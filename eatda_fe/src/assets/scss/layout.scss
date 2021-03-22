@@ -1,0 +1,22 @@
+.contentWrapper {
+  height: 100%;
+  width: 100%;
+
+  padding: 5%;
+
+  display: grid;
+  grid-template-rows: 1fr 10fr;
+
+  .contentTitle {
+    grid-row: 1 / 2;
+
+    font-size: x-large;
+    font-weight: 600;
+    
+    color: #EFBF43;
+  }
+
+  .contentBody {
+    grid-row: 2 / 3;
+  }
+}

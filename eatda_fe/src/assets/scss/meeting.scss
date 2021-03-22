@@ -1,0 +1,136 @@
+.meetingFindFriend{
+    display:grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    .ant-form-item-control{
+        grid-column: 2 / 3;
+        .meetingFindFriendButton{
+            width:100%;
+            border-radius: 10px;
+            color:#717171;
+            background-color:#EFBF43;
+            border:1px solid #EFBF43;
+        }
+    }    
+}
+
+.meetingFriendsList{
+    border:2px solid #cccccc;
+    padding:3%;
+    border-radius: 10px;
+}
+
+.meetingCreate{
+    .ant-form-item-control{
+        width:100%;
+        .meetingCreateButton{
+            width:100%;
+            border-radius: 10px;
+            color:#717171;
+            background-color:#ffffff;
+            border:2px solid #EFBF43;
+        }
+    }    
+}
+
+// 날짜 모달 SCSS
+.meetingDateContent{
+    width:100%;
+    height:100%;
+    display:grid;
+    grid-template-rows:3fr 3fr 1fr;
+    .meetingDateDate{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        .meetingDateItem{
+            display:grid;
+            grid-template-rows: 1fr 1fr 1fr 1fr;
+            justify-items: center;
+            text-align: center;            
+            .prevItem, .nextItem, .currentItem{
+                width:80%;
+                text-align: center;
+                line-height: 2.5em;
+            }
+            .currentItem{
+                border-top: 1px solid #717171;
+                border-bottom: 1px solid #717171;
+                font-weight: 500;
+            }
+            .prevItem, .nextItem{
+                color:#cccccc;
+            }
+        }
+    }
+    .meetingDateTime{
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        .meetingDateItem{
+            display:grid;
+            grid-template-rows: 1fr 1fr 1fr 1fr;
+            justify-items: center;
+            text-align: center;
+            .prevItem, .nextItem, .currentItem{
+                width:80%;
+                text-align: center;
+                line-height: 2.5em;
+            }
+            .currentItem{
+                border-top: 1px solid #717171;
+                border-bottom: 1px solid #717171;
+                font-weight: 500;
+            }
+            .prevItem, .nextItem{
+                color:#cccccc;
+            }
+        }
+        .meetingDateHour{
+            grid-column: 2 / 5;
+        }
+        .meetingDateMinute{
+            grid-column: 7 / 10;
+        }
+    }
+    .meetingDateConfirmButton{
+        align-self: center;
+        color:#717171;
+        background-color: #ffffff;
+        border:2px solid #EFBF43;
+        border-radius:10px;
+    }
+}
+
+// 장소 SCSS
+.meetingLocationContent{
+    display:grid;
+    grid-template-rows:2fr 6fr 1fr;
+    .meetingLocationMap{
+        grid-row: 2 / 3;
+    }
+    .meetingLocationConfirmButton{
+        grid-row: 3 / 4;
+        align-self: end;
+        color:#717171;
+        background-color: #ffffff;
+        border:2px solid #EFBF43;
+        border-radius:10px;
+    }
+}
+
+// 친구 검색 SCSS
+.meetingFriendContent{
+    display:grid;
+    grid-template-rows: 2fr 5fr 1fr;
+    .meetingFriendModalList{
+        grid-row: 2 / 3;
+        border: 2px solid #717171;
+        border-radius:10px;
+    }
+    .meetingFriendConfirmButton{
+        grid-row: 3 / 4;
+        align-self: center;
+        color:#717171;
+        background-color: #ffffff;
+        border:2px solid #EFBF43;
+        border-radius:10px;
+    }
+}

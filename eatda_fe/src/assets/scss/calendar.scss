@@ -1,0 +1,84 @@
+.calWrapper {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+
+  grid-template-rows: 1fr 6fr;
+}
+
+// 캘린더 헤더 영역
+
+.calHeaderWrapper {
+  justify-items: center;
+  align-items: center;
+
+  display: grid;
+
+  grid-template-columns: 2fr 1fr 3fr 1fr 2fr;
+}
+
+// 헤더 날짜 영역 
+.calHeaderNow {
+  grid-column: 3 / 4;
+
+  color: #EFBF43;
+  font-weight: 600;
+}
+
+// 버튼 공통 속성
+.calHeaderBtn {
+}
+
+// 버튼 각각의 속성
+.calHeaderBeforeBtn {
+  grid-column: 2 / 3;
+}
+
+.calHeaderAfterBtn {
+  grid-column: 4 / 5;
+}
+
+// 캘린더 바디 영역
+
+.calBodyWrapper {
+  height: 100%;
+  width: 100%;
+
+  background-color: burlywood;
+
+  display: grid;
+
+  grid-template-rows: 1fr 15fr;
+}
+
+// 캘린더 바디 중 요일 영역
+
+.calBodyHeader {
+  height: 100%;
+  width: 100%;
+
+  background-color: #EFBF43;
+  
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+
+  justify-items: center;
+  align-items: center;
+}
+
+// 각 요일 영역 셀 공통
+.calBodyHeaderCell {
+  font-size: x-small;
+}
+
+// 요일별 셀 속성
+.date-sun {
+  color: red;
+}
+.date-sat {
+  color: blue;
+}
+.date-weekday {
+  color: black;
+}

@@ -1,0 +1,26 @@
+.mainWrapper {
+  width: 100%;
+  height: 100%;
+
+  background-color: aquamarine;
+
+  display: grid;
+  grid-template-rows: 1fr 5fr;
+}
+
+.mainButtonWrapper {
+  width: 100%;
+  height: 100%;
+
+  // 나중에 grid로 변경하고 custom div 맞출 예정입니다!
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainComponentWrapper {
+  width: 100%;
+  height: 100%;
+
+  background-color: blueviolet;
+}
