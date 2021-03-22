@@ -32,7 +32,7 @@ public class UserController {
   @Autowired
   UserService userService;
 
-  // 로그인카카오
+  // 카카오 로그인
   @ApiOperation(value = "카카오 로그인", notes = "access_token을 인자로 받아 로그인/회원가입", response = String.class)
   @PostMapping("/kakao/login")
   public ResponseEntity<String> login(
@@ -68,6 +68,18 @@ public class UserController {
     String jwt = req.getHeader("token");
     int userSeq = jwtService.decode(jwt);
     User userInfo = userService.userInfoUpdate(userSeq, user, file);
+    return new ResponseEntity<User>(userInfo, HttpStatus.OK);
+  }
+
+  // 친구 추가
+  @ApiOperation(value = "친구추가", notes = "코드(seq)를 받아와서 친구추가", response = User.class)
+  @PutMapping("/addfriend")
+  public ResponseEntity<User> addFriend(@ApiParam(value = "code(seq)", required = true) int code,
+      HttpServletRequest req) {
+    logger.info("addfriend - 호출");
+    String jwt = req.getHeader("token");
+    int userSeq = jwtService.decode(jwt);
+    User userInfo = userService.addFriend(userSeq, code);
     return new ResponseEntity<User>(userInfo, HttpStatus.OK);
   }
 

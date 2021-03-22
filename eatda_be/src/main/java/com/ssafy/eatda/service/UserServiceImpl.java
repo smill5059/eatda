@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import org.apache.commons.io.FilenameUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -100,6 +102,10 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
           }
         }
+
+        user.setFriends(new ArrayList<ObjectId>());
+        user.setSchedules(new ArrayList<ObjectId>());
+
         userRepository.save(user);
       }
 
@@ -183,6 +189,26 @@ public class UserServiceImpl implements UserService {
     userRepository.save(user);
 
     return user;
+  }
+
+  @Override
+  public User addFriend(int userSeq, int code) {
+
+    User user = userRepository.findBySeq(userSeq);
+    if (user == null)
+      return null;
+
+    User friend = userRepository.findBySeq(code);
+    if (friend == null)
+      return null;
+
+    user.getFriends().add(friend.getId());
+    friend.getFriends().add(user.getId());
+
+    userRepository.save(user);
+    userRepository.save(friend);
+
+    return null;
   }
 
 }
