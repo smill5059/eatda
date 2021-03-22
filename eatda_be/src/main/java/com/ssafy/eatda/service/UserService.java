@@ -11,4 +11,6 @@ public interface UserService {
 
   public User userInfoUpdate(int userSeq, User newUser, MultipartFile file);
 
+  public User addFriend(int userSeq, int code);
+
 }
