@@ -2,6 +2,7 @@ package com.ssafy.eatda.service;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,9 +10,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.UUID;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.eatda.repository.UserRepository;
@@ -34,6 +37,8 @@ public class UserServiceImpl implements UserService {
 
   @Value("${resources.location}")
   private String uploadPath;
+
+  private String defaultFileName = "logo.jpg";
 
   @Override
   public String getToken(String access_token) {
@@ -73,7 +78,7 @@ public class UserServiceImpl implements UserService {
         user.setSeq(seq);
         user.setName(name);
         if (profile_image_url == null || "".equals(profile_image_url)) {
-          user.setProfileUrl("logo.jpg");
+          user.setProfileUrl("profile/" + defaultFileName);
         } else {
           StringTokenizer st = new StringTokenizer(profile_image_url, ".");
           st.nextToken();
@@ -108,6 +113,76 @@ public class UserServiceImpl implements UserService {
       e.printStackTrace();
       return null;
     }
+  }
+
+  @Override
+  public User userInfo(int userSeq) {
+    return userRepository.findBySeq(userSeq);
+  }
+
+  @Override
+  public User userInfoUpdate(int userSeq, User newUser, MultipartFile uploadFile) {
+    // TODO Auto-generated method stub
+
+    User user = userRepository.findBySeq(userSeq);
+    if (user == null)
+      return null;
+
+
+    try {
+      // 기본이미지로 변경
+      if ("noImage".equals(newUser.getProfileUrl())) {
+
+        if (!user.getProfileUrl().equals(defaultFileName)) {
+          File deleteFile = new File(uploadPath + user.getProfileUrl());
+          if (deleteFile.exists() && !deleteFile.delete())
+            return user;
+        }
+        user.setProfileUrl("profile/" + defaultFileName);
+
+      }
+
+      // 새로운 이미지로 변경
+      if (uploadFile != null && !uploadFile.isEmpty()) {
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists())
+          uploadDir.mkdir();
+
+        // 기존 프로필 이미지가 기본 이미지가 아닐 경우 기존 사진 제거
+        if (!user.getProfileUrl().equals(defaultFileName)) {
+          File deleteFile = new File(uploadPath + user.getProfileUrl());
+          if (deleteFile.exists() && !deleteFile.delete())
+            return user;
+        }
+
+        // 새로운 프로필 이미지로 업데이트
+        String fileName = uploadFile.getOriginalFilename();
+
+        // Random Fild Id
+        UUID uuid = UUID.randomUUID();
+
+        // file extension
+        String extension = FilenameUtils.getExtension(fileName);
+
+        String savingFileName = uuid + "." + extension;
+        File destFile = new File(uploadPath + savingFileName);
+        uploadFile.transferTo(destFile);
+        user.setProfileUrl("profile/" + savingFileName);
+      }
+    } catch (Exception e) {
+      // TODO: handle exception
+      e.printStackTrace();
+      user.setName("dpdpdpd,,,");
+      return user;
+    }
+
+    // 닉네임 변경
+    user.setName(newUser.getName());
+
+    // 테이블 업데이트
+    userRepository.save(user);
+
+    return user;
   }
 
 }
