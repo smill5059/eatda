@@ -177,7 +177,7 @@ function CreateModify() {
             name="meetingName"
             rules={[{ required: true, message: "약속 이름을 정해주세요" }]}
           >
-            <Input placeholder="약속 이름을 지어주세요" />
+            <Input placeholder="약속 이름을 지어주세요"/>
           </Form.Item>
           {/* 날짜 선택 창 */}
           <Form.Item
