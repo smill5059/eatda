@@ -20,7 +20,7 @@ public class Schedule {
   private Date meetDate;
 
   private List<Store> stores;
-  private List<Friend> participants;
+  private List<Profile> participants;
   private List<String> tags;
   private List<Score> scores;
   private List<Comment> comments;
