@@ -16,4 +16,8 @@ public interface UserService {
 
   public List<Profile> addFriend(int userSeq, int code);
 
+  public List<Profile> deleteFriend(int userSeq, Integer code);
+
+  public String deleteUser(int userSeq);
+
 }

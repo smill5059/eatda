@@ -243,11 +243,13 @@ public class UserServiceImpl implements UserService {
     if (friend == null || friendProfile == null)
       return null;
 
-    user.getFriends().add(friend.getId());
-    friend.getFriends().add(user.getId());
+    if (!user.getFriends().contains(friend.getId())) {
+      user.getFriends().add(friend.getId());
+      friend.getFriends().add(user.getId());
 
-    userRepository.save(user);
-    userRepository.save(friend);
+      userRepository.save(user);
+      userRepository.save(friend);
+    }
 
     ArrayList<Profile> list = new ArrayList<Profile>();
     for (ObjectId id : user.getFriends()) {
@@ -256,6 +258,63 @@ public class UserServiceImpl implements UserService {
     }
 
     return list;
+  }
+
+  @Override
+  public List<Profile> deleteFriend(int userSeq, Integer code) {
+
+    User user = userRepository.findBySeq(userSeq);
+    Profile userProfile = profileRepository.findByUserSeq(userSeq);
+    if (user == null || userProfile == null)
+      return null;
+
+    User friend = userRepository.findBySeq(code);
+    Profile friendProfile = profileRepository.findByUserSeq(code);
+    if (friend == null || friendProfile == null)
+      return null;
+
+    if (user.getFriends().contains(friend.getId())) {
+      user.getFriends().remove(friend.getId());
+      friend.getFriends().remove(user.getId());
+
+      userRepository.save(user);
+      userRepository.save(friend);
+    }
+
+    ArrayList<Profile> list = new ArrayList<Profile>();
+    for (ObjectId id : user.getFriends()) {
+      Profile profile = profileRepository.findById(id).get();
+      list.add(profile);
+    }
+
+    return list;
+  }
+
+  @Override
+  public String deleteUser(int userSeq) {
+
+    User user = userRepository.findBySeq(userSeq);
+    Profile profile = profileRepository.findByUserSeq(userSeq);
+
+    if (user == null || profile == null)
+      return "FAIL";
+
+    ObjectId id = user.getId();
+
+    // 친구들의 친구목록에서 삭제
+    for (ObjectId friendId : user.getFriends()) {
+      User friend = userRepository.findById(friendId).get();
+      friend.getFriends().remove(id);
+      userRepository.save(friend);
+    }
+
+    // Profile 테이블 지우기
+    profileRepository.delete(profile);
+
+    // User 테이블 지우기
+    userRepository.delete(user);
+
+    return "SUCCESS";
   }
 
 }
