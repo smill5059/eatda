@@ -71,6 +71,8 @@ public class UserController {
     String jwt = req.getHeader("token");
     int userSeq = jwtService.decode(jwt);
     User userInfo = userService.userInfoUpdate(userSeq, user, file);
+    if (userInfo == null)
+      return new ResponseEntity<User>(userInfo, HttpStatus.BAD_REQUEST);
     return new ResponseEntity<User>(userInfo, HttpStatus.OK);
   }
 
