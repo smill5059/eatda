@@ -21,7 +21,7 @@ public class Schedule {
     private Date meetDate;
 
     private List<Store> stores;
-    private List<Participant> participants;
+    private List<Profile> participants;
     private List<String> tags;
     private List<Score> scores;
     private List<Comment> comments;
