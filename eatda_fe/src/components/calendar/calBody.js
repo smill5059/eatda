@@ -13,11 +13,11 @@ function Calendar(props) {
       const className = () => {
         let className = "calBodyHeaderCell";
         if (index === 0) {
-          return className + " date-sun"
+          return className + " day-sun"
         } else if (index === 6) {
-          return className + " date-sat"
+          return className + " day-sat"
         } else {
-          return className + " date-weekday"
+          return className + " day-weekday"
         }
       }
       return (
@@ -39,25 +39,39 @@ function Calendar(props) {
   const firstDayOfMonth = firstDateOfMonth.get('d')
   const firstDate = firstDateOfMonth.clone().add(-firstDayOfMonth, 'days')
 
-  console.info("전달 받아지는지?", curDate)
-  console.info("이번 달의 첫 날", firstDateOfMonth)
-  console.info("이번 달의 첫 요일", firstDayOfMonth)
-  console.info("이번 달력의 첫 날", firstDate)
-
-  const Days = (firstDate) => {
+  const Date = (firstDate) => {
     const _days = [];
 
     for (let i = 0; i < 42; i ++) {
       const Day = firstDate.clone().add('d', i);
-      console.log("하루하루", Day)
-      _days.push({
-        getDay: Day.format('D')
-      });
+      _days.push(Day);
     }
-
     return _days;
+  };
+  
+  const mapArrayToDate = (Date) => {
+    return Date.map((date, index) => {
+      const className = () => {
+        let className = "calBodyContentCell";
+        if (date.isSame(curDate, 'month') === false) {
+          return className + " outdate"
+        } else {
+          if ((index % 7) === 0) {
+            return className + " date-sun"
+          } else if ((index % 7) === 6) {
+            return className + " date-sat"
+          } else {
+            return className + " date-weekday"
+          }
+        }
+      }
+      return (
+        <div className={className()}>
+          { date.format('D') }
+        </div>
+      )
+    })
   }
-
 
   return (
     <div className="calBodyWrapper">
@@ -65,7 +79,7 @@ function Calendar(props) {
         { mapArrayToDay(dayArray) }        
       </div>
       <div className="calBodyContent">
-        { Days }
+        { mapArrayToDate(Date(firstDate)) }
       </div>
     </div>
   );
