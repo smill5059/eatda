@@ -73,12 +73,61 @@
 }
 
 // 요일별 셀 속성
+.day-sun {
+  color: red;
+}
+.day-sat {
+  color: blue;
+}
+.day-weekday {
+  color: black;
+}
+
+
+// 캘린더 바디 중 날짜 영역 
+
+.calBodyContent {
+  height: 100%;
+  width: 100%;
+
+  
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  
+}
+
+
+// 각 요일 영역 셀 공통
+.calBodyContentCell {
+  height: 100%;
+  width: 100%;  
+    
+  font-size: x-small;
+  text-align: center;
+  
+  padding: 15%;
+  
+  border: solid 0.3px white;
+
+}
+
+.outdate {
+  color: white;
+  background-color: white;
+}
+
 .date-sun {
   color: red;
+  background-color: #f8f8f8;
+
 }
 .date-sat {
   color: blue;
+  background-color: #f8f8f8;
+
 }
 .date-weekday {
   color: black;
+  background-color: #f8f8f8;
 }
