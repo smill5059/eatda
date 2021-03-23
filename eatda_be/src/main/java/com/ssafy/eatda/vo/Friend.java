@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Participant {
+public class Friend {
     private ObjectId userSeq;
     private String userName;
     private String userProfileUrl;
