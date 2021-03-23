@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import org.apache.commons.io.FilenameUtils;
@@ -19,14 +20,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.eatda.repository.ProfileRepository;
 import com.ssafy.eatda.repository.UserRepository;
+import com.ssafy.eatda.vo.Profile;
 import com.ssafy.eatda.vo.User;
+import com.ssafy.eatda.vo.UserResult;
 
 @Service
 public class UserServiceImpl implements UserService {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private ProfileRepository profileRepository;
 
   @Autowired
   private JwtService jwtService;
@@ -40,10 +47,10 @@ public class UserServiceImpl implements UserService {
   @Value("${resources.location}")
   private String uploadPath;
 
-  private String defaultFileName = "logo.jpg";
+  private String defaultFileName = "profile/logo.jpg";
 
   @Override
-  public String getToken(String access_token) {
+  public UserResult login(String access_token) {
     String reqURL = "https://kapi.kakao.com/v2/user/me";
     try {
       URL url = new URL(reqURL);
@@ -77,17 +84,18 @@ public class UserServiceImpl implements UserService {
         String profile_image_url = kakao_account.path("profile").path("profile_image_url").asText();
         String name = kakao_account.path("profile").path("nickname").asText();
         User user = new User();
+        Profile profile = new Profile();
         user.setSeq(seq);
         user.setName(name);
         if (profile_image_url == null || "".equals(profile_image_url)) {
-          user.setProfileUrl("profile/" + defaultFileName);
+          user.setProfileUrl(defaultFileName);
         } else {
           StringTokenizer st = new StringTokenizer(profile_image_url, ".");
           st.nextToken();
           st.nextToken();
           st.nextToken();
           String img = UUID.randomUUID() + "." + st.nextToken();
-          String OUTPUT_FILE_PATH = uploadPath + img;
+          String OUTPUT_FILE_PATH = uploadPath + "profile/" + img;
           try (
               BufferedInputStream in =
                   new BufferedInputStream(new URL(profile_image_url).openStream());
@@ -97,9 +105,10 @@ public class UserServiceImpl implements UserService {
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
               fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
-            user.setProfileUrl(img);
+            user.setProfileUrl("profile/" + img);
           } catch (IOException e) {
             e.printStackTrace();
+            return null;
           }
         }
 
@@ -107,12 +116,35 @@ public class UserServiceImpl implements UserService {
         user.setSchedules(new ArrayList<ObjectId>());
 
         userRepository.save(user);
+        user = userRepository.findBySeq(seq);
+
+        profile.setId(user.getId());
+        profile.setUserSeq(user.getSeq());
+        profile.setUserName(user.getName());
+        profile.setUserProfileUrl(user.getProfileUrl());
+        profileRepository.save(profile);
+
       }
 
       // 로그인
       User user = userRepository.findBySeq(seq);
-      return jwtService.create(user.getSeq());
 
+
+      UserResult userResult = new UserResult();
+      userResult.setToken(jwtService.create(user.getSeq()));
+      userResult.setProfileUrl(user.getProfileUrl());
+      userResult.setName(user.getName());
+      userResult.setSeq(seq);
+
+      ArrayList<Profile> list = new ArrayList<Profile>();
+      for (ObjectId id : user.getFriends()) {
+        Profile profile = profileRepository.findById(id).get();
+        list.add(profile);
+      }
+
+      userResult.setFriends(list);
+
+      return userResult;
 
     } catch (IOException e) {
       // TODO Auto-generated catch block
@@ -131,7 +163,8 @@ public class UserServiceImpl implements UserService {
     // TODO Auto-generated method stub
 
     User user = userRepository.findBySeq(userSeq);
-    if (user == null)
+    Profile profile = profileRepository.findByUserSeq(userSeq);
+    if (user == null || profile == null)
       return null;
 
 
@@ -141,16 +174,18 @@ public class UserServiceImpl implements UserService {
 
         if (!user.getProfileUrl().equals(defaultFileName)) {
           File deleteFile = new File(uploadPath + user.getProfileUrl());
+          System.out.println("dpdpd,,,");
           if (deleteFile.exists() && !deleteFile.delete())
-            return user;
+            return null;
         }
-        user.setProfileUrl("profile/" + defaultFileName);
+
+        user.setProfileUrl(defaultFileName);
 
       }
 
       // 새로운 이미지로 변경
       if (uploadFile != null && !uploadFile.isEmpty()) {
-        File uploadDir = new File(uploadPath);
+        File uploadDir = new File(uploadPath + "profile/");
         if (!uploadDir.exists())
           uploadDir.mkdir();
 
@@ -158,7 +193,7 @@ public class UserServiceImpl implements UserService {
         if (!user.getProfileUrl().equals(defaultFileName)) {
           File deleteFile = new File(uploadPath + user.getProfileUrl());
           if (deleteFile.exists() && !deleteFile.delete())
-            return user;
+            return null;
         }
 
         // 새로운 프로필 이미지로 업데이트
@@ -171,35 +206,41 @@ public class UserServiceImpl implements UserService {
         String extension = FilenameUtils.getExtension(fileName);
 
         String savingFileName = uuid + "." + extension;
-        File destFile = new File(uploadPath + savingFileName);
+        File destFile = new File(uploadPath + "profile/" + savingFileName);
         uploadFile.transferTo(destFile);
         user.setProfileUrl("profile/" + savingFileName);
       }
     } catch (Exception e) {
       // TODO: handle exception
       e.printStackTrace();
-      user.setName("dpdpdpd,,,");
-      return user;
+      return null;
     }
 
     // 닉네임 변경
     user.setName(newUser.getName());
 
+    // 친구 테이블의 데이터도 변경
+    profile.setUserName(user.getName());
+    profile.setUserProfileUrl(user.getProfileUrl());
+
     // 테이블 업데이트
     userRepository.save(user);
+    profileRepository.save(profile);
 
     return user;
   }
 
   @Override
-  public User addFriend(int userSeq, int code) {
+  public List<Profile> addFriend(int userSeq, int code) {
 
     User user = userRepository.findBySeq(userSeq);
-    if (user == null)
+    Profile userProfile = profileRepository.findByUserSeq(userSeq);
+    if (user == null || userProfile == null)
       return null;
 
     User friend = userRepository.findBySeq(code);
-    if (friend == null)
+    Profile friendProfile = profileRepository.findByUserSeq(code);
+    if (friend == null || friendProfile == null)
       return null;
 
     user.getFriends().add(friend.getId());
@@ -208,7 +249,13 @@ public class UserServiceImpl implements UserService {
     userRepository.save(user);
     userRepository.save(friend);
 
-    return null;
+    ArrayList<Profile> list = new ArrayList<Profile>();
+    for (ObjectId id : user.getFriends()) {
+      Profile profile = profileRepository.findById(id).get();
+      list.add(profile);
+    }
+
+    return list;
   }
 
 }

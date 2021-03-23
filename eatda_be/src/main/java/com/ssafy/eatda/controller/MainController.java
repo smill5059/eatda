@@ -3,6 +3,7 @@ package com.ssafy.eatda.controller;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +52,34 @@ public class MainController {
   // 메인 - schedule list
   @ApiOperation(value = "캘린더", notes = "날짜를 받아와서 해당 월의 약속을 보여줌", response = Schedule.class)
   @GetMapping("/timeline")
-  public ResponseEntity<User> getTimeLine(HttpServletRequest req) {
+  public ResponseEntity<User> getTimeLine(ObjectId id, HttpServletRequest req) {
     logger.info("getTimeline - 호출");
+    System.out.println(id);
     // String jwt = req.getHeader("token");
     // int userSeq = jwtService.decode(jwt);
     // List<Schedule> result = mainService.getSchedules(userSeq, requestDate);
-    String result = null;
+    // String result = null;
+    User user = UserRepository.findBySeq(1664038710);
+    System.out.println(user.getId());
+    // System.out.println(user.getId());
+    return new ResponseEntity<User>(user, HttpStatus.OK);
+  }
+
+  // test
+  @GetMapping("/test/{test}")
+  public ResponseEntity<ObjectId> test(@PathVariable Integer test, HttpServletRequest req) {
+    logger.info("test - 호출");
+    User user = UserRepository.findBySeq(test);
+    System.out.println(user.getId());
+    return new ResponseEntity<ObjectId>(user.getId(), HttpStatus.OK);
+  }
+
+  // test2
+  @GetMapping("/test2")
+  public ResponseEntity<User> test2(ObjectId id, HttpServletRequest req) {
+    logger.info("test2 - 호출");
+    System.out.println(id);
+    System.out.println("=================");
     User user = UserRepository.findBySeq(1664038710);
     System.out.println(user.getId());
     return new ResponseEntity<User>(user, HttpStatus.OK);
