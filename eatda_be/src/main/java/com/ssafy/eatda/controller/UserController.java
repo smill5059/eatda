@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -82,13 +83,42 @@ public class UserController {
   public ResponseEntity<List<Profile>> addFriend(
       @ApiParam(value = "code(seq)", required = true) @RequestBody Integer code,
       HttpServletRequest req) {
-    logger.info("addfriend - 호출");
+    logger.info("addFriend - 호출");
     String jwt = req.getHeader("token");
     int userSeq = jwtService.decode(jwt);
     List<Profile> result = userService.addFriend(userSeq, code);
     if (result == null)
       return new ResponseEntity<List<Profile>>(result, HttpStatus.BAD_REQUEST);
     return new ResponseEntity<List<Profile>>(result, HttpStatus.OK);
+  }
+
+  // 친구 삭제
+  @ApiOperation(value = "친구삭제", notes = "코드(seq)를 받아와서 친구추가(친구에게서도 삭제됨)", response = List.class)
+  @DeleteMapping("/deletefriend")
+  public ResponseEntity<List<Profile>> deleteFriend(
+      @ApiParam(value = "code(seq)", required = true) @RequestBody Integer code,
+      HttpServletRequest req) {
+    logger.info("deleteFriend - 호출");
+    String jwt = req.getHeader("token");
+    int userSeq = jwtService.decode(jwt);
+    List<Profile> result = userService.deleteFriend(userSeq, code);
+    if (result == null)
+      return new ResponseEntity<List<Profile>>(result, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<List<Profile>>(result, HttpStatus.OK);
+  }
+
+  // 회원탈퇴
+  @ApiOperation(value = "회원탈퇴", notes = "구현중(User, Profile 테이블 관련 데이터만 지워짐)",
+      response = String.class)
+  @DeleteMapping("/deleteuser")
+  public ResponseEntity<String> deleteUser(HttpServletRequest req) {
+    logger.info("deleteFriend - 호출");
+    String jwt = req.getHeader("token");
+    int userSeq = jwtService.decode(jwt);
+    String result = userService.deleteUser(userSeq);
+    if (result == "FAIL")
+      return new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<String>(result, HttpStatus.OK);
   }
 
 }
