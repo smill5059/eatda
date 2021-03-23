@@ -3,6 +3,7 @@ import { Route, BrowserRouter, Switch, } from "react-router-dom";
 
 import Layout from './pages/layout/layout';
 import Main from './pages/main/main';
+import Login from './pages/main/login';
 // 약속 생성
 import CreateModify from './pages/meeting/createModify';
 
@@ -18,7 +19,8 @@ function App() {
         <div className="Content">
           <Switch>
             {/* <Route path="/" component={Layout} /> */}
-            <Route path="/" component={Main} />
+            <Route exact path="/" component={Main} />
+            <Route path="/login" component={Login} />
             <Route path="/createMeeting" component={CreateModify}/>
           </Switch>
         </div>
