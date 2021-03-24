@@ -1,0 +1,47 @@
+.profileBody {
+  display: grid;
+  grid-template-rows: 1fr 2fr;
+
+  .profileBox {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(9, 1fr);
+
+    .usrImg {
+      grid-row: 2/4;
+      grid-column: 2/5;
+    }
+
+    .usrName {
+      grid-row: 2;
+      grid-column: 6/9;
+    }
+
+    .usrCode {
+      grid-row: 3;
+      grid-column: 6/9;
+    }
+  }
+
+  .friendBox {
+    display: grid;
+    grid-template-rows: 1fr 7fr;
+    grid-template-columns: repeat(12, 1fr);
+
+    .frdTitle {
+      grid-column: 1/5;
+    }
+
+    .frdAddBtn {
+      grid-column: 10/13;
+    }
+
+    .frdList {
+      grid-column: span 12;
+    }
+  }
+}
+
+.sizing {
+  border: 0.5px solid darkgrey;
+}
