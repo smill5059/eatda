@@ -1,6 +1,8 @@
 package com.ssafy.eatda.vo;
 
-import java.sql.Date;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.ssafy.eatda.util.CustomObjectIdSerializer;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -8,11 +10,14 @@ import org.bson.types.ObjectId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule {
+  @JsonSerialize(using = CustomObjectIdSerializer.class)
+  @Id
   private ObjectId id;
   private String title;
 

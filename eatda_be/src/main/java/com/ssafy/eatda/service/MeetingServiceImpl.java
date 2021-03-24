@@ -15,11 +15,12 @@ public class MeetingServiceImpl implements MeetingService {
 
   @Override
   public Schedule createMeeting(Schedule schedule) {
+    schedule.setCompleted(false);
     return repository.insert(schedule);
   }
 
   @Override
-  public Schedule findBySeq(ObjectId id) {
+  public Schedule readMeeting(ObjectId id) {
     Optional<Schedule> found = repository.findById(id);
     if (found.isPresent()) {
       return found.get();
