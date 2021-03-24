@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule {
-  private ObjectId seq;
+  private ObjectId id;
   private String title;
 
   @Temporal(TemporalType.TIMESTAMP)
   private Date meetDate;
 
   private List<Store> stores;
-  private List<Profile> participants;
+  private List<ObjectId> participants;
   private List<String> tags;
   private List<Score> scores;
   private List<Comment> comments;

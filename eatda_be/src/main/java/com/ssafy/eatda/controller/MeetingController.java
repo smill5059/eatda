@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/meeting")
@@ -31,8 +29,8 @@ public class MeetingController {
 
   @ApiOperation(value = "약속 확인")
   @GetMapping("/{seq}")
-  public ResponseEntity<?> findBySeq(@PathVariable ObjectId seq) {
-    Schedule result = meetingSvc.findBySeq(seq);
+  public ResponseEntity<?> findBySeq(@PathVariable ObjectId id) {
+    Schedule result = meetingSvc.findBySeq(id);
     if (result != null) {
       return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -41,8 +39,8 @@ public class MeetingController {
 
   @ApiOperation(value = "만났어요 클릭 시")
   @PutMapping("/{seq}")
-  public ResponseEntity<?> updateIsCompleted(@PathVariable ObjectId seq) {
-    Schedule result = meetingSvc.updateIsCompleted(seq);
+  public ResponseEntity<?> updateIsCompleted(@PathVariable ObjectId id) {
+    Schedule result = meetingSvc.updateIsCompleted(id);
     if (result != null) {
       return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -61,8 +59,12 @@ public class MeetingController {
 
   @ApiOperation(value = "약속 삭제")
   @DeleteMapping("/{seq}")
-  public String deleteMeeting(@PathVariable ObjectId seq) {
-    return meetingSvc.deleteMeeting(seq);
+  public ResponseEntity<?> deleteMeeting(@PathVariable ObjectId id) {
+    String result = meetingSvc.deleteMeeting(id);
+    if (result.equals("SUCCESS")) {
+      return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
 }

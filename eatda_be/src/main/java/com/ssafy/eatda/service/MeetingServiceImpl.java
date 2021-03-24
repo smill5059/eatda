@@ -5,8 +5,6 @@ import com.ssafy.eatda.vo.Schedule;
 import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +19,8 @@ public class MeetingServiceImpl implements MeetingService {
   }
 
   @Override
-  public Schedule findBySeq(ObjectId seq) {
-    Optional<Schedule> found = repository.findById(seq);
+  public Schedule findBySeq(ObjectId id) {
+    Optional<Schedule> found = repository.findById(id);
     if (found.isPresent()) {
       return found.get();
     }
@@ -30,8 +28,8 @@ public class MeetingServiceImpl implements MeetingService {
   }
 
   @Override
-  public Schedule updateIsCompleted(ObjectId seq) {
-    Optional<Schedule> found = repository.findById(seq);
+  public Schedule updateIsCompleted(ObjectId id) {
+    Optional<Schedule> found = repository.findById(id);
     if (found.isPresent()) {
       found.get().setCompleted(true);
       Schedule result = repository.save(found.get());
@@ -42,7 +40,7 @@ public class MeetingServiceImpl implements MeetingService {
 
   @Override
   public Schedule updateMeeting(Schedule schedule) {
-    Optional<Schedule> found = repository.findById(schedule.getSeq());
+    Optional<Schedule> found = repository.findById(schedule.getId());
     if (found.isPresent()) {
       found.get().setTitle(schedule.getTitle());
       found.get().setMeetDate(schedule.getMeetDate());
@@ -56,9 +54,9 @@ public class MeetingServiceImpl implements MeetingService {
   }
 
   @Override
-  public String deleteMeeting(ObjectId seq) {
-    if (repository.existsById(seq)) {
-      repository.deleteById(seq);
+  public String deleteMeeting(ObjectId id) {
+    if (repository.existsById(id)) {
+      repository.deleteById(id);
       return "SUCCESS";
     }
     return "FAIL";

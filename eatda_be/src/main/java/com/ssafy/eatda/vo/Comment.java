@@ -9,6 +9,6 @@ import org.bson.types.ObjectId;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
-    private ObjectId userSeq;
+    private int userSeq;
     private String content;
 }

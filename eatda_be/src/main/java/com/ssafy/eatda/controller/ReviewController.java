@@ -25,7 +25,7 @@ public class ReviewController {
 
   @PutMapping("/img")
   public ResponseEntity<?> updateImg(@RequestBody Schedule schedule) {
-    Optional<Schedule> found = repository.findById(schedule.getSeq());
+    Optional<Schedule> found = repository.findById(schedule.getId());
     if (found.isPresent()) {
       found.get().setImgs(schedule.getImgs());
       Schedule result = repository.save(found.get());
@@ -36,7 +36,7 @@ public class ReviewController {
 
   @PutMapping("/comment")
   public ResponseEntity<?> updateComment(@RequestBody Schedule schedule) {
-    Optional<Schedule> found = repository.findById(schedule.getSeq());
+    Optional<Schedule> found = repository.findById(schedule.getId());
     if (found.isPresent()) {
       found.get().setComments(schedule.getComments());
       Schedule result = repository.save(found.get());
