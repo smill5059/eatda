@@ -41,7 +41,7 @@
             	  "access_token" : access_token
         	}
         	
-        	axios.post('http://eatda.me:8080/user/kakao/login', JSON.stringify(data), {
+        	axios.post('http://eatda.me:8080/app/user/kakao/login', JSON.stringify(data), {
         		headers: { "Content-Type": `application/json`},
         	    },
         	).then((res) => {

@@ -3,6 +3,7 @@ package com.ssafy.eatda.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,34 +139,44 @@ public class MainServiceImpl implements MainService {
   // 타임라인 친구필터
   @Override
   public List<ScheduleResult> getTimelineByFriend(int userSeq, int code) {
-    User user = userRepository.findBySeq(userSeq);
-    if (user == null)
-      return null;
+    // User user = userRepository.findBySeq(userSeq);
+    // if (user == null || friendName == null || friendName.equals(""))
+    // return null;
 
-    User friend = userRepository.findBySeq(code);
-    if (friend == null)
-      return null;
-
+    HashSet<ObjectId> list = new HashSet<ObjectId>();
     ArrayList<ScheduleResult> result = new ArrayList<ScheduleResult>();
 
-    for (ObjectId id : user.getSchedules()) {
-      Schedule s = scheduleRepository.findById(id).get();
-      if (s.isCompleted()) {
-        ScheduleResult sr = new ScheduleResult();
-        sr.copy(s);
-        ArrayList<Profile> profiles = new ArrayList<Profile>();
-        for (ObjectId userId : s.getParticipants()) {
-          Profile profile = profileRepository.findById(userId).get();
-          if (profile == null)
-            return null;
-          if (profile.getUserSeq() == code) {
-            profiles.add(profile);
-            result.add(sr);
-            break;
-          }
-        }
-      }
-    }
+
+    // for (ObjectId friendId : user.getFriends()) {
+    // Profile friend = profileRepository.findById(friendId).get();
+    // if (friend.getUserName() != null && friend.getUserName().contains(friendName)) {
+    // int friendSeq = userRepository.findBySeq(friend.getUserSeq()).getSeq();
+    //
+    // for (ObjectId id : user.getSchedules()) {
+    // Schedule s = scheduleRepository.findById(id).get();
+    // if (s.isCompleted()) {
+    //
+    // }
+    // }
+    //
+    //
+    // ScheduleResult sr = new ScheduleResult();
+    // sr.copy(s);
+    // ArrayList<Profile> profiles = new ArrayList<Profile>();
+    // for (ObjectId userId : s.getParticipants()) {
+    // Profile profile = profileRepository.findById(userId).get();
+    // if (profile == null)
+    // return null;
+    // if (profile.getUserSeq() == friendSeq) {
+    // profiles.add(profile);
+    // result.add(sr);
+    // break;
+    // }
+    // }
+    //
+    // }
+    //
+    // }
 
     return result;
   }
