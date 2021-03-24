@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, BrowserRouter, Switch, } from "react-router-dom";
-
 import Layout from './pages/layout/layout';
 import Main from './pages/main/main';
 import Login from './pages/main/login';
@@ -15,7 +14,6 @@ function App() {
     <BrowserRouter>
       <div className="Layout">
         <div className="Nav">
-        
         </div>
         <div className="Content">
           <Switch>
