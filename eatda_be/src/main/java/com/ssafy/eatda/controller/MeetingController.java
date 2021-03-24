@@ -1,15 +1,22 @@
 package com.ssafy.eatda.controller;
 
-import com.ssafy.eatda.repository.MeetingRepository;
-import com.ssafy.eatda.vo.Schedule;
-import io.swagger.annotations.ApiOperation;
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.ssafy.eatda.repository.MeetingRepository;
+import com.ssafy.eatda.vo.Schedule;
+import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -54,7 +61,7 @@ public class MeetingController {
   @ApiOperation(value = "약속 수정")
   @PutMapping()
   public ResponseEntity<?> updateMeeting(@RequestBody Schedule schedule) {
-    Optional<Schedule> found = repository.findById(schedule.getSeq());
+    Optional<Schedule> found = repository.findById(schedule.getId());
     if (found.isPresent()) {
       found.get().setTitle(schedule.getTitle());
       found.get().setMeetDate(schedule.getMeetDate());

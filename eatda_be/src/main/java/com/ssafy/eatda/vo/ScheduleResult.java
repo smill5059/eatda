@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Schedule {
+public class ScheduleResult {
   private ObjectId id;
   private String title;
 
@@ -20,11 +20,22 @@ public class Schedule {
   private Date meetDate;
 
   private List<Store> stores;
-  private List<ObjectId> participants;
+  private List<Profile> participants;
   private List<String> tags;
   private List<Score> scores;
   private List<Comment> comments;
   private List<Img> imgs;
 
   private boolean isCompleted;
+
+  public void copy(Schedule s) {
+    this.id = s.getId();
+    this.title = s.getTitle();
+    this.meetDate = s.getMeetDate();
+    this.stores = s.getStores();
+    this.tags = s.getTags();
+    this.scores = s.getScores();
+    this.comments = s.getComments();
+    this.imgs = s.getImgs();
+  }
 }
