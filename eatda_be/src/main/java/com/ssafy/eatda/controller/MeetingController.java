@@ -3,6 +3,7 @@ package com.ssafy.eatda.controller;
 import com.ssafy.eatda.service.JwtService;
 import com.ssafy.eatda.service.MeetingService;
 import com.ssafy.eatda.vo.Schedule;
+import com.ssafy.eatda.vo.ScheduleResult;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
 import org.bson.types.ObjectId;
@@ -36,7 +37,7 @@ public class MeetingController {
   @ApiOperation(value = "약속 확인")
   @GetMapping("/{id}")
   public ResponseEntity<?> readMeeting(@PathVariable ObjectId id, HttpServletRequest req) {
-    Schedule result = meetingSvc.readMeeting(id);
+    ScheduleResult result = meetingSvc.readMeeting(id);
     if (result != null) {
       return new ResponseEntity<>(result, HttpStatus.OK);
     }
