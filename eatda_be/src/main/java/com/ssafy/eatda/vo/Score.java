@@ -9,7 +9,7 @@ import org.bson.types.ObjectId;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Score {
-    private int userSeq;
-    private int storeId;
-    private int rate;
+  private int userSeq;
+  private int storeId;
+  private int rate;
 }
