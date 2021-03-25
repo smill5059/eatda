@@ -1,5 +1,6 @@
 package com.ssafy.eatda.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,10 +41,10 @@ public class UserController {
   // 카카오 로그인
   @ApiOperation(value = "카카오 로그인", notes = "access_token을 인자로 받아 로그인/회원가입", response = String.class)
   @PostMapping("/kakao/login")
-  public ResponseEntity<UserResult> login(
-      @RequestParam(value = "access_token", required = true) String access_token,
+  public ResponseEntity<UserResult> login(@RequestBody HashMap<String, String> map,
       HttpServletResponse res) {
     logger.info("login - 호출");
+    String access_token = map.get("access_token");
     UserResult result = userService.login(access_token);
     if (result == null)
       return new ResponseEntity<UserResult>(result, HttpStatus.BAD_REQUEST);
@@ -81,9 +82,10 @@ public class UserController {
   @ApiOperation(value = "친구추가", notes = "코드(seq)를 받아와서 친구추가", response = List.class)
   @PutMapping("/addfriend")
   public ResponseEntity<List<Profile>> addFriend(
-      @ApiParam(value = "code(seq)", required = true) @RequestBody Integer code,
+      @ApiParam(value = "code(seq)", required = true) @RequestBody HashMap<String, Object> map,
       HttpServletRequest req) {
     logger.info("addFriend - 호출");
+    Integer code = (Integer) map.get("code");
     String jwt = req.getHeader("token");
     int userSeq = jwtService.decode(jwt);
     List<Profile> result = userService.addFriend(userSeq, code);

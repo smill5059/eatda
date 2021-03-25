@@ -17,37 +17,22 @@
         	let date = new Date();
         	console.log(date);
           axios({
-            method: 'post', //통신 방식
-            url: 'http://localhost:8081/main/test', //통신할 페이지
+            method: 'get', //통신 방식
+            url: 'http://localhost:8081/main/timeline/date', //통신할 페이지
             data: {
-            	"test": 1664038710
+            	"startDate" : date,
+            	"endDate" : date,
+            	"now" : date
             	}, //인자로 보낼 데이터
-            	header: {
-                    'Content-Type': 'application/json'
-                }
-          })
-            .then(response=>{
-                document.getElementById('boom').innerText=response.data;
-                console.log(response);
-			axios({
-            method: 'post', //통신 방식
-            url: 'http://localhost:8081/main/test2', //통신할 페이지
-            data: {
-            	"id": response.data
-            }, //인자로 보낼 데이터
             header: {
-                'Content-Type': 'application/json'
+            	'Content-Type': 'application/json'
             }
           })
             .then(response=>{
                 document.getElementById('boom').innerText=response.data;
                 console.log(response);
-            })
-            .catch(error=>{
-                document.getElementById('boom').innerText='error';
-                console.log(error);
-            })
-                
+//                 console.log(response);
+//                 window.open(response.data);   
             })
             .catch(error=>{
                 document.getElementById('boom').innerText='error';
