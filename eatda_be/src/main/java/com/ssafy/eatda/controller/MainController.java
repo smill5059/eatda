@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,23 +112,23 @@ public class MainController {
 
   // test
   @PostMapping("/test")
-  public ResponseEntity<ObjectId> test(@RequestBody HashMap<String, Object> map,
+  public ResponseEntity<User> test(@RequestBody HashMap<String, Object> map,
       HttpServletRequest req) {
     logger.info("test - 호출");
     User user = UserRepository.findBySeq((Integer) map.get("test"));
     System.out.println(user.getId());
-    return new ResponseEntity<ObjectId>(user.getId(), HttpStatus.OK);
+    return new ResponseEntity<User>(user, HttpStatus.OK);
   }
 
   // test2
   @PostMapping("/test2")
-  public ResponseEntity<User> test2(@RequestBody HashMap<String, ObjectId> map,
-      HttpServletRequest req) {
+  public ResponseEntity<User> test2(@RequestBody User user, HttpServletRequest req) {
     logger.info("test2 - 호출");
-    System.out.println(map.get("id"));
-    System.out.println("=================");
-    User user = UserRepository.findBySeq(1664038710);
+    System.out.println(user);
     System.out.println(user.getId());
+    System.out.println("=================");
+    User user2 = UserRepository.findBySeq(1664038710);
+    System.out.println(user2.getId());
     return new ResponseEntity<User>(user, HttpStatus.OK);
   }
 
