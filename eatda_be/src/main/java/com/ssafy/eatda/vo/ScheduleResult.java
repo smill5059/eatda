@@ -1,7 +1,10 @@
 package com.ssafy.eatda.vo;
 
-import java.sql.Date;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.ssafy.eatda.util.CustomObjectIdSerializer;
+import java.util.Date;
 import java.util.List;
+import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.bson.types.ObjectId;
@@ -13,6 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleResult {
+  @JsonSerialize(using = CustomObjectIdSerializer.class)
+  @Id
   private ObjectId id;
   private String title;
 
