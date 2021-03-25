@@ -10,16 +10,24 @@
     .usrImg {
       grid-row: 2/4;
       grid-column: 2/5;
+      display: grid;
+      align-items: center;
+
+      .ant-image-img {
+        border-radius: 5vh;
+      }
     }
 
     .usrName {
       grid-row: 2;
       grid-column: 6/9;
+      font-size: x-large;
     }
 
     .usrCode {
       grid-row: 3;
       grid-column: 6/9;
+      font-size: larger;
     }
   }
 
