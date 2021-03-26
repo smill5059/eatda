@@ -1,6 +1,6 @@
 .profileBody {
   display: grid;
-  grid-template-rows: 1fr 2fr;
+  grid-template-rows: 1fr 3fr;
 
   .profileBox {
     display: grid;
@@ -12,10 +12,6 @@
       grid-column: 2/5;
       display: grid;
       align-items: center;
-
-      .ant-image-img {
-        border-radius: 5vh;
-      }
     }
 
     .usrName {
@@ -37,19 +33,41 @@
     grid-template-columns: repeat(12, 1fr);
 
     .frdTitle {
-      grid-column: 1/5;
+      grid-column: 1/7;
+      margin: auto 0;
+      font-size: larger;
+      font-weight: 600;
+      color: #EFBF43;
     }
 
     .frdAddBtn {
       grid-column: 10/13;
+      margin: auto;
     }
 
     .frdList {
       grid-column: span 12;
+      background-color: ivory;
+      border: none;
+
+      .frdImg {
+        grid-column: 1/3;
+        display: grid;
+        align-items: center;
+      }
+
+      .frdName {
+        grid-column: 7/9;
+        margin: auto;
+      }
     }
   }
 }
 
 .sizing {
   border: 0.5px solid darkgrey;
+}
+
+.ant-image-img {
+  border-radius: 5vh;
 }
