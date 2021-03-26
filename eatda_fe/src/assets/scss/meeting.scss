@@ -37,59 +37,8 @@
     width:100%;
     height:100%;
     display:grid;
-    grid-template-rows:3fr 3fr 1fr;
-    .meetingDateDate{
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        .meetingDateItem{
-            display:grid;
-            grid-template-rows: 1fr 1fr 1fr 1fr;
-            justify-items: center;
-            text-align: center;            
-            .prevItem, .nextItem, .currentItem{
-                width:80%;
-                text-align: center;
-                line-height: 2.5em;
-            }
-            .currentItem{
-                border-top: 1px solid #717171;
-                border-bottom: 1px solid #717171;
-                font-weight: 500;
-            }
-            .prevItem, .nextItem{
-                color:#cccccc;
-            }
-        }
-    }
-    .meetingDateTime{
-        display: grid;
-        grid-template-columns: repeat(10, 1fr);
-        .meetingDateItem{
-            display:grid;
-            grid-template-rows: 1fr 1fr 1fr 1fr;
-            justify-items: center;
-            text-align: center;
-            .prevItem, .nextItem, .currentItem{
-                width:80%;
-                text-align: center;
-                line-height: 2.5em;
-            }
-            .currentItem{
-                border-top: 1px solid #717171;
-                border-bottom: 1px solid #717171;
-                font-weight: 500;
-            }
-            .prevItem, .nextItem{
-                color:#cccccc;
-            }
-        }
-        .meetingDateHour{
-            grid-column: 2 / 5;
-        }
-        .meetingDateMinute{
-            grid-column: 7 / 10;
-        }
-    }
+    grid-template-rows:1fr 2fr 2fr 1fr;
+    
     .meetingDateConfirmButton{
         align-self: center;
         color:#717171;
