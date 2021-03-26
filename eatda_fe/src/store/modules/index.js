@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 
-import calendar from "./calendar";
+import baseDate from "./baseDate";
 
 export default combineReducers ({
-  calendar,
+  baseDate,
 });
