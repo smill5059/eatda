@@ -7,6 +7,8 @@ function MeetingRead(props) {
   const { meetingId } = props.match.params;
   console.log(meetingId);
 
+  let createUrl = false;
+
   // 드롭다운 메뉴들
   const menu = (
     <Menu>
@@ -19,18 +21,8 @@ function MeetingRead(props) {
     </Menu>
   );
 
+  
 
-
-  useEffect(() => {
-    // 지도 로딩
-    const { kakao } = window;
-    if (document.querySelector(".meetingReadMap") !== null) {
-      new kakao.maps.Map(document.querySelector(".meetingReadMap"), {
-        center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
-        level: 3, //지도의 레벨(확대, 축소 정도)
-      });
-    }
-  }, []);
   return (
     <div className="contentWrapper">
       <Row className="contentTitle">
@@ -42,8 +34,8 @@ function MeetingRead(props) {
         </Col>
       </Row>
       {/* 조건문으로 분할 */}
-      {/* <MeetingInfo></MeetingInfo> */}
-      <MeetingReview></MeetingReview>
+      <MeetingInfo></MeetingInfo>
+      {/* <MeetingReview></MeetingReview> */}
       
       
     </div>

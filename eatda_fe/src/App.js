@@ -22,6 +22,7 @@ function App() {
             {/* <Route path="/" component={Layout} /> */}
             <Route exact path="/" component={Main} />
             <Route path="/createMeeting" component={CreateModify}/>
+            <Route path="/updateMeeting/:meetingId" component={CreateModify}/>
             <Route path="/meeting/:meetingId" component={MeetingRead}/>
           </Switch>
         </div>

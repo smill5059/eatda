@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, DatePicker, Space } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
 // const layout = {
@@ -7,81 +7,50 @@ import { CloseOutlined } from "@ant-design/icons";
 //     wrapperCol: { span: 16 },
 //   };
 
-function CreateModify() {
-  // 모달 관련 상태  
+function CreateModify(props) {
+  // 모달 관련 상태
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState(null);
   const [modalContent, setModalContent] = useState(null);
   // 정보 관리 상태
-  const [meetingTitle, setMeetingTitle] = useState('');
-  const [meetingYear, setMeetingYear] = useState('');
-  const [meetingMonth, setMeetingMonth] = useState('')
-  const [meetingDay, setMeetingDay] = useState('');
-  const [meetingHour, setMeetingHour] = useState('');
-  const [meetingMinute, setMeetingMinute] = useState('');
+  const [pageTitle, setPageTitle] = useState("약속 만들기");
   const [meetingLocation, setMeetingLocation] = useState([]);
   const [meetingFriends, setMeetingFriends] = useState([]);
 
-  const monthList = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-  
+  const { meetingId } = props.match.params;
+
   // 페이지 렌더 이후 1번 실행 => 기본 정보 세팅
-  useEffect(()=>{
+  useEffect(() => {
     // Create 할때 => 추후 URL 조건으로 분리
-    const today = new Date()
-    setMeetingYear(today.getFullYear().toString())
-    setMeetingMonth(monthList[today.getMonth()].toString())
-    setMeetingDay(today.getDay.toString())
-    setMeetingHour(today.getHours().toString())
-    setMeetingMinute(today.getMinutes().toString())
-  }, [])
+    if (meetingId === undefined) {
+      setPageTitle("약속 만들기");
+      const today = new Date();
+    } else {
+      // meetingId가 있으므로 수정
+      setPageTitle("약속 수정하기");
+      // 통신하여 약속정보 가져오기
+    }
+  }, []);
 
   // 모달에 들어가는 요소들
   // 날짜 모달
-  function dateModalItem() {
-    return (
-      <div className="meetingDateContent">
-        <div className="meetingDateDate">
-          <div className="meetingDateYear meetingDateItem">
-            <p>연</p>
-            <div className="prevYear prevItem">2020</div>
-            <div className="currentYear currentItem">2021</div>
-            <div className="nextYear nextItem">2022</div>
-          </div>
-          <div className="meetingDateMonth meetingDateItem">
-            <p>월</p>
-            <div className="prevYear prevItem">02</div>
-            <div className="currentYear currentItem">03</div>
-            <div className="nextYear nextItem">04</div>
-          </div>
-          <div className="meetingDateDay meetingDateItem">
-            <p>일</p>
-            <div className="prevYear prevItem">17</div>
-            <div className="currentYear currentItem">18</div>
-            <div className="nextYear nextItem">19</div>
-          </div>
-        </div>
-        <div className="meetingDateTime">
-          <div className="meetingDateHour meetingDateItem">
-            <p>시</p>
-            <div className="prevHour prevItem">17</div>
-            <div className="currentHour currentItem">18</div>
-            <div className="nextHour nextItem">19</div>
-          </div>
-          <div className="meetingDateMinute meetingDateItem">
-            <p>분</p>
-            <div className="prevMinute prevItem">17</div>
-            <div className="currentMinute currentItem">18</div>
-            <div className="nextMinute nextItem">19</div>
-          </div>
-        </div>
-        <Button type="primary"
-          htmlType="button"
-          className="meetingDateConfirmButton">
-              확인
-          </Button>
-      </div>
-    );
-  }
+//   function dateModalItem() {
+//     return (
+//       <div className="meetingDateContent">
+//         <Space direction="horizontal">
+//           <DatePicker />
+//           <DatePicker picker="time" />
+//         </Space>
+//         <Button
+//           type="primary"
+//           htmlType="button"
+//           className="meetingDateConfirmButton"
+//         >
+//           확인
+//         </Button>
+//       </div>
+//     );
+//   }
 
   // 장소 모달
   function locationModalItem() {
@@ -146,12 +115,7 @@ function CreateModify() {
 
   function showModal(e, modalType) {
     e.preventDefault();
-    // 날짜 모달
-    if (modalType === "date") {
-      setModalTitle("언제 먹을까?");
-      setModalContent(dateModalItem);
-      // 장소 모달
-    } else if (modalType === "location") {
+    if (modalType === "location") {
       setModalTitle("어디서 먹을까?");
       setModalContent(locationModalItem);
       // 친구 모달
@@ -164,12 +128,13 @@ function CreateModify() {
   }
 
   function createMeeting(e) {
+    e.preventDefault();
     console.log("CREATE!");
   }
 
   return (
     <div className="contentWrapper">
-      <div className="contentTitle">약속 만들기</div>
+      <div className="contentTitle">{pageTitle}</div>
       <div className="contentBody">
         <Form name="meetingCreateForm">
           {/* 약속 이름 창 */}
@@ -177,20 +142,36 @@ function CreateModify() {
             name="meetingName"
             rules={[{ required: true, message: "약속 이름을 정해주세요" }]}
           >
-            <Input placeholder="약속 이름을 지어주세요"/>
-          </Form.Item>
-          {/* 날짜 선택 창 */}
-          <Form.Item
-            name="meetingDate"
-            label="언제"
-            rules={[{ required: true, message: "약속 날짜를 정해주세요" }]}
-          >
             <Input
-              span={8}
-              placeholder="약속 날짜를 정해주세요"
-              onClick={(e) => showModal(e, "date")}
+              placeholder="약속 이름을 지어주세요"
+              onChange={(e) => {
+                setMeetingTitle(e.target.value);
+              }}
             />
           </Form.Item>
+          {/* 날짜 선택 창 */}
+          <Space direction="horizontal">
+            <Form.Item
+              name="meetingDate"
+              label="언제"
+              rules={[{ required: true, message: "약속 날짜를 정해주세요" }]}
+            >
+                <DatePicker placeholder="약속 날짜" format='YYYY년 MM월 DD일'/>
+              {/* <Input
+                span={8}
+                placeholder="약속 날짜"
+                onClick={(e) => showModal(e, "date")}
+              /> */}
+            </Form.Item>
+            <Form.Item
+              name="meetingTime"
+              label="몇시"
+              rules={[{ required: true, message: "약속 시간을 정해주세요" }]}
+            >
+              <DatePicker picker="time" placeholder="약속 시간" format="HH시 mm분"/>
+            </Form.Item>
+          </Space>
+
           {/* 장소 선택 창 */}
           <Form.Item
             name="meetingLocation"
@@ -239,16 +220,7 @@ function CreateModify() {
                 <CloseOutlined onClick={() => setModalVisible(false)} />
               </p>
             </div>
-            <div className="modalContent">
-              {modalContent}
-              {/* Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum. */}
-            </div>
+            <div className="modalContent">{modalContent}</div>
           </div>
         </div>
       ) : null}
