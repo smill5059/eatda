@@ -6,6 +6,8 @@ import Login from './pages/main/login';
 import Profile from './pages/account/profile';
 // 약속 생성
 import CreateModify from './pages/meeting/createModify';
+// 약속 보기
+import MeetingRead from './pages/meeting/read'
 
 import './App.css';
 
@@ -22,6 +24,8 @@ function App() {
             <Route path="/login" component={Login} />
             <Route path="/profile" component={Profile} />
             <Route path="/createMeeting" component={CreateModify}/>
+            <Route path="/updateMeeting/:meetingId" component={CreateModify}/>
+            <Route path="/meeting/:meetingId" component={MeetingRead}/>
           </Switch>
         </div>
         <div className="Footer">
