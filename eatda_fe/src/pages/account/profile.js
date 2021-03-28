@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from 'react-redux';
-import { Image, Card } from 'antd';
+import { Image, Card, Modal, Menu, Dropdown, Button, message } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 function Profile() {
   // 친구목록 카드 CSS
@@ -15,6 +16,42 @@ function Profile() {
   }
 
 
+  // 친구 관리 -> 친구 삭제
+  const { confirm } = Modal;
+  function deleteFriend (key) {
+    confirm({
+      title: '친구 안 할거야? ㅠㅠ',
+      icon: <ExclamationCircleOutlined />,
+      content: '안 할 거냐구우',
+      okText: '넹',
+      okType: 'danger',
+      cancelText: '앗 실수',
+      onOk() {
+        message.success(`${key.key} 절교`)
+      },
+      onCancel() {
+        // message.success('절교')
+      },
+    })
+  }
+
+  // 친구 관리
+  // function friendMenu(name) {
+  //   const menu = (
+  //     <Menu onClick={deleteFriend(name)}>
+  //       <Menu.Item> 친구 끊기 </Menu.Item>
+  //     </Menu>
+  //   )
+  // }
+  const friendMenu = name => (
+    <Menu>
+      <Menu.Item key={name} onClick={deleteFriend}>
+        { name } 친구 끊기
+      </Menu.Item>
+    </Menu>
+  )
+
+
   // 유저 데이터
   const user = useSelector(state => state.userData)
   const friendList = user.friendList.map(friend =>
@@ -25,6 +62,9 @@ function Profile() {
       <div className="frdName">
         { friend.name }
       </div>
+      <Dropdown overlay={friendMenu(friend.name)} placement="bottomCenter" className="frdCtrl">
+        <Button>관리</Button>
+      </Dropdown>
     </Card.Grid>
   )
   
