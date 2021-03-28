@@ -26,9 +26,12 @@ code {
 @import '~antd/dist/antd.css';
 @import "assets/scss/layout.scss";
 @import "assets/scss/login.scss";
+@import "assets/scss/profile.scss";
 @import "assets/scss/main.scss";
 @import "assets/scss/calendar.scss";
 @import "assets/scss/modal.scss";
 
 // 약속 관련 SCSS
-@import "assets/scss/meeting.scss"
+@import "assets/scss/meeting.scss";
+@import "assets/scss/meetingInfo.scss";
+@import "assets/scss/meetingReview.scss";

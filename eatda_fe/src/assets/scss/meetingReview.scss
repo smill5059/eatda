@@ -1,0 +1,72 @@
+.meetingReadAfterContent {
+  display: grid;
+  grid-template-rows: 1fr 9fr 2fr 5fr;
+  min-height: 0;
+  grid-gap: 5px;
+  .meetingReadTitle {
+    grid-row: 1 / 2;
+    p {
+      margin: 0;
+    }
+  }
+  .meetingReadImage {
+    grid-row: 2 / 3;
+    padding: 5%;
+    overflow: auto;
+    white-space: nowrap;
+    .meetingReadImageItem {
+      display: inline-block;
+      width: 80%;
+      height: 100%;
+      margin-right: 5%;
+      border: 2px solid black;
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+  .meetingReadAfterFriend {
+    grid-row: 3 / 4;
+    padding: 2%;
+    width:100%;
+    height:100%;
+    overflow: auto;
+    white-space: nowrap;
+    .meetingReadAfterFriendItem{
+        display:inline-flex;
+        margin-right:3%;
+        width:35%;
+        height:100%;
+        border: 2px solid #cccccc;
+        border-radius: 10px;
+        .meetingReadAfterFriendImage{
+            img{
+                width:100%;
+                height:100%;
+            }
+        }
+        .meetingReadAfterFriendName{
+            height:100%;
+            padding-top:10%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+    }
+  }
+  .meetingReadAfterComment {
+    grid-row: 4 / 5;
+    overflow:auto;
+    .meetingReadAfterCommentItem{
+        border-bottom:1px solid #717171; 
+        padding:1%;
+        overflow: auto;
+        .meetingReadAfterCommentName{
+            height:10%;
+        }
+    }
+  }
+}

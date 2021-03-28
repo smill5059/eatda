@@ -4,9 +4,21 @@ import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { Provider } from "react-redux";
+ 
+import { createStore } from "redux";
+import rootReducer from "./store/modules";
+
+const devTools =
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+const store = createStore(rootReducer, devTools);
+console.info("현재 state는", store.getState())
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store} >
+      <App /> 
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
