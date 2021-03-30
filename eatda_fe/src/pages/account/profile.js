@@ -57,7 +57,7 @@ function Profile() {
   const friendList = user.friendList.map(friend =>
     <Card.Grid style={frdCard}>
       <div className="frdImg">
-        <Image src={ friend.profileImg }/>
+        <Image src={ friend.profileImg } />
       </div>
       <div className="frdName">
         { friend.name }
