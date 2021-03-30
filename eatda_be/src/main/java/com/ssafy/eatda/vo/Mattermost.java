@@ -15,6 +15,7 @@ public class Mattermost {
   @Getter
   @NoArgsConstructor
   public static class Props {
+
     private String card;
 
     public Props(Exception e) {
@@ -23,9 +24,9 @@ public class Mattermost {
 
       e.printStackTrace(new PrintWriter(sw));
       sb.append("**Stack Trace**").append("\n\n");
-      sb.append("```");
-      sb.append(sw.toString().substring(0, Math.min(5500, sw.toString().length())) + "...");
-      sb.append("```").append("\n\n");
+      sb.append("```")
+          .append(sw.toString().substring(0, Math.min(5500, sw.toString().length())) + "...")
+          .append("\n\n");
 
       this.card = sb.toString();
     }
@@ -63,6 +64,7 @@ public class Mattermost {
   @Getter
   @NoArgsConstructor
   public static class Attachments {
+
     private Props props;
     private List<Attachment> attachments;
 
