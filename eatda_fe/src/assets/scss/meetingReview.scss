@@ -70,3 +70,61 @@
     }
   }
 }
+
+/* PhotoUploader 부분 */
+
+.photoUploaderWrapper {
+  height: 100%;
+  width: 100%;
+
+  display: grid;
+  grid-template-rows: 1fr 22fr 1fr;
+  min-height: 0;
+  grid-gap: 5px;
+}
+
+.photoUploaderContent {
+  width: 100%;
+  height: 100%;
+
+  background-color: yellowgreen;
+
+  // 사진 정렬 구도
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+
+  // 내용물이 많을 경우 scroll 처리
+  overflow: scroll;
+}
+
+.box::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+.photoBox {
+  // contentWrapper에서 전체 화면의 5%씩을 padding으로 주었으므로,
+  // 내부인 90%가 곧 90vw임. 30vw로 하면 딱 맞아떨어짐
+  width: 30vw;
+  height: 30vw;
+
+  background-color: #cccccc;
+
+  justify-items: center;
+  align-items: center;
+
+  position: relative;
+
+  .photoBoxDelete {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+
+    
+  }
+}
+.addPhoto {
+  background-color: #717171;
+  color: #EFBF43;
+}
