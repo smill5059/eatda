@@ -87,7 +87,7 @@
   width: 100%;
   height: 100%;
 
-  background-color: yellowgreen;
+  // background-color: yellowgreen;
 
   // 사진 정렬 구도
   display: flex;
@@ -109,22 +109,30 @@
   width: 30vw;
   height: 30vw;
 
-  background-color: #cccccc;
+  background-color: #efbf43;
 
-  justify-items: center;
-  align-items: center;
+  // justify-items: center;
+  // align-items: center;
+
+  border: solid 2px white;
 
   position: relative;
 
   .photoBoxDelete {
     position: absolute;
-    top: 2px;
-    left: 2px;
+    top: 3.5px;
+    right: 3.5px;
 
-    
+    color: #f8f8f89f;
   }
 }
 .addPhoto {
-  background-color: #717171;
-  color: #EFBF43;
+  background-color: #cccccc;
+  color: #ffffff;
+
+  font-size: xx-large;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
