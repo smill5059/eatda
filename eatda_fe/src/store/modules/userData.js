@@ -4,6 +4,10 @@ import frdImg1 from 'assets/product/frdImg1.jpg'
 import frdImg2 from 'assets/product/frdImg2.jpg'
 import frdImg3 from 'assets/product/frdImg3.jpg'
 
+const SET_USER = 'userData/SET_USER';
+
+export const setUser = createAction(SET_USER, data => ({name: data.name, code: data.code}));
+
 const user = {
   username: '밥버거',
   usercode: 12345,
@@ -25,7 +29,13 @@ const user = {
 }
 
 const userData = handleActions(
-  {},
+  {
+    [SET_USER]: (state, action) => ({
+      ...state,
+      username: action.payload.name,
+      usercode: action.payload.code
+    })
+  },
   user
 )
 

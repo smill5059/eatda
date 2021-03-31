@@ -6,7 +6,9 @@ function Timeline() {
   const meetings = useSelector(state => state.timelineData)
   // 검색창
   const { Search } = Input;
-  const onSearch = value => console.log(value);
+  const onSearch = value => (
+    console.log(value) 
+  )
 
   // 약속 정보 보기
   const meetingInfo = meeting => (

@@ -35,14 +35,6 @@ function Profile() {
     })
   }
 
-  // 친구 관리
-  // function friendMenu(name) {
-  //   const menu = (
-  //     <Menu onClick={deleteFriend(name)}>
-  //       <Menu.Item> 친구 끊기 </Menu.Item>
-  //     </Menu>
-  //   )
-  // }
   const friendMenu = name => (
     <Menu>
       <Menu.Item key={name} onClick={deleteFriend}>
