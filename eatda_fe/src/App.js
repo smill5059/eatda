@@ -9,35 +9,18 @@ import CreateModify from './pages/meeting/createModify';
 // 약속 보기
 import MeetingRead from './pages/meeting/read'
 
-import './App.css';
+import Navbar from 'components/bar/navbar';
 
-import { useHistory } from "react-router";
+import './App.css';
 
 const { Kakao } = window;
 
 function App() {
-  const history = useHistory()
-
-  function logoutWithKakao() {
-    Kakao.API.request({
-      url: '/v1/user/unlink',
-      success: function(response) {
-        console.log('성공', response);
-        // history.push('/login')
-      },
-      fail: function(error) {
-        console.log('실패', error);
-      },
-    });
-  }
-
   return (
     <BrowserRouter>
       <div className="Layout">
         <div className="Nav">
-          <div className="logoutBtn" onClick={logoutWithKakao}>
-            로그아웃
-          </div>
+          <Navbar />
         </div>
         <div className="Content">
           <Switch>

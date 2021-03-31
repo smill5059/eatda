@@ -21,14 +21,7 @@ function Login() {
   function loginWithKakao() {
     Kakao.Auth.login({
       success: function(obj) {
-        // Kakao.API.request({
-        //   url: '/v2/user/me',
-        //   success: function (res) {
-        //     console.log(res)
-        //   }
-        // })
-        console.log('카카오 로그인')
-        console.log(obj, SERVER_URL)
+        // console.log(obj, SERVER_URL)
         fetch(`${SERVER_URL}/user/kakao/login`, {
           method: 'POST',
           headers: {
@@ -42,30 +35,18 @@ function Login() {
           .then(res => {
             console.log('로그인 결과', res)
             console.log(settingUser.setUser)
-            dispatch(settingUser.setUser(res.name))
-            // localStorage.setItem('Kakao_token', res.token);
-            // if (res.token) {
-            //   console.log('로그인 성공')
+            dispatch(settingUser.setUser({name: res.name, code: res.seq}))
+            localStorage.setItem('Kakao_token', res.token);
+            if (res.token) {
+              console.log('로그인 성공')
               history.push('/profile')
-            // }
+            }
           })
-
       },
       fail: function(err) {
         console.warn(JSON.stringify(err))
       }
     })
-  }
-
-  function test() {
-    const name = '가나다'
-    const code = 'abcde'
-    const data = {
-      name: '가나다',
-      code: 'abcde'
-    }
-    dispatch(settingUser.setUser(data))
-    history.push('/profile')
   }
 
   return (
@@ -77,10 +58,6 @@ function Login() {
       <img src={Logo} className="logoImg" />
       
       <img src={kakaoLogin} className="kakaoLogin" onClick={loginWithKakao} />
-
-      <div className="test" onClick={test}>
-        테스트
-      </div>
 
     </div>
   );

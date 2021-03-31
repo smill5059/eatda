@@ -6,11 +6,11 @@ import frdImg3 from 'assets/product/frdImg3.jpg'
 
 const SET_USER = 'userData/SET_USER';
 
-export const setUser = createAction(SET_USER, data => ({name: data.name, code: data.code}));
+export const setUser = createAction(SET_USER, data => ({username: data.name, usercode: data.code}));
 
 const user = {
-  username: '밥버거',
-  usercode: 12345,
+  username: '',
+  usercode: 0,
   profileUrl: profileUrl,
   friendList: [
     {
@@ -32,8 +32,8 @@ const userData = handleActions(
   {
     [SET_USER]: (state, action) => ({
       ...state,
-      username: action.payload.name,
-      usercode: action.payload.code
+      username: action.payload.username,
+      usercode: action.payload.usercode
     })
   },
   user
