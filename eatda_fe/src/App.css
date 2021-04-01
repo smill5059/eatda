@@ -16,8 +16,7 @@
 .Content {
   grid-row: 2 / 19;
   grid-column: 1 / 10;
-  display: grid;
-  align-items: center;
+  background-color: floralwhite;
 }
 
 .Footer {

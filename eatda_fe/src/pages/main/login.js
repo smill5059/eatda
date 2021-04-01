@@ -1,35 +1,47 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Logo from 'assets/product/logo.png';
 import kakaoLogin from 'assets/product/kakaoLogin.png';
 import { useHistory } from "react-router";
+import { useSelector, useDispatch } from 'react-redux'
+import * as settingUser from 'store/modules/userData'
 
 const { Kakao } = window;
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 function Login() {
   const history = useHistory()
-  function loginWithKakao() {
-    // Kakao.Auth.authorize({
-    //   redirectUri: 'http://localhost:3000'
-    // })
 
+  const user = useSelector(state => state.userData)
+  const dispatch = useDispatch();
+
+  // const setUser = useCallback(
+  //   () => dispatch()
+  // )
+
+  function loginWithKakao() {
     Kakao.Auth.login({
       success: function(obj) {
+        // console.log(obj, SERVER_URL)
         fetch(`${SERVER_URL}/user/kakao/login`, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({
             access_token: obj.access_token
           })
         })
           .then(res => res.json())
           .then(res => {
+            console.log('로그인 결과', res)
+            console.log(settingUser.setUser)
+            dispatch(settingUser.setUser({name: res.name, code: res.seq}))
             localStorage.setItem('Kakao_token', res.token);
             if (res.token) {
               console.log('로그인 성공')
-              history.push('/')
+              history.push('/profile')
             }
           })
-
       },
       fail: function(err) {
         console.warn(JSON.stringify(err))

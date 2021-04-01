@@ -23,11 +23,17 @@ function Main() {
         <div className="mainButtonWrapper">
           {/* Button은 임시로 달아놓았습니다. 여러가지 이유로 custom div로 수정해야 함 */}
           <Button
+            type={viewCalendar ? 'primary' : ''}
+            size="large"
+            shape="round"
             onClick={() => setViewCalendar(true)}
           >
-            달력
+            캘린더
           </Button>
           <Button
+            type={viewCalendar ? '' : 'primary'}
+            size="large"
+            shape="round"
             onClick={() => setViewCalendar(false)}
           >
             타임라인

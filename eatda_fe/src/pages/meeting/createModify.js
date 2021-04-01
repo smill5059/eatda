@@ -142,12 +142,12 @@ function CreateModify(props) {
             name="meetingName"
             rules={[{ required: true, message: "약속 이름을 정해주세요" }]}
           >
-            <Input
+            {/* <Input
               placeholder="약속 이름을 지어주세요"
               onChange={(e) => {
                 setMeetingTitle(e.target.value);
               }}
-            />
+            /> */}
           </Form.Item>
           {/* 날짜 선택 창 */}
           <Space direction="horizontal">

@@ -15,7 +15,7 @@
     }
 
     .usrName {
-      grid-row: 2;
+      grid-row: 2/4;
       grid-column: 6/9;
       font-size: x-large;
     }
@@ -23,7 +23,7 @@
     .usrCode {
       grid-row: 3;
       grid-column: 6/9;
-      font-size: larger;
+      // font-size: larger;
     }
   }
 
@@ -57,8 +57,12 @@
       }
 
       .frdName {
-        grid-column: 7/9;
+        grid-column: 4/6;
         margin: auto;
+      }
+
+      .frdCtrl {
+        grid-column: 8/9;
       }
     }
   }
