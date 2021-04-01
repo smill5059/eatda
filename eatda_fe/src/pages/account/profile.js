@@ -4,11 +4,11 @@ import axios from 'axios';
 import { Image, Card, Modal, Menu, Dropdown, Button, message, Input } from 'antd';
 import { ExclamationCircleOutlined, PlusSquareOutlined } from '@ant-design/icons';
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_URL = process.env.REACT_APP_API_URL;
 
 function Profile() {
   // 검색 input
-   const { Search } = Input;
+  const { Search } = Input;
 
   // 친구목록 카드 CSS
   const frdCard = {
@@ -65,13 +65,9 @@ function Profile() {
     console.log('친구 코드 : ', typeof code)
     console.log(localStorage.getItem('Kakao_token'))
     // 데이터 전송
-    axios.put(`${SERVER_URL}/user/addfriend`, {
-      method: 'PUT',
+    axios.put(`${SERVER_URL}/user/addfriend`, {'code': code}, {
       headers: {
         'token': localStorage.getItem('Kakao_token')
-      },
-      data: {
-        'code': code
       }
     })
       .then(res => console.log(res))
@@ -86,15 +82,18 @@ function Profile() {
   
   // 유저 데이터
   const user = useSelector(state => state.userData)
+
+  console.log(user)
+  
   const friendList = user.friendList.map(friend =>
     <Card.Grid style={frdCard}>
       <div className="frdImg">
-        <Image src={ friend.profileImg } />
+        <Image src={ friend.userProfileUrl } />
       </div>
       <div className="frdName">
-        { friend.name }
+        { friend.userName }
       </div>
-      <Dropdown overlay={friendMenu(friend.name)} placement="bottomCenter" className="frdCtrl">
+      <Dropdown overlay={friendMenu(friend.userName)} placement="bottomCenter" className="frdCtrl">
         <Button>관리</Button>
       </Dropdown>
     </Card.Grid>
