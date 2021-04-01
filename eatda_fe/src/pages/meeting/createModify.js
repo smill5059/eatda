@@ -24,8 +24,10 @@ function CreateModify(props) {
   const [meetingLocation, setMeetingLocation] = useState([]);
   const [meetingFriends, setMeetingFriends] = useState([]);
   // 나의 위치정보
-  const [myLatitude, setMyLatitude] = useState(33.450701);
-  const [myLongitude, setMyLongitude] = useState(126.570667);
+  const [myLatitude, setMyLatitude] = useState(37.571075);
+  const [myLongitude, setMyLongitude] = useState(127.013588);
+  // 지도 검색 키워드
+  const [locationKeyword, setLocationKeyword] = useState("");
 
   const { meetingId } = props.match.params;
   // 리액트에서 폼 세팅
@@ -33,7 +35,16 @@ function CreateModify(props) {
 
   // 페이지 렌더 이후 1번 실행 => 기본 정보 세팅
   useEffect(() => {
-    //   navigator.geolocation()
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setMyLatitude(position.coords.latitude);
+        setMyLongitude(position.coords.longitude);
+      },
+      () => {
+        setMyLatitude(37.571075);
+        setMyLongitude(127.013588);
+      }
+    );
     // Create 할때 => 추후 URL 조건으로 분리
     if (meetingId === undefined) {
       setPageTitle("약속 만들기");
@@ -48,10 +59,10 @@ function CreateModify(props) {
       ).then((res) => {
         res.json().then((response) => {
           console.log(response);
-          console.log(response.id)
+          console.log(response.id);
           setMeetingTitle(response.title);
-          console.log(new Date())
-          console.log(response.meetDate)
+          console.log(new Date());
+          console.log(response.meetDate);
           let meetDate = new Date(response.meetDate);
           setMeetingDate(moment(meetDate));
           setMeetingTime(moment(meetDate));
@@ -77,17 +88,17 @@ function CreateModify(props) {
             className="meetingLocationForm"
             label="장소 검색하기"
           >
-            <Input placeholder="식당 이름을 검색해주세요" />
+            <Input
+              placeholder="식당 이름을 검색해주세요"
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  setLocationKeyword(e.target.value);
+                }
+              }}
+            />
           </Form.Item>
         </Form>
         <div className="meetingLocationMap"></div>
-        <Button
-          type="primary"
-          htmlType="button"
-          className="meetingLocationConfirmButton"
-        >
-          확인
-        </Button>
       </div>
     );
   }
@@ -121,12 +132,73 @@ function CreateModify(props) {
     // 지도 로딩
     const { kakao } = window;
     if (document.querySelector(".meetingLocationMap") !== null) {
-      new kakao.maps.Map(document.querySelector(".meetingLocationMap"), {
-        center: new kakao.maps.LatLng(myLatitude, myLongitude), //지도의 중심좌표.
-        level: 5, //지도의 레벨(확대, 축소 정도)
+      let map = new kakao.maps.Map(
+        document.querySelector(".meetingLocationMap"),
+        {
+          center: new kakao.maps.LatLng(myLatitude, myLongitude), //지도의 중심좌표.
+          level: 5, //지도의 레벨(확대, 축소 정도)
+        }
+      );
+      let currentLocationMarker = new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(myLatitude, myLongitude),
+      });
+      currentLocationMarker.setMap(map);
+
+      // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
+      let infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
+      // 장소 검색 객체
+      let ps = new kakao.maps.services.Places();
+      ps.keywordSearch(locationKeyword, (data, status, pagination) => {
+        if (status === kakao.maps.services.Status.OK) {
+          let bounds = new kakao.maps.LatLngBounds();
+
+          for (let i = 0; i < data.length; i++) {
+            let marker = new kakao.maps.Marker({
+              map: map,
+              position: new kakao.maps.LatLng(data[i].y, data[i].x),
+            });
+
+            // 마커에 이벤트 등록
+            kakao.maps.event.addListener(marker, "click", function () {
+              infowindow.setContent(
+                `<div style="display:flex; width:max-content; padding:10px;"><a href=${data[i].place_url} target="_blank" style="margin-right:10px">${data[i].place_name}</a><Button class="locationAddButton" data-store-name="${data[i].place_name}" data-store-address="${data[i].road_address_name}" data-store-latitude=${data[i].y} data-store-longitude=${data[i].x}>추가</Button></div>`
+              );
+              document
+                .querySelectorAll(".locationAddButton")
+                .forEach((element) => {
+                  console.log(element);
+                  element.addEventListener("click", function (event) {
+                    console.log(element.dataset.storeName);
+                    console.log(element.dataset.storeAddress);
+                    console.log(element.dataset.storeLatitude);
+                    console.log(element.dataset.storeLongitude);
+                    meetingLocation.push({
+                      storeName: element.dataset.storeName,
+                      storeAddress: element.dataset.storeAddress,
+                      storeLatitude: element.dataset.storeLatitude,
+                      storeLongitude: element.dataset.storeLongitude,
+                    });
+                    setMeetingLocation(meetingLocation)
+                  });
+                });
+              console.log(data[i]);
+              infowindow.open(map, marker);
+            });
+
+            //   console.log(data[i])
+            //   console.log(meetingLocation)
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          }
+          map.setBounds(bounds);
+        }
       });
     }
-  }, [modalVisible]);
+  }, [modalVisible, locationKeyword]);
+
+  function addLocation() {
+    console.log("what");
+  }
 
   function showModal(e, modalType) {
     e.preventDefault();
@@ -153,24 +225,24 @@ function CreateModify(props) {
     } else if (meetingTime === "") {
       alert("약속 시간을 입력해주세요.");
       return;
-    } else if (meetingLocation === "") {
+    } else if (meetingLocation.length < 1) {
       alert("약속 장소를 입력해주세요.");
       return;
     }
     let date_text = meetingDate.format("YYYY-MM-DD");
     let time_text = meetingTime.format("HH:mm:ss");
     let newDate = date_text + "T" + time_text;
-    meetingLocation.push({
-      storeId: "1",
-      storeName: "Agal",
-      storeAddress: "서울특별시 마포구 동교동 170-13",
-      storeLatitude: "37.556862",
-      storeLongitude: "126.926666",
-    });
+    // meetingLocation.push({
+    //   storeId: "1",
+    //   storeName: "Agal",
+    //   storeAddress: "서울특별시 마포구 동교동 170-13",
+    //   storeLatitude: "37.556862",
+    //   storeLongitude: "126.926666",
+    // });
     setMeetingLocation(meetingLocation);
     meetingFriends.push("605af3f78463422771e08028");
     setMeetingFriends(meetingFriends);
-    
+
     let dataset = {
       title: meetingTitle,
       meetDate: newDate,
@@ -182,30 +254,40 @@ function CreateModify(props) {
       imgs: [],
       completed: false,
     };
-    let dataMethod = "POST"
+    let dataMethod = "POST";
     // 수정일때
-    if (meetingId !== undefined){
-        // dataset["id"] = meetingId
-        dataset.id = "606405072802a2267bbe0e8e"
-        dataMethod = "PUT"
+    if (meetingId !== undefined) {
+      // dataset["id"] = meetingId
+      dataset.id = "606405072802a2267bbe0e8e";
+      dataMethod = "PUT";
     }
 
-    console.log(dataset)
-    console.log(JSON.stringify(dataset))
-    console.log(dataMethod)
+    console.log(dataset);
+    console.log(JSON.stringify(dataset));
+    console.log(dataMethod);
 
     // 데이터 보내기
     fetch(`${process.env.REACT_APP_API_URL}/meeting`, {
       method: dataMethod,
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
       },
-      credentials: 'same-origin',
+      credentials: "same-origin",
       body: JSON.stringify(dataset),
-    }).then((res) => res.json()).then((response)=>console.log(response));
+    })
+      .then((res) => res.json())
+      .then((response) => console.log(response));
 
     // console.log("CREATE!");
+  }
+
+  function deleteStore(store){
+      console.log(store)
+      
+      setMeetingLocation(meetingLocation.filter((item)=>{
+        return item !== store
+      }))
   }
 
   return (
@@ -280,7 +362,7 @@ function CreateModify(props) {
                     return (
                       <div className="meetingLocationsItem" key={index}>
                         <p>{store.storeName}</p>
-                        <CloseOutlined />
+                        <CloseOutlined onClick={(e)=>deleteStore(store)}/>
                       </div>
                     );
                   })
@@ -288,18 +370,15 @@ function CreateModify(props) {
             </div>
           </Form.Item>
           {/* 친구 부르기 버튼 */}
-          <Form.Item name="meetingFindFriend" className="meetingFindFriend">
-            <Button
-              type="primary"
-              htmlType="button"
-              className="meetingFindFriendButton"
+          <Form.Item name="meetingFindFriend" label="누구랑" className="meetingFindFriend" rules={[{ required: true}]}>
+            <Input
+            //   className="meetingFindFriendButton"
+            placeholder="친구를 검색해주세요"
               onClick={(e) => showModal(e, "friend")}
-            >
-              친구 부르기
-            </Button>
+            />
           </Form.Item>
           {/* 친구 목록   */}
-          <Form.Item label="누구랑" className="meetingFriendsListBox">
+          <Form.Item className="meetingFriendsListBox">
             <div className="meetingFriendsList">
               {meetingFriends.length > 0
                 ? meetingFriends.map((item, index) => {
@@ -314,7 +393,7 @@ function CreateModify(props) {
                         </div>
 
                         <p>{item.userName}</p>
-                        <CloseOutlined />
+                        <CloseOutlined/>
                       </div>
                     );
                   })
