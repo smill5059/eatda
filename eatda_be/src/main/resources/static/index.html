@@ -1,33 +1,58 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width"/>
-<title>Login Demo - Kakao JavaScript SDK</title>
-<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
-
-</head>
-<body>
-<a id="kakao-login-btn"></a>
+<html lang='en'>
+	<head>
+		<meta charset='UTF-8'/>
+		<title></title>
+		<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+	</head>
+	
+	<body>
+        <button onclick="onButtonClicked()">붐</button>
+        <h2 id="boom">0</h2>
+        
+        <a id="kakao-login-btn"></a>
 <a href="http://developers.kakao.com/logout"></a>
-<script type='text/javascript'>
-  //<![CDATA[
-    // 사용할 앱의 JavaScript 키를 설정해 주세요.
-    Kakao.init('');  //여기서 아까 발급받은 키 중 javascript키를 사용해준다.
+        
+    </body>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+    
+    Kakao.init('83785c478d05854a2b908f95ba035b78');  //여기서 아까 발급받은 키 중 javascript키를 사용해준다.
     // 카카오 로그인 버튼을 생성합니다.
+    var access_token = null;
     Kakao.Auth.createLoginButton({
       container: '#kakao-login-btn',
       success: function(authObj) {
     	  console.log(authObj.access_token);
-        alert(JSON.stringify(authObj));
+   			access_token = authObj.access_token;
       },
       fail: function(err) {
          alert(JSON.stringify(err));
       }
     });
-  //]]>
-</script>
-
-</body>
+    
+        function onButtonClicked()
+        {
+        	let date = new Date();
+        	console.log(access_token);
+        	
+        	data = {
+            	  "access_token" : access_token
+        	}
+        	
+        	axios.post('http://eatda.me:8080/app/user/kakao/login', JSON.stringify(data), {
+        		headers: { "Content-Type": `application/json`},
+        	    },
+        	).then((res) => {
+        	          console.log(res);
+        	        })
+        	
+                .catch(error=>{
+                    document.getElementById('boom').innerText='error';
+                    console.log(error);
+                });
+        }
+    </script>
+	
 </html>

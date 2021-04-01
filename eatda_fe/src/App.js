@@ -9,13 +9,18 @@ import CreateModify from './pages/meeting/createModify';
 // 약속 보기
 import MeetingRead from './pages/meeting/read'
 
+import Navbar from 'components/bar/navbar';
+
 import './App.css';
+
+const { Kakao } = window;
 
 function App() {
   return (
     <BrowserRouter>
       <div className="Layout">
         <div className="Nav">
+          <Navbar />
         </div>
         <div className="Content">
           <Switch>
