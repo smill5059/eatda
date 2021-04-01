@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from 'react-redux';
-import { Image, Card, Modal, Menu, Dropdown, Button, message } from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import { Image, Card, Modal, Menu, Dropdown, Button, message, Input } from 'antd';
+import { ExclamationCircleOutlined, PlusSquareOutlined } from '@ant-design/icons';
+
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 function Profile() {
+  // 검색 input
+   const { Search } = Input;
+
   // 친구목록 카드 CSS
   const frdCard = {
     width: 'inherit',
@@ -35,6 +41,7 @@ function Profile() {
     })
   }
 
+  // 친구 관리
   const friendMenu = name => (
     <Menu>
       <Menu.Item key={name} onClick={deleteFriend}>
@@ -43,7 +50,40 @@ function Profile() {
     </Menu>
   )
 
+  const [loading, setLoading] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [code, setCode] = useState(0)
 
+  const codeInput = value => { setCode(Number(value)) }
+
+  // 친구 추가 Modal
+  const showModal = () => { setVisible(true) }
+
+  // 친구 추가하기
+  const addFriend = () => {
+    setLoading(true);
+    console.log('친구 코드 : ', typeof code)
+    console.log(localStorage.getItem('Kakao_token'))
+    // 데이터 전송
+    axios.put(`${SERVER_URL}/user/addfriend`, {
+      method: 'PUT',
+      headers: {
+        'token': localStorage.getItem('Kakao_token')
+      },
+      data: {
+        'code': code
+      }
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+    setTimeout(() => {
+      setLoading(false)
+      setVisible(false)
+    }, 3000);
+  };
+
+  const cancel = () => { setVisible(false) }
+  
   // 유저 데이터
   const user = useSelector(state => state.userData)
   const friendList = user.friendList.map(friend =>
@@ -58,8 +98,7 @@ function Profile() {
         <Button>관리</Button>
       </Dropdown>
     </Card.Grid>
-  )
-  
+  )  
 
   return (
     <div className="contentWrapper">
@@ -83,13 +122,33 @@ function Profile() {
             나의 친구 목록
           </div>
           <div className="frdAddBtn">
-            친구 추가
+            <PlusSquareOutlined style={{fontSize: 'larger', color: '#EFBF43'}} />
           </div>
           <Card className="frdList">
             { friendList }
           </Card>
         </div>
       </div>
+      <Button type="primary" onClick={showModal}>
+        친구 추가
+      </Button>
+      <Modal
+        visible={visible}
+        title="친구 찾기"
+        onOk={addFriend}
+        onCancel={cancel}
+        footer={[
+          <Button key="back" onClick={cancel}>
+            돌아가기
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={addFriend}>
+            친구 찾기
+          </Button>
+        ]}
+      >
+        <div className="">친구의 고유코드를 입력하세요!</div>
+        <Search placeholder="친구 코드" type="number" allowClear onSearch={codeInput} style={{ width: 200 }} />
+      </Modal>
     </div>
   );
 }
