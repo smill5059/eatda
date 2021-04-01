@@ -299,7 +299,7 @@ function CreateModify(props) {
             {/* <Input
               placeholder="약속 이름을 지어주세요"
               onChange={(e) => {
-                setMeetingTitle(e.target.value);
+                // setMeetingTitle(e.target.value);
               }}
             /> */}
           </Form.Item>
