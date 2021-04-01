@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @RestController
 @RequestMapping("/review")
@@ -25,9 +26,11 @@ public class ReviewController {
   @Autowired
   private ReviewService reviewSvc;
 
-  @PutMapping("/img")
-  public ResponseEntity<?> updateImg(@RequestBody Schedule schedule, HttpServletRequest req) {
-    Schedule result = reviewSvc.updateImg(schedule);
+  @PutMapping("/img/{id}")
+  public ResponseEntity<?> updateImg(@PathVariable ObjectId id,
+      @RequestParam List<MultipartFile> updatedFiles, @RequestParam List<String> deletedFiles,
+      HttpServletRequest req) {
+    Schedule result = reviewSvc.updateImg(id, updatedFiles, deletedFiles);
     if (result != null) {
       return new ResponseEntity<>(result, HttpStatus.OK);
     }

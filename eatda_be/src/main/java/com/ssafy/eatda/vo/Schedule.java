@@ -29,7 +29,7 @@ public class Schedule {
   private List<String> tags;
   private List<Score> scores;
   private List<Comment> comments;
-  private List<Img> imgs;
+  private List<String> imgs;
 
   private boolean isCompleted;
 }
