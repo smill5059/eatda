@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import { Form, Input, Button, DatePicker, Space } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
@@ -13,44 +14,69 @@ function CreateModify(props) {
   const [modalTitle, setModalTitle] = useState(null);
   const [modalContent, setModalContent] = useState(null);
   // 정보 관리 상태
+  // 페이지 정보 (생성, 수정)
   const [pageTitle, setPageTitle] = useState("약속 만들기");
+  const [meetingButtonText, setMeetingButtonText] = useState("약속 생성하기");
+  // 서버에 보낼 정보
+  const [meetingTitle, setMeetingTitle] = useState("");
+  const [meetingDate, setMeetingDate] = useState("");
+  const [meetingTime, setMeetingTime] = useState("");
   const [meetingLocation, setMeetingLocation] = useState([]);
   const [meetingFriends, setMeetingFriends] = useState([]);
+  // 나의 위치정보
+  const [myLatitude, setMyLatitude] = useState(37.571075);
+  const [myLongitude, setMyLongitude] = useState(127.013588);
+  // 지도 검색 키워드
+  const [locationKeyword, setLocationKeyword] = useState("");
 
   const { meetingId } = props.match.params;
+  // 리액트에서 폼 세팅
+  const [form] = Form.useForm();
 
   // 페이지 렌더 이후 1번 실행 => 기본 정보 세팅
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setMyLatitude(position.coords.latitude);
+        setMyLongitude(position.coords.longitude);
+      },
+      () => {
+        setMyLatitude(37.571075);
+        setMyLongitude(127.013588);
+      }
+    );
     // Create 할때 => 추후 URL 조건으로 분리
     if (meetingId === undefined) {
       setPageTitle("약속 만들기");
-      const today = new Date();
+      setMeetingButtonText("약속 생성하기");
     } else {
       // meetingId가 있으므로 수정
       setPageTitle("약속 수정하기");
+      setMeetingButtonText("약속 수정하기");
       // 통신하여 약속정보 가져오기
+      fetch(
+        `${process.env.REACT_APP_API_URL}/meeting/6064065b2802a2267bbe0e90`
+      ).then((res) => {
+        res.json().then((response) => {
+          console.log(response);
+          console.log(response.id);
+          setMeetingTitle(response.title);
+          console.log(new Date());
+          console.log(response.meetDate);
+          let meetDate = new Date(response.meetDate);
+          setMeetingDate(moment(meetDate));
+          setMeetingTime(moment(meetDate));
+          setMeetingLocation(response.stores);
+          setMeetingFriends(response.participants);
+          form.setFieldsValue({
+            meetingName: response.title,
+            meetingDate: moment(meetDate),
+            meetingTime: moment(meetDate),
+          });
+        });
+      });
     }
   }, []);
-
-  // 모달에 들어가는 요소들
-  // 날짜 모달
-//   function dateModalItem() {
-//     return (
-//       <div className="meetingDateContent">
-//         <Space direction="horizontal">
-//           <DatePicker />
-//           <DatePicker picker="time" />
-//         </Space>
-//         <Button
-//           type="primary"
-//           htmlType="button"
-//           className="meetingDateConfirmButton"
-//         >
-//           확인
-//         </Button>
-//       </div>
-//     );
-//   }
 
   // 장소 모달
   function locationModalItem() {
@@ -62,17 +88,17 @@ function CreateModify(props) {
             className="meetingLocationForm"
             label="장소 검색하기"
           >
-            <Input placeholder="식당 이름을 검색해주세요" />
+            <Input
+              placeholder="식당 이름을 검색해주세요"
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  setLocationKeyword(e.target.value);
+                }
+              }}
+            />
           </Form.Item>
         </Form>
         <div className="meetingLocationMap"></div>
-        <Button
-          type="primary"
-          htmlType="button"
-          className="meetingLocationConfirmButton"
-        >
-          확인
-        </Button>
       </div>
     );
   }
@@ -106,12 +132,73 @@ function CreateModify(props) {
     // 지도 로딩
     const { kakao } = window;
     if (document.querySelector(".meetingLocationMap") !== null) {
-      new kakao.maps.Map(document.querySelector(".meetingLocationMap"), {
-        center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
-        level: 3, //지도의 레벨(확대, 축소 정도)
+      let map = new kakao.maps.Map(
+        document.querySelector(".meetingLocationMap"),
+        {
+          center: new kakao.maps.LatLng(myLatitude, myLongitude), //지도의 중심좌표.
+          level: 5, //지도의 레벨(확대, 축소 정도)
+        }
+      );
+      let currentLocationMarker = new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(myLatitude, myLongitude),
+      });
+      currentLocationMarker.setMap(map);
+
+      // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
+      let infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
+      // 장소 검색 객체
+      let ps = new kakao.maps.services.Places();
+      ps.keywordSearch(locationKeyword, (data, status, pagination) => {
+        if (status === kakao.maps.services.Status.OK) {
+          let bounds = new kakao.maps.LatLngBounds();
+
+          for (let i = 0; i < data.length; i++) {
+            let marker = new kakao.maps.Marker({
+              map: map,
+              position: new kakao.maps.LatLng(data[i].y, data[i].x),
+            });
+
+            // 마커에 이벤트 등록
+            kakao.maps.event.addListener(marker, "click", function () {
+              infowindow.setContent(
+                `<div style="display:flex; width:max-content; padding:10px;"><a href=${data[i].place_url} target="_blank" style="margin-right:10px">${data[i].place_name}</a><Button class="locationAddButton" data-store-name="${data[i].place_name}" data-store-address="${data[i].road_address_name}" data-store-latitude=${data[i].y} data-store-longitude=${data[i].x}>추가</Button></div>`
+              );
+              document
+                .querySelectorAll(".locationAddButton")
+                .forEach((element) => {
+                  console.log(element);
+                  element.addEventListener("click", function (event) {
+                    console.log(element.dataset.storeName);
+                    console.log(element.dataset.storeAddress);
+                    console.log(element.dataset.storeLatitude);
+                    console.log(element.dataset.storeLongitude);
+                    meetingLocation.push({
+                      storeName: element.dataset.storeName,
+                      storeAddress: element.dataset.storeAddress,
+                      storeLatitude: element.dataset.storeLatitude,
+                      storeLongitude: element.dataset.storeLongitude,
+                    });
+                    setMeetingLocation(meetingLocation)
+                  });
+                });
+              console.log(data[i]);
+              infowindow.open(map, marker);
+            });
+
+            //   console.log(data[i])
+            //   console.log(meetingLocation)
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          }
+          map.setBounds(bounds);
+        }
       });
     }
-  }, [modalVisible]);
+  }, [modalVisible, locationKeyword]);
+
+  function addLocation() {
+    console.log("what");
+  }
 
   function showModal(e, modalType) {
     e.preventDefault();
@@ -129,14 +216,85 @@ function CreateModify(props) {
 
   function createMeeting(e) {
     e.preventDefault();
-    console.log("CREATE!");
+    if (meetingTitle === "") {
+      alert("약속 이름을 입력해주세요.");
+      return;
+    } else if (meetingDate === "") {
+      alert("약속 날짜를 입력해주세요.");
+      return;
+    } else if (meetingTime === "") {
+      alert("약속 시간을 입력해주세요.");
+      return;
+    } else if (meetingLocation.length < 1) {
+      alert("약속 장소를 입력해주세요.");
+      return;
+    }
+    let date_text = meetingDate.format("YYYY-MM-DD");
+    let time_text = meetingTime.format("HH:mm:ss");
+    let newDate = date_text + "T" + time_text;
+    // meetingLocation.push({
+    //   storeId: "1",
+    //   storeName: "Agal",
+    //   storeAddress: "서울특별시 마포구 동교동 170-13",
+    //   storeLatitude: "37.556862",
+    //   storeLongitude: "126.926666",
+    // });
+    setMeetingLocation(meetingLocation);
+    meetingFriends.push("605af3f78463422771e08028");
+    setMeetingFriends(meetingFriends);
+
+    let dataset = {
+      title: meetingTitle,
+      meetDate: newDate,
+      stores: meetingLocation,
+      participants: meetingFriends,
+      tags: [],
+      scores: [],
+      comments: [],
+      imgs: [],
+      completed: false,
+    };
+    let dataMethod = "POST";
+    // 수정일때
+    if (meetingId !== undefined) {
+      // dataset["id"] = meetingId
+      dataset.id = "606405072802a2267bbe0e8e";
+      dataMethod = "PUT";
+    }
+
+    console.log(dataset);
+    console.log(JSON.stringify(dataset));
+    console.log(dataMethod);
+
+    // 데이터 보내기
+    fetch(`${process.env.REACT_APP_API_URL}/meeting`, {
+      method: dataMethod,
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      credentials: "same-origin",
+      body: JSON.stringify(dataset),
+    })
+      .then((res) => res.json())
+      .then((response) => console.log(response));
+
+    // console.log("CREATE!");
+  }
+
+  function deleteStore(store){
+      console.log(store)
+      
+      setMeetingLocation(meetingLocation.filter((item)=>{
+        return item !== store
+      }))
   }
 
   return (
     <div className="contentWrapper">
       <div className="contentTitle">{pageTitle}</div>
       <div className="contentBody">
-        <Form name="meetingCreateForm">
+        <Form name="meetingCreateForm" form={form}>
           {/* 약속 이름 창 */}
           <Form.Item
             name="meetingName"
@@ -156,7 +314,13 @@ function CreateModify(props) {
               label="언제"
               rules={[{ required: true, message: "약속 날짜를 정해주세요" }]}
             >
-                <DatePicker placeholder="약속 날짜" format='YYYY년 MM월 DD일'/>
+              <DatePicker
+                placeholder="약속 날짜"
+                format="YYYY년 MM월 DD일"
+                onChange={(e) => {
+                  setMeetingDate(e);
+                }}
+              />
               {/* <Input
                 span={8}
                 placeholder="약속 날짜"
@@ -168,7 +332,14 @@ function CreateModify(props) {
               label="몇시"
               rules={[{ required: true, message: "약속 시간을 정해주세요" }]}
             >
-              <DatePicker picker="time" placeholder="약속 시간" format="HH시 mm분"/>
+              <DatePicker
+                picker="time"
+                placeholder="약속 시간"
+                format="HH시 mm분"
+                onChange={(e) => {
+                  setMeetingTime(e);
+                }}
+              />
             </Form.Item>
           </Space>
 
@@ -183,20 +354,51 @@ function CreateModify(props) {
               onClick={(e) => showModal(e, "location")}
             />
           </Form.Item>
+          {/* 장소 목록   */}
+          <Form.Item className="meetingLocationsListBox">
+            <div className="meetingLocationsList">
+              {meetingLocation.length > 0
+                ? meetingLocation.map((store, index) => {
+                    return (
+                      <div className="meetingLocationsItem" key={index}>
+                        <p>{store.storeName}</p>
+                        <CloseOutlined onClick={(e)=>deleteStore(store)}/>
+                      </div>
+                    );
+                  })
+                : "장소를 정해주세요"}
+            </div>
+          </Form.Item>
           {/* 친구 부르기 버튼 */}
-          <Form.Item name="meetingFindFriend" className="meetingFindFriend">
-            <Button
-              type="primary"
-              htmlType="button"
-              className="meetingFindFriendButton"
+          <Form.Item name="meetingFindFriend" label="누구랑" className="meetingFindFriend" rules={[{ required: true}]}>
+            <Input
+            //   className="meetingFindFriendButton"
+            placeholder="친구를 검색해주세요"
               onClick={(e) => showModal(e, "friend")}
-            >
-              친구 부르기
-            </Button>
+            />
           </Form.Item>
           {/* 친구 목록   */}
-          <Form.Item label="만날 친구" className="meetingFriendsListBox">
-            <div className="meetingFriendsList">친구목록</div>
+          <Form.Item className="meetingFriendsListBox">
+            <div className="meetingFriendsList">
+              {meetingFriends.length > 0
+                ? meetingFriends.map((item, index) => {
+                    let imgUrl =
+                      process.env.REACT_APP_API_URL +
+                      "/files/" +
+                      item.userProfileUrl;
+                    return (
+                      <div className="meetingFriendsItem" key={index}>
+                        <div className="meetingFriendsProfile">
+                          <img src={imgUrl} />
+                        </div>
+
+                        <p>{item.userName}</p>
+                        <CloseOutlined/>
+                      </div>
+                    );
+                  })
+                : "친구를 추가해주세요."}
+            </div>
           </Form.Item>
           <Form.Item name="meetingCreate" className="meetingCreate">
             <Button
@@ -205,7 +407,7 @@ function CreateModify(props) {
               onClick={(e) => createMeeting(e)}
               className="meetingCreateButton"
             >
-              약속 생성하기
+              {meetingButtonText}
             </Button>
           </Form.Item>
         </Form>
