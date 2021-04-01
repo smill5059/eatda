@@ -9,7 +9,7 @@ import org.bson.types.ObjectId;
 public interface MeetingService {
 
   Schedule createMeeting(Schedule schedule);
-  List<Store> recommend(List<String> reviewIds, float latitude, float longtitude);
+  List<Store> recommend(List<String> reviewIds, float latitude, float longitude);
   ScheduleResult readMeeting(ObjectId id);
   Schedule updateIsCompleted(ObjectId id);
   Schedule updateMeeting(Schedule schedule);

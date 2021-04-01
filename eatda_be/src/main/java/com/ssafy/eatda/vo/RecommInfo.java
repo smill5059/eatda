@@ -12,5 +12,5 @@ public class RecommInfo {
 
   private List<String> reviewInfo;
   private float latitude;
-  private float longtitude;
+  private float longitude;
 }

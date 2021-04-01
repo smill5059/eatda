@@ -37,8 +37,8 @@ public class MeetingController {
   }
 
   @GetMapping("/recomm")
-  public ResponseEntity<?> recommend(@RequestParam List<String> reviewIds, @RequestParam float latitude, @RequestParam float longtitude, HttpServletRequest req) {
-    List<Store> result = meetingSvc.recommend(reviewIds, latitude, longtitude);
+  public ResponseEntity<?> recommend(@RequestParam List<String> reviewIds, @RequestParam float latitude, @RequestParam float longitude, HttpServletRequest req) {
+    List<Store> result = meetingSvc.recommend(reviewIds, latitude, longitude);
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
