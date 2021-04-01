@@ -21,7 +21,7 @@ function MeetingRead(props) {
     </Menu>
   );
 
-  
+
 
   return (
     <div className="contentWrapper">
@@ -36,8 +36,8 @@ function MeetingRead(props) {
       {/* 조건문으로 분할 */}
       <MeetingInfo></MeetingInfo>
       {/* <MeetingReview></MeetingReview> */}
-      
-      
+
+
     </div>
   );
 }
