@@ -1,6 +1,6 @@
 .contentWrapper {
   height: 100%;
-  width: 100%;
+  width: 100vw;
 
   padding: 5%;
 
@@ -17,6 +17,7 @@
   }
 
   .contentBody {
+      min-width:0%;
     grid-row: 2 / 3;
   }
 }

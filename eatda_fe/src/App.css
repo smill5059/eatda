@@ -14,9 +14,10 @@
 }
 
 .Content {
+    width:100vw;
   grid-row: 2 / 19;
   grid-column: 1 / 10;
-  
+  background-color: floralwhite;
 }
 
 .Footer {

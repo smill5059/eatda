@@ -1,23 +1,75 @@
-.meetingFindFriend{
-    display:grid;
-    grid-template-columns: 1fr 3fr 1fr;
-    .ant-form-item-control{
-        grid-column: 2 / 3;
-        .meetingFindFriendButton{
-            width:100%;
-            border-radius: 10px;
-            color:#717171;
-            background-color:#EFBF43;
-            border:1px solid #EFBF43;
-        }
-    }    
+.ant-row{
+    width:100%;
 }
 
-.meetingFriendsList{
+.ant-form-item{
+    margin:2%;
+}
+
+.meetingFriendsList, .meetingLocationsList{
+    display:flex;
+    flex-direction: row;
+    overflow: auto;
     border:2px solid #cccccc;
     padding:3%;
     border-radius: 10px;
 }
+
+.meetingLocationsItem{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border:1px solid #EFBF43;
+    min-width:40%;
+    padding:1%;
+    margin-right:2%;
+    p{
+        display:inline-block;
+        width:80%;
+        margin:0;
+        margin-right:1%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    span{
+        display:inline-block;
+    }
+}
+
+.meetingFriendsItem{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border:1px solid #EFBF43;
+    max-width:40%;
+    padding:1%;
+    margin-right:2%;
+    .meetingFriendsProfile{
+        display:inline-block;
+        width:30%;
+        img{
+            display:block;
+            width:100%;
+            height:100%;
+        }
+    }
+    p{
+        display:inline-block;
+        width:60%;
+        margin:0 1%;
+        margin-right:1%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    span{
+        display:inline-block;
+    }
+}
+
 
 .meetingCreate{
     .ant-form-item-control{
@@ -37,59 +89,8 @@
     width:100%;
     height:100%;
     display:grid;
-    grid-template-rows:3fr 3fr 1fr;
-    .meetingDateDate{
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        .meetingDateItem{
-            display:grid;
-            grid-template-rows: 1fr 1fr 1fr 1fr;
-            justify-items: center;
-            text-align: center;            
-            .prevItem, .nextItem, .currentItem{
-                width:80%;
-                text-align: center;
-                line-height: 2.5em;
-            }
-            .currentItem{
-                border-top: 1px solid #717171;
-                border-bottom: 1px solid #717171;
-                font-weight: 500;
-            }
-            .prevItem, .nextItem{
-                color:#cccccc;
-            }
-        }
-    }
-    .meetingDateTime{
-        display: grid;
-        grid-template-columns: repeat(10, 1fr);
-        .meetingDateItem{
-            display:grid;
-            grid-template-rows: 1fr 1fr 1fr 1fr;
-            justify-items: center;
-            text-align: center;
-            .prevItem, .nextItem, .currentItem{
-                width:80%;
-                text-align: center;
-                line-height: 2.5em;
-            }
-            .currentItem{
-                border-top: 1px solid #717171;
-                border-bottom: 1px solid #717171;
-                font-weight: 500;
-            }
-            .prevItem, .nextItem{
-                color:#cccccc;
-            }
-        }
-        .meetingDateHour{
-            grid-column: 2 / 5;
-        }
-        .meetingDateMinute{
-            grid-column: 7 / 10;
-        }
-    }
+    grid-template-rows:1fr 2fr 2fr 1fr;
+    
     .meetingDateConfirmButton{
         align-self: center;
         color:#717171;
@@ -104,16 +105,16 @@
     display:grid;
     grid-template-rows:2fr 6fr 1fr;
     .meetingLocationMap{
-        grid-row: 2 / 3;
+        grid-row: 2 / 4;
     }
-    .meetingLocationConfirmButton{
-        grid-row: 3 / 4;
-        align-self: end;
-        color:#717171;
-        background-color: #ffffff;
-        border:2px solid #EFBF43;
-        border-radius:10px;
-    }
+    // .meetingLocationConfirmButton{
+    //     grid-row: 3 / 4;
+    //     align-self: end;
+    //     color:#717171;
+    //     background-color: #ffffff;
+    //     border:2px solid #EFBF43;
+    //     border-radius:10px;
+    // }
 }
 
 // 친구 검색 SCSS
