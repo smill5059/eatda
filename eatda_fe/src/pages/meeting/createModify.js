@@ -55,7 +55,7 @@ function CreateModify(props) {
       setMeetingButtonText("약속 수정하기");
       // 통신하여 약속정보 가져오기
       fetch(
-        `${process.env.REACT_APP_API_URL}/meeting/6064065b2802a2267bbe0e90`
+        `${process.env.REACT_APP_API_URL}/meeting/${meetingId}`
       ).then((res) => {
         res.json().then((response) => {
           console.log(response);
@@ -196,10 +196,6 @@ function CreateModify(props) {
     }
   }, [modalVisible, locationKeyword]);
 
-  function addLocation() {
-    console.log("what");
-  }
-
   function showModal(e, modalType) {
     e.preventDefault();
     if (modalType === "location") {
@@ -258,7 +254,7 @@ function CreateModify(props) {
     // 수정일때
     if (meetingId !== undefined) {
       // dataset["id"] = meetingId
-      dataset.id = "606405072802a2267bbe0e8e";
+      dataset.id = meetingId;
       dataMethod = "PUT";
     }
 
