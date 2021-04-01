@@ -115,7 +115,7 @@ function PhotoUploader() {
         <p>클로이와 홍대 나들이</p>
       </Row>
       <div className="photoUploaderContent">
-        <div className="photoBox addPhoto">
+        <div className="photoBox addPhoto" encType="multipart/form-data">
           {/* <PlusOutlined /> */}
           <PictureFilled onClick={handleClick} />
           <input 
