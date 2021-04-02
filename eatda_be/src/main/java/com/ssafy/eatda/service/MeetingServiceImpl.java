@@ -3,11 +3,13 @@ package com.ssafy.eatda.service;
 import com.google.gson.Gson;
 import com.ssafy.eatda.repository.MeetingRepository;
 import com.ssafy.eatda.repository.ProfileRepository;
+import com.ssafy.eatda.repository.UserRepository;
 import com.ssafy.eatda.vo.Profile;
 import com.ssafy.eatda.vo.RecommInfo;
 import com.ssafy.eatda.vo.Schedule;
 import com.ssafy.eatda.vo.ScheduleResult;
 import com.ssafy.eatda.vo.Store;
+import com.ssafy.eatda.vo.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,14 +31,31 @@ public class MeetingServiceImpl implements MeetingService {
   private MeetingRepository meetingRepo;
   @Autowired
   private ProfileRepository profileRepo;
+  @Autowired
+  private UserRepository userRepo;
 
   @Autowired
   private RestTemplate restTemplate;
 
   @Override
   public Schedule createMeeting(Schedule schedule) {
+    //schedule 저장
     schedule.setCompleted(false);
-    return meetingRepo.insert(schedule);
+    Schedule result = meetingRepo.insert(schedule);
+
+    //user schedule 정보에 추가
+    List<ObjectId> participant = schedule.getParticipants();
+    for (ObjectId p : participant) {
+      Optional<User> user = userRepo.findById(p);
+      if (user.isPresent()) {
+        List<ObjectId> s = user.get().getSchedules();
+        s.add(result.getId());
+        user.get().setSchedules(s);
+        userRepo.save(user.get());
+      }
+    }
+
+    return result;
   }
 
   @Override
@@ -51,7 +70,8 @@ public class MeetingServiceImpl implements MeetingService {
     header.set("Contenet-type", MediaType.APPLICATION_JSON_VALUE);
 
     HttpEntity<MultiValueMap> entity = new HttpEntity<>(body, header);
-    ResponseEntity<int[]> stores = restTemplate.getForEntity("http://localhost:8000/recommendation", int[].class, entity);
+    ResponseEntity<int[]> stores = restTemplate
+        .getForEntity("http://localhost:8000/recommendation", int[].class, entity);
 
     System.out.println(stores);
     return null;
@@ -64,7 +84,7 @@ public class MeetingServiceImpl implements MeetingService {
       ScheduleResult result = new ScheduleResult();
       result.copy(found.get());
       List<Profile> profiles = new ArrayList<>();
-      for (ObjectId p : found.get().getParticipants()){
+      for (ObjectId p : found.get().getParticipants()) {
         profiles.add(profileRepo.findById(p).get());
       }
       result.setParticipants(profiles);
@@ -101,7 +121,21 @@ public class MeetingServiceImpl implements MeetingService {
 
   @Override
   public String deleteMeeting(ObjectId id) {
-    if (meetingRepo.existsById(id)) {
+    Optional<Schedule> found = meetingRepo.findById(id);
+    if (found.isPresent()) {
+      //user schedule에서 삭제
+      List<ObjectId> participants = found.get().getParticipants();
+      for (ObjectId p : participants) {
+        Optional<User> user = userRepo.findById(p);
+        if (user.isPresent()) {
+          List<ObjectId> s = user.get().getSchedules();
+          s.remove(id);
+          user.get().setSchedules(s);
+          userRepo.save(user.get());
+        }
+      }
+
+      //schdule 삭제
       meetingRepo.deleteById(id);
       return "SUCCESS";
     }
