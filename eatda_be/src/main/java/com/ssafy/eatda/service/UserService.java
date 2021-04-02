@@ -14,7 +14,7 @@ public interface UserService {
 
   public User userInfoUpdate(int userSeq, User newUser, MultipartFile file);
 
-  public List<Profile> addFriend(int userSeq, int code);
+  public Profile addFriend(int userSeq, int code);
 
   public List<Profile> deleteFriend(int userSeq, Integer code);
 

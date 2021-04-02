@@ -8,14 +8,22 @@ import Profile from './pages/account/profile';
 import CreateModify from './pages/meeting/createModify';
 // 약속 보기
 import MeetingRead from './pages/meeting/read'
+// 약속 수정 및 기록 남기기
+import PhotoUpdate from './pages/meeting/photoUpdate';
+
+
+import Navbar from 'components/bar/navbar';
 
 import './App.css';
+
+const { Kakao } = window;
 
 function App() {
   return (
     <BrowserRouter>
       <div className="Layout">
         <div className="Nav">
+          <Navbar />
         </div>
         <div className="Content">
           <Switch>
@@ -24,7 +32,8 @@ function App() {
             <Route path="/login" component={Login} />
             <Route path="/profile" component={Profile} />
             <Route path="/createMeeting" component={CreateModify}/>
-            <Route path="/updateMeeting/:meetingId" component={CreateModify}/>
+            <Route exact path="/updateMeeting/:meetingId" component={CreateModify}/>
+            <Route path="/updateMeeting/:meetingId/photoUpdate" component={PhotoUpdate}/>
             <Route path="/meeting/:meetingId" component={MeetingRead}/>
           </Switch>
         </div>

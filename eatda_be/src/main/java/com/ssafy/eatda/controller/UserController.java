@@ -81,17 +81,17 @@ public class UserController {
   // 친구 추가
   @ApiOperation(value = "친구추가", notes = "코드(seq)를 받아와서 친구추가", response = List.class)
   @PutMapping("/addfriend")
-  public ResponseEntity<List<Profile>> addFriend(
+  public ResponseEntity<Profile> addFriend(
       @ApiParam(value = "code(seq)", required = true) @RequestBody HashMap<String, Object> map,
       HttpServletRequest req) {
     logger.info("addFriend - 호출");
     Integer code = (Integer) map.get("code");
     String jwt = req.getHeader("token");
     int userSeq = jwtService.decode(jwt);
-    List<Profile> result = userService.addFriend(userSeq, code);
+    Profile result = userService.addFriend(userSeq, code);
     if (result == null)
-      return new ResponseEntity<List<Profile>>(result, HttpStatus.BAD_REQUEST);
-    return new ResponseEntity<List<Profile>>(result, HttpStatus.OK);
+      return new ResponseEntity<Profile>(result, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<Profile>(result, HttpStatus.OK);
   }
 
   // 친구 삭제

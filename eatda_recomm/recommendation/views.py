@@ -12,6 +12,10 @@ import random
 from pymongo import MongoClient
 import configparser
 
+# 유사도 업데이트시 필요한 모듈
+import schedule
+import time
+
 DATA_DIR = "./data"
 STORE_REVIEW_FILE = os.path.join(DATA_DIR, "StoresAndReviews.pkl")
 
@@ -148,6 +152,8 @@ def update():
         if len(data) >= 1:
             sim_collection.insert_one({"reviewId": i, "sim": data})
 
+    print("오늘의 유사도 업데이트 완료")
+
 
 def sim_pearson(data, name1, name2):
     sumX = 0  # X의 합
@@ -176,15 +182,20 @@ def sim_pearson(data, name1, name2):
         return (sumXY - ((sumX * sumY) / count)) / a
 
 
-# 함수 1 : 유사도 자동 업데이트 함수 
-def Similarity(request):
-  return 
+# 함수 1 : 유사도 자동 업데이트 함수     
+def Similarity():
+    schedule.every().day.at("05:00").do(update)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+    return "유사도 업데이트도 됩니다!"
 
 # 함수 2 : user와 지역 정보를 입력받아서, 가게 유사도 돌린 후, 추천 값 반환하는 함수
 @api_view(['POST'])
 def Recommendation(request): 
 
-  # 요청이 왔을 때 인원 수 체크한 다음 분기를 걸어서  
   user = request.data.get('reviewId')
   latitude = request.data.get('latitude')
   longitude = request.data.get('longitude') 
