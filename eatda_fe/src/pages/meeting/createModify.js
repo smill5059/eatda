@@ -14,6 +14,17 @@ function CreateModify(props) {
   const [modalTitle, setModalTitle] = useState(null);
   const [modalContent, setModalContent] = useState(null);
   // 정보 관리 상태
+  // 회원 정보
+  const [userToken, setUserToken] = useState(
+    localStorage.getItem("Kakao_token")
+      ? localStorage.getItem("Kakao_token")
+      : ""
+  );
+  const [myFriends, setMyFriends] = useState([]);
+  const [myId, setMyId] = useState('')
+  // 나의 위치정보
+  const [myLatitude, setMyLatitude] = useState(37.571075);
+  const [myLongitude, setMyLongitude] = useState(127.013588);
   // 페이지 정보 (생성, 수정)
   const [pageTitle, setPageTitle] = useState("약속 만들기");
   const [meetingButtonText, setMeetingButtonText] = useState("약속 생성하기");
@@ -23,9 +34,6 @@ function CreateModify(props) {
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingLocation, setMeetingLocation] = useState([]);
   const [meetingFriends, setMeetingFriends] = useState([]);
-  // 나의 위치정보
-  const [myLatitude, setMyLatitude] = useState(37.571075);
-  const [myLongitude, setMyLongitude] = useState(127.013588);
   // 지도 검색 키워드
   const [locationKeyword, setLocationKeyword] = useState("");
 
@@ -35,6 +43,26 @@ function CreateModify(props) {
 
   // 페이지 렌더 이후 1번 실행 => 기본 정보 세팅
   useEffect(() => {
+    if (userToken === "") {
+      window.location.href = "/login";
+    }
+    // 회원정보를 바탕으로 친구 목록 가져오기
+    // + 약속 사람에 본인 세팅
+    fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
+      headers: {
+        token: userToken,
+      },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        //   console.log(result)
+          setMyFriends(result.friends)
+          setMyId(result.id)
+        //   meetingFriends.push(result.id)
+        //   console.log(meetingFriends)
+        //   setMeetingFriends(meetingFriends)
+      });
+    // 현재 위치 세팅
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setMyLatitude(position.coords.latitude);
@@ -50,31 +78,31 @@ function CreateModify(props) {
       setPageTitle("약속 만들기");
       setMeetingButtonText("약속 생성하기");
     } else {
+        console.log(meetingId)
       // meetingId가 있으므로 수정
       setPageTitle("약속 수정하기");
       setMeetingButtonText("약속 수정하기");
       // 통신하여 약속정보 가져오기
-      fetch(
-        `${process.env.REACT_APP_API_URL}/meeting/${meetingId}`
-      ).then((res) => {
-        res.json().then((response) => {
-          console.log(response);
-          console.log(response.id);
-          setMeetingTitle(response.title);
-          console.log(new Date());
-          console.log(response.meetDate);
-          let meetDate = new Date(response.meetDate);
-          setMeetingDate(moment(meetDate));
-          setMeetingTime(moment(meetDate));
-          setMeetingLocation(response.stores);
-          setMeetingFriends(response.participants);
-          form.setFieldsValue({
-            meetingName: response.title,
-            meetingDate: moment(meetDate),
-            meetingTime: moment(meetDate),
+      fetch(`${process.env.REACT_APP_API_URL}/meeting/${meetingId}`).then(
+        (res) => {
+          res.json().then((response) => {
+            console.log(response);
+            console.log(response.id);
+            console.log(new Date());
+            console.log(response.meetDate);
+            let meetDate = new Date(response.meetDate);
+            setMeetingDate(moment(meetDate));
+            setMeetingTime(moment(meetDate));
+            setMeetingLocation(response.stores);
+            setMeetingFriends(response.participants);
+            form.setFieldsValue({
+              meetingName: response.title,
+              meetingDate: moment(meetDate),
+              meetingTime: moment(meetDate),
+            });
           });
-        });
-      });
+        }
+      ).catch((err)=>console.log(err));
     }
   }, []);
 
@@ -103,18 +131,13 @@ function CreateModify(props) {
     );
   }
 
+  function findFriends(e) {
+    console.log(e.target.value);
+  }
+
   function friendModalItem() {
     return (
       <div className="meetingFriendContent">
-        <Form>
-          <Form.Item
-            name="meetingFriendForm"
-            className="meetingFriendForm"
-            label="친구 검색하기"
-          >
-            <Input placeholder="친구 이름을 검색해주세요" />
-          </Form.Item>
-        </Form>
         <ul className="meetingFriendModalList"></ul>
         <Button
           type="primary"
@@ -179,7 +202,9 @@ function CreateModify(props) {
                       storeLatitude: element.dataset.storeLatitude,
                       storeLongitude: element.dataset.storeLongitude,
                     });
-                    setMeetingLocation(meetingLocation)
+                    setMeetingLocation(meetingLocation);
+                    // 모달 끄기
+                    setModalVisible(false);
                   });
                 });
               console.log(data[i]);
@@ -193,6 +218,12 @@ function CreateModify(props) {
           map.setBounds(bounds);
         }
       });
+    }
+    // 지도 끝
+    // 친구
+    else if (document.querySelector(".meetingFriendForm") !== null) {
+      console.log("칭구!");
+      // 나의 친구목록 불러오기
     }
   }, [modalVisible, locationKeyword]);
 
@@ -236,7 +267,7 @@ function CreateModify(props) {
     //   storeLongitude: "126.926666",
     // });
     setMeetingLocation(meetingLocation);
-    meetingFriends.push("605af3f78463422771e08028");
+    meetingFriends.push("606577812802a2267bbe0e96");
     setMeetingFriends(meetingFriends);
 
     let dataset = {
@@ -269,7 +300,6 @@ function CreateModify(props) {
         "Content-Type": "application/json",
         "Accept": "application/json",
       },
-      credentials: "same-origin",
       body: JSON.stringify(dataset),
     })
       .then((res) => res.json())
@@ -278,12 +308,14 @@ function CreateModify(props) {
     // console.log("CREATE!");
   }
 
-  function deleteStore(store){
-      console.log(store)
-      
-      setMeetingLocation(meetingLocation.filter((item)=>{
-        return item !== store
-      }))
+  function deleteStore(store) {
+    console.log(store);
+
+    setMeetingLocation(
+      meetingLocation.filter((item) => {
+        return item !== store;
+      })
+    );
   }
 
   return (
@@ -294,14 +326,15 @@ function CreateModify(props) {
           {/* 약속 이름 창 */}
           <Form.Item
             name="meetingName"
+            label="약속 이름"
             rules={[{ required: true, message: "약속 이름을 정해주세요" }]}
           >
-            {/* <Input
+            <Input
               placeholder="약속 이름을 지어주세요"
               onChange={(e) => {
-                // setMeetingTitle(e.target.value);
+                setMeetingTitle(e.target.value);
               }}
-            /> */}
+            />
           </Form.Item>
           {/* 날짜 선택 창 */}
           <Space direction="horizontal">
@@ -358,7 +391,7 @@ function CreateModify(props) {
                     return (
                       <div className="meetingLocationsItem" key={index}>
                         <p>{store.storeName}</p>
-                        <CloseOutlined onClick={(e)=>deleteStore(store)}/>
+                        <CloseOutlined onClick={(e) => deleteStore(store)} />
                       </div>
                     );
                   })
@@ -366,10 +399,15 @@ function CreateModify(props) {
             </div>
           </Form.Item>
           {/* 친구 부르기 버튼 */}
-          <Form.Item name="meetingFindFriend" label="누구랑" className="meetingFindFriend" rules={[{ required: true}]}>
+          <Form.Item
+            name="meetingFindFriend"
+            label="누구랑"
+            className="meetingFindFriend"
+            rules={[{ required: true }]}
+          >
             <Input
-            //   className="meetingFindFriendButton"
-            placeholder="친구를 검색해주세요"
+              //   className="meetingFindFriendButton"
+              placeholder="친구를 검색해주세요"
               onClick={(e) => showModal(e, "friend")}
             />
           </Form.Item>
@@ -389,7 +427,7 @@ function CreateModify(props) {
                         </div>
 
                         <p>{item.userName}</p>
-                        <CloseOutlined/>
+                        <CloseOutlined />
                       </div>
                     );
                   })
