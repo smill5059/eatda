@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+
 import { Button } from 'antd';
 
 import Calendar from '../../components/main/calendar';
 import Timeline from '../../components/main/timeline';
+
+import * as actions from 'store/modules/meetingData';
+
 
 function Main() {
 
@@ -13,6 +18,37 @@ function Main() {
   // STEP 3. 삼항연산자를 이용해 해당 값이 true 일 때는 calendar, false 일 때는 timeline을 보여주도록 하자.
 
   const [viewCalendar, setViewCalendar] = useState(true)
+
+  /* when main rendering */
+  const dispatch = useDispatch();
+  const [ data, setData ] = useState({});
+  
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL}/main/timeline`, {
+      headers : {
+        'token': localStorage.getItem('Kakao_token'),
+        // 'Content-Type': 'application/json',
+      }
+    })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log("타임라인 데이터가 받아져야되는데", res)
+    })
+    .then((response) => {
+      console.log("불러온 전체 미팅", response)
+      setData(response)
+    })
+  },[]);
+
+
+  const setMeetingData = useCallback((data) => {
+    console.info("이게 안뜨는거같은데요?")
+    dispatch(actions.meetingData("있었습니다"));
+  }, [dispatch])
+
+  setMeetingData(data)
+  console.log("데이터 보냈다")
+
 
   return (
     <div className="contentWrapper">

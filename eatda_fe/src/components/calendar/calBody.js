@@ -56,8 +56,20 @@ function Calendar(props) {
     return _days;
   };
   
+  /* 각 날짜에 해당하는 미팅 데이터 불러와 div 생성하기 */
+  
+  // STEP 1. 우선 store에서 전체 meetingData를 불러온다.
+  // STEP 2. 각 day 컴포넌트를 불러올 때, meetingData를 순회하며 일치하는 데이터가 있나 확인한다.
+  // STEP 3. 일치하는 경우에만 "약속있음"을 불러온다.
+
+  const meetingData = useSelector((state) => state)
+  const meetings = meetingData.meetingData.meeting
+  console.info("미팅데이터", meetings)
+
+
   const mapArrayToDate = (Date) => {
     return Date.map((date, index) => {
+      /* day 표기 class 설정 part */
       const className = () => {
         let className = "calBodyContentCell";
         if (date.isSame(curDate, 'month') === false) {
@@ -72,9 +84,20 @@ function Calendar(props) {
           }
         }
       }
+      /* meeting data 표기 설정 part */
+      const meeting = () => {
+        // for (let i )
+        if (date) {
+          return (
+            <div>
+              약속있음
+            </div>
+          )}
+      }
       return (
         <div className={className()}>
           { date.format('D') }
+          { meeting() }
         </div>
       )
     })

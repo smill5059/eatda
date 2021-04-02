@@ -1,5 +1,5 @@
-import Reac, { useState, useEffect, useRef } from "react";
-import { Button, Dropdown, Menu, Row, Col, Image } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Button, Dropdown, Menu, Row, Col, Image, Form } from "antd";
 
 import { PlusOutlined, CloseCircleFilled, PictureFilled } from '@ant-design/icons';
 
@@ -13,28 +13,30 @@ function PhotoUploader() {
   
   // 업로드할 사진 보내기 
   const updatedFiles = [];
-  const deletedUrls = [];
+  // const [ updatedFiles, setUpdatedFiles ] = useState([]);
+  const deletedFiles = [];
   
   const savePhoto = () => {
-    // setPhotoList(photoToAddList.concat(photoAddedList)) 
-    // console.info("photoList", photoList)
     for (let i = 0; i < photoToAddList.length; i++) {
       updatedFiles.push(photoToAddList[i].file)
-    }
-    
+    }    
     console.log("추가할 파일", updatedFiles)
 
     fetch(`${process.env.REACT_APP_API_URL}/review/img/6064065b2802a2267bbe0e90`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body : JSON.stringify({
+      method: "PUT",
+      // headers: {
+      //   // 'Content-Type': 'application/json'
+      //   // 'Content-Type': 'multipart/form-data'
+      // },
+      body : {
         updatedFiles : updatedFiles,
-        deletedUrls : deletedUrls,
-      })
+        deletedFiles : deletedFiles,
+      }
+    }).then((res) => {
+      alert("사진이 저장되었습니다!");
+      // window.location.href = '/meeting/6064065b2802a2267bbe0e90';
     })
-  }
+  };
 
   // 저장된 사진 가져오기 구현
   const [ photoAddedList, setPhotoAddedList ] = useState([]);
@@ -65,7 +67,7 @@ function PhotoUploader() {
 
   const onRemoveAdded = (deleteUrl) => {
     setPhotoAddedList(photoAddedList.filter(photo => photo.imgUrl != deleteUrl))
-    deletedUrls.push(deleteUrl)
+    deletedFiles.push(deleteUrl)
   }
   
 
@@ -98,8 +100,6 @@ function PhotoUploader() {
   };
   
 
-
-
   return (
   <div className="contentWrapper">
     <Row className="contentTitle">
@@ -115,7 +115,7 @@ function PhotoUploader() {
         <p>클로이와 홍대 나들이</p>
       </Row>
       <div className="photoUploaderContent">
-        <div className="photoBox addPhoto" encType="multipart/form-data">
+        <Form className="photoBox addPhoto" encType="multipart/form-data">
           {/* <PlusOutlined /> */}
           <PictureFilled onClick={handleClick} />
           <input 
@@ -126,7 +126,7 @@ function PhotoUploader() {
             onChange={(e) => handlePhoto(e)}
             style={{display: 'none'}} 
           />
-        </div>
+        </Form>
         { photoToAddPreview() }
         { photoAddedPreview() }
       </div>
