@@ -67,6 +67,7 @@ public class ReviewServiceImpl implements ReviewService {
     Optional<Schedule> found = reviewRepo.findById(schedule.getId());
     if (found.isPresent()) {
       found.get().setComments(schedule.getComments());
+      found.get().setScores(schedule.getScores());
       return reviewRepo.save(found.get());
     }
     return null;
