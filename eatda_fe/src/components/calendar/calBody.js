@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from "moment";
 
 
-function Calendar(props) {
+function Calendar() {
 
   /* 캘린더 본문의 요일 부분 */  
 
@@ -36,9 +36,9 @@ function Calendar(props) {
   // STEP 2. 첫 날짜부터 하루씩 더해 날짜 객체를 생성한다. 6주를 기본으로 하기 때문에 42번 반복한다.
   // STEP 3. 날짜마다 요일 정보를 확인하고 div의 className을 설정한다.
 
-  const baseDate = useSelector((state) => state)
-  console.info("자식 컴포넌트도 받아왔는데요", baseDate)
-  const curDate = baseDate.baseDate.date.clone()
+  const baseDate = useSelector(state => state.baseDate)
+  // console.info("자식 컴포넌트도 받아왔는데요", baseDate)
+  const curDate = moment(baseDate.date).clone()
   const firstDateOfMonth = curDate.clone().startOf('month')
   const firstDayOfMonth = firstDateOfMonth.get('d')
   const firstDate = firstDateOfMonth.clone().add(-firstDayOfMonth, 'days')

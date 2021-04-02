@@ -42,10 +42,10 @@ function Profile() {
   }
 
   // 친구 관리
-  const friendMenu = name => (
+  const friendMenu = friend => (
     <Menu>
-      <Menu.Item key={name} onClick={deleteFriend}>
-        { name } 친구 끊기
+      <Menu.Item key={friend.seq} onClick={deleteFriend}>
+        { friend.userName } 친구 끊기
       </Menu.Item>
     </Menu>
   )
@@ -75,14 +75,13 @@ function Profile() {
     setTimeout(() => {
       setLoading(false)
       setVisible(false)
-    }, 3000);
+    }, 2000);
   };
 
   const cancel = () => { setVisible(false) }
   
   // 유저 데이터
   const user = useSelector(state => state.userData)
-
   console.log(user)
   
   const friendList = user.friendList.map(friend =>
@@ -93,7 +92,7 @@ function Profile() {
       <div className="frdName">
         { friend.userName }
       </div>
-      <Dropdown overlay={friendMenu(friend.userName)} placement="bottomCenter" className="frdCtrl">
+      <Dropdown overlay={friendMenu(friend)} placement="bottomCenter" className="frdCtrl">
         <Button>관리</Button>
       </Dropdown>
     </Card.Grid>
