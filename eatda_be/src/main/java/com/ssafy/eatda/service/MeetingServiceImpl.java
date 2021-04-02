@@ -1,30 +1,60 @@
 package com.ssafy.eatda.service;
 
+import com.google.gson.Gson;
 import com.ssafy.eatda.repository.MeetingRepository;
 import com.ssafy.eatda.repository.ProfileRepository;
 import com.ssafy.eatda.vo.Profile;
+import com.ssafy.eatda.vo.RecommInfo;
 import com.ssafy.eatda.vo.Schedule;
 import com.ssafy.eatda.vo.ScheduleResult;
+import com.ssafy.eatda.vo.Store;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class MeetingServiceImpl implements MeetingService {
 
   @Autowired
   private MeetingRepository meetingRepo;
-
   @Autowired
   private ProfileRepository profileRepo;
+
+  @Autowired
+  private RestTemplate restTemplate;
 
   @Override
   public Schedule createMeeting(Schedule schedule) {
     schedule.setCompleted(false);
     return meetingRepo.insert(schedule);
+  }
+
+  @Override
+  public List<Store> recommend(List<String> reviewIds, float latitude, float longitude) {
+    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+    body.put("reviewIds", reviewIds);
+    body.add("latitude", String.valueOf(latitude));
+    body.add("longitude", String.valueOf(longitude));
+
+//    String body = new Gson().toJson(recommInfo);
+    HttpHeaders header = new HttpHeaders();
+    header.set("Contenet-type", MediaType.APPLICATION_JSON_VALUE);
+
+    HttpEntity<MultiValueMap> entity = new HttpEntity<>(body, header);
+    ResponseEntity<int[]> stores = restTemplate.getForEntity("http://localhost:8000/recommendation", int[].class, entity);
+
+    System.out.println(stores);
+    return null;
   }
 
   @Override

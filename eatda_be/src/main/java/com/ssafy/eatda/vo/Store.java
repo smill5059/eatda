@@ -12,5 +12,5 @@ public class Store {
     private String storeName;
     private String storeAddress;
     private float storeLatitude;
-    private float storeLongtitude;
+    private float storeLongitude;
 }
