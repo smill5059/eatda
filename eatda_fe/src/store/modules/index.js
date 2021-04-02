@@ -1,11 +1,25 @@
 import { combineReducers } from "redux";
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 import baseDate from "./baseDate";
 import userData from "./userData";
 import timelineData from "./timelineData";
+const persistConfig = {
+  key: "root",
+  storage
+};
 
-export default combineReducers ({
+// export default combineReducers({
+//   baseDate,
+//   userData,
+//   timelineData,
+// });
+
+const rootReducer = combineReducers({
   baseDate,
   userData,
   timelineData,
 });
+
+export default persistReducer(persistConfig, rootReducer);

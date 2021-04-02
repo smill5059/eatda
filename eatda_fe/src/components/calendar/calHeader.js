@@ -7,10 +7,10 @@ import moment from "moment";
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 
-function Calendar(props) {
+function Header() {
 
-  const baseDate = useSelector((state) => state)
-  const curDate = baseDate.baseDate.date.clone()
+  const baseDate = useSelector(state => state.baseDate)
+  const curDate = moment(baseDate.date).clone()
   const viewMonth = curDate.format('YYYY - MM')
 
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ function Calendar(props) {
     dispatch(actions.incMonth());
   }, [dispatch])
 
-  console.info("store에 저장된 baseDate는요", baseDate)
+  // console.info("store에 저장된 baseDate는요", baseDate)
 
   return (
     <div className="calHeaderWrapper">
@@ -50,4 +50,4 @@ function Calendar(props) {
   );
 }
 
-export default Calendar;
+export default Header;

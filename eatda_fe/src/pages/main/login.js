@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import * as settingUser from 'store/modules/userData'
 
 const { Kakao } = window;
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_URL = process.env.REACT_APP_API_URL;
 
 function Login() {
   const history = useHistory()
@@ -35,7 +35,7 @@ function Login() {
           .then(res => {
             console.log('로그인 결과', res)
             console.log(settingUser.setUser)
-            dispatch(settingUser.setUser({name: res.name, code: res.seq}))
+            dispatch(settingUser.setUser({name: res.name, code: res.seq, friends: res.friends}))
             localStorage.setItem('Kakao_token', res.token);
             if (res.token) {
               console.log('로그인 성공')

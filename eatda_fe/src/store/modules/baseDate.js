@@ -15,11 +15,11 @@ export default handleActions(
   {
     [DEC_MONTH]: (state, action) => ({
       ...state,
-      baseDate: state.date.add(-1, 'months'),
+      date: moment(state.date).add(-1, 'months'),
     }),
     [INC_MONTH]: (state, action) => ({
       ...state,
-      baseDate: state.date.add(1, 'months'),
+      date: moment(state.date).add(1, 'months'),
     })
   },
   initialState
