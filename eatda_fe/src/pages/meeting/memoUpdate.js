@@ -6,9 +6,9 @@ function MemoUpdate(props) {
   // 요일 배열
   const weekDays = ["(일)", "(월)", "(화)", "(수)", "(목)", "(금)", "(토)"];
   // 유저 토큰
-  const userToken = localStorage.getItem("Kakao-token")
-    ? localStorage.getItem("Kakao-token")
-    : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw";
+  const userToken = localStorage.getItem("Kakao_token")
+    ? localStorage.getItem("Kakao_token")
+    : "";
   let [userSeq, setUserSeq] = useState(0);
   // 미팅 ID 받아오기
   const { meetingId } = props.match.params;
@@ -21,6 +21,10 @@ function MemoUpdate(props) {
 
   // 바로 실행
   useEffect(() => {
+    console.log(userToken);
+    if (userToken === "") {
+      window.location.href = "/login";
+    }
     // 유저 정보 확인
     fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
       headers: {
@@ -90,7 +94,9 @@ function MemoUpdate(props) {
           body: JSON.stringify(schedule),
         })
           .then((res) => res.json())
-          .then((result) => console.log(result));
+          .then((result) => {
+            window.location.href = `meeting/${result.id}`;
+          });
       });
     console.log(schedule);
   }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Dropdown, Menu, Row, Col, Image } from "antd";
 import MeetingInfo from "../../components/meeting/meetInfo";
-import MeetingReview from "../../components/meeting/meetReview"
+import MeetingReview from "../../components/meeting/meetReview";
 import { RestFilled } from "@ant-design/icons";
 
 function MeetingRead(props) {
@@ -12,17 +12,18 @@ function MeetingRead(props) {
   const [day, setDay] = useState("");
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
+  const [menu, setMenu] = useState("");
   useEffect(() => {
-    (fetch(`${process.env.REACT_APP_API_URL}/meeting/` + meetingId, {
-      method: 'GET',
+    fetch(`${process.env.REACT_APP_API_URL}/meeting/` + meetingId, {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         // 디니디니
-        'token': `토큰 넣기~`
-      }
+        // token: `토큰 넣기~`,
+      },
     })
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         function parse(str) {
           var y = str.substr(0, 4);
           var m = str.substr(5, 2);
@@ -32,74 +33,83 @@ function MeetingRead(props) {
           return new Date(y, m - 1, d, h, minutes, 0);
         }
         let date = parse(res.meetDate);
-        res.meetDate = date
+        res.meetDate = date;
         setMonth(date.getMonth() + 1);
         setDate(date.getDate());
         if (date.getDay == 0) {
-          setDay("일")
+          setDay("일");
         } else if (date.getDay() == 1) {
-          setDay("월")
+          setDay("월");
         } else if (date.getDay() == 2) {
-          setDay("화")
+          setDay("화");
         } else if (date.getDay() == 3) {
-          setDay("수")
+          setDay("수");
         } else if (date.getDay() == 4) {
-          setDay("목")
+          setDay("목");
         } else if (date.getDay() == 5) {
-          setDay("금")
+          setDay("금");
         } else {
-          setDay("토")
+          setDay("토");
         }
-        setHours(date.getHours())
-        setMinutes(date.getMinutes())
+        setHours(date.getHours());
+        setMinutes(date.getMinutes());
 
         if (!res.isCompleted) {
-          var i = 0
-          var comment = ""
+          var i = 0;
+          var comment = "";
 
           for (i = 0; i < res.comments.length; i++) {
             //디니디니
             if (res.comments[i].userSeq == 1664038710) {
-              comment = res.comments[i].content
-              break
+              comment = res.comments[i].content;
+              break;
             }
           }
 
           if (comment == "") {
-            comment = "수정하기를 눌러 다녀온 후기를 남겨보세요!"
+            comment = "수정하기를 눌러 다녀온 후기를 남겨보세요!";
           }
 
-
-          setMeetComponent(<MeetingReview info={res}
-            comment={comment}></MeetingReview>)
+          setMeetComponent(
+            <MeetingReview info={res} comment={comment}></MeetingReview>
+          );
+          setMenu(
+            <Menu>
+              <Menu.Item key="0">
+                <a href={`/updateMeeting/${meetingId}/photoUpdate`}>사진</a>
+              </Menu.Item>
+              <Menu.Item key="1">
+                <a href={`/updateMeeting/${meetingId}/memoUpdate`}>후기</a>
+              </Menu.Item>
+            </Menu>
+          );
         } else {
-          setMeetComponent(<MeetingInfo info={res}></MeetingInfo>)
+          setMeetComponent(<MeetingInfo info={res}></MeetingInfo>);
+          setMenu(
+            <Menu>
+              <Menu.Item key="0">
+                <a href={`/updateMeeting/${meetingId}`}>수정</a>
+              </Menu.Item>
+              <Menu.Item key="1">
+                <div>삭제</div>
+              </Menu.Item>
+            </Menu>
+          );
         }
-
-      }))
-  }, [])
+      });
+  }, []);
 
   let createUrl = false;
 
   // 드롭다운 메뉴들
   // 디니디니
-  const menu = (
-    <Menu>
-      <Menu.Item key="0">
-        <a href="https://www.antgroup.com">수정하기</a>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <a href="https://www.aliyun.com">삭제하기</a>
-      </Menu.Item>
-    </Menu>
-  );
-
-
 
   return (
     <div className="contentWrapper">
       <Row className="contentTitle">
-        <Col span={20}>{month}월 {date}일 ({day}) {hours}시 {minutes}분</Col>
+        <Col span={20}>
+          {month}월 {date}일 ({day}) {hours}시 {minutes}분
+        </Col>
         <Col span={4}>
           <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
             <Button>...</Button>
@@ -108,12 +118,8 @@ function MeetingRead(props) {
       </Row>
 
       {meetComponent}
-
     </div>
   );
-
-
-
 }
 
 export default MeetingRead;
