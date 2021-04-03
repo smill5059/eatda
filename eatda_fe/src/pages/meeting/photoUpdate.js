@@ -12,15 +12,25 @@ function PhotoUploader() {
   };
   
   // 업로드할 사진 보내기 
-  const updatedFiles = [];
-  // const [ updatedFiles, setUpdatedFiles ] = useState([]);
-  const deletedFiles = [];
+  const [ updatedUrls, setUpdatedUrls ] = useState([]);
+  const deletedUrls = [];
   
   const savePhoto = () => {
     for (let i = 0; i < photoToAddList.length; i++) {
-      updatedFiles.push(photoToAddList[i].file)
+      fetch(`${process.env.REACT_APP_API_URL}/updatePhoto`, {
+        method: "POST",
+        body: {
+          file: photoToAddList[i].file,
+        }
+      })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res)
+        console.log(res.url)
+        setUpdatedUrls(updatedUrls.concat(res.url))
+      })
     }    
-    console.log("추가할 파일", updatedFiles)
+    console.log("추가할 파일", updatedUrls)
 
     fetch(`${process.env.REACT_APP_API_URL}/review/img/6064065b2802a2267bbe0e90`, {
       method: "PUT",
@@ -28,9 +38,9 @@ function PhotoUploader() {
       //   // 'Content-Type': 'application/json'
       //   // 'Content-Type': 'multipart/form-data'
       // },
-      body : {
-        updatedFiles : updatedFiles,
-        deletedFiles : deletedFiles,
+      body: {
+        updatedUrls: updatedUrls,
+        deletedUrls: deletedUrls,
       }
     }).then((res) => {
       alert("사진이 저장되었습니다!");
@@ -67,7 +77,7 @@ function PhotoUploader() {
 
   const onRemoveAdded = (deleteUrl) => {
     setPhotoAddedList(photoAddedList.filter(photo => photo.imgUrl != deleteUrl))
-    deletedFiles.push(deleteUrl)
+    deletedUrls.push(deleteUrl)
   }
   
 
