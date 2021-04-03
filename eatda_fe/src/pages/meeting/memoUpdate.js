@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Input, Button } from "antd";
+import { Input, Button, Rate } from "antd";
 import moment from "moment";
 
 function MemoUpdate(props) {
   // 요일 배열
   const weekDays = ["(일)", "(월)", "(화)", "(수)", "(목)", "(금)", "(토)"];
   // 유저 토큰
-  const userToken = localStorage.getItem("Kakao-token")
-    ? localStorage.getItem("Kakao-token")
-    : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw";
+  const userToken = localStorage.getItem("Kakao_token")
+    ? localStorage.getItem("Kakao_token")
+    : "";
   let [userSeq, setUserSeq] = useState(0);
   // 미팅 ID 받아오기
   const { meetingId } = props.match.params;
@@ -21,6 +21,10 @@ function MemoUpdate(props) {
 
   // 바로 실행
   useEffect(() => {
+    console.log(userToken);
+    if (userToken === "") {
+      window.location.href = "/login";
+    }
     // 유저 정보 확인
     fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
       headers: {
@@ -90,7 +94,9 @@ function MemoUpdate(props) {
           body: JSON.stringify(schedule),
         })
           .then((res) => res.json())
-          .then((result) => console.log(result));
+          .then((result) => {
+            window.location.href = `meeting/${result.id}`;
+          });
       });
     console.log(schedule);
   }
@@ -113,14 +119,36 @@ function MemoUpdate(props) {
           </div>
           <div className="starCreate">
             {meetingStores.map((store, index) => {
+              console.log(store);
               return (
                 <div className="starContent" key={index}>
                   <p className="starStoreName">{store.storeName}</p>
-                  <div className="startStoreStar"></div>
+                  <Rate
+                    className="starRating"
+                    allowHalf
+                    onChange={(value) => console.log(value)}
+                  />
                 </div>
               );
             })}
-            <div className="starContent">테스트</div>
+
+            <div className="starContent">
+              <p className="starStoreName">sadjflkasdflk</p>
+              <Rate
+                className="starRating"
+                allowHalf
+                onChange={(value) => console.log(value)}
+              />
+            </div>
+            <div className="starContent">
+              <p className="starStoreName">sadjflkasdflk</p>
+              <Rate
+                className="starRating"
+                allowHalf
+                onChange={(value) => console.log(value)}
+              />
+            </div>
+
             <div className="starContent">테스트</div>
           </div>
           <Button className="memoCreateButton" onClick={() => createMemo()}>

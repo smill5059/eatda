@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+
 import { Button } from 'antd';
+import { PlusCircleFilled } from '@ant-design/icons';
 
 import Calendar from '../../components/main/calendar';
 import Timeline from '../../components/main/timeline';
+
+import * as actions from 'store/modules/meetingData';
+
 
 function Main() {
 
@@ -13,6 +19,35 @@ function Main() {
   // STEP 3. 삼항연산자를 이용해 해당 값이 true 일 때는 calendar, false 일 때는 timeline을 보여주도록 하자.
 
   const [viewCalendar, setViewCalendar] = useState(true)
+
+  /* when main rendering */
+  const dispatch = useDispatch();
+  const [ data, setData ] = useState({});
+  
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
+      headers : {
+        // 'token': localStorage.getItem('Kakao_token'),
+        'token': "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw",
+        // 'Content-Type': 'application/json',
+      }
+    })
+    .then((res) => res.json())
+    .then((res) => {
+      setData(res)
+      console.info("미팅데이터 불러오기", res)
+    })
+  },[]);
+
+  const setMeetingData = useCallback((data) => {
+    dispatch(actions.meetingData(data));
+  }, [dispatch])
+
+  setMeetingData(data)
+
+  const toMeetingCreate = () => {
+   window.location.href="/createMeeting"
+  }
 
   return (
     <div className="contentWrapper">
@@ -40,7 +75,11 @@ function Main() {
           </Button>
         </div>
         <div className="mainComponentWrapper">
-           { viewCalendar ? <Calendar/> : <Timeline/> }
+          { viewCalendar ? <Calendar/> : <Timeline/> }
+          <PlusCircleFilled 
+            className="mainMeetingCreateBtn"
+            onClick={toMeetingCreate} 
+          />
         </div>
       </div>
     </div>
