@@ -17,13 +17,19 @@ function PhotoUploader() {
   
   const savePhoto = () => {
     for (let i = 0; i < photoToAddList.length; i++) {
-      fetch(`${process.env.REACT_APP_API_URL}/review/img/6064065b2802a2267bbe0e90`, {
+      console.info("파일 하나", photoToAddList[i])
+      console.info("그 파일의 내용물", photoToAddList[i].file)
+      fetch(`${process.env.REACT_APP_API_URL}/review/img/6066975e4c8f71296a892d09`, {
         method: "POST",
+        headers: {
+        // 'Content-Type': 'application/json'
+        // 'Content-Type': 'multipart/form-data',
+      },
         body: {
           updatedFile: photoToAddList[i].file,
         }
       })
-      .then((res) => res.json())
+      // .then((res) => res.json())
       .then((res) => {
         console.log(res)
         // console.log(res.url)
@@ -32,7 +38,7 @@ function PhotoUploader() {
     }    
     // console.log("추가할 파일", updatedUrls)
 
-    fetch(`${process.env.REACT_APP_API_URL}/review/img/6064065b2802a2267bbe0e90`, {
+    fetch(`${process.env.REACT_APP_API_URL}/review/img/6066975e4c8f71296a892d09`, {
       method: "DELETE",
       // headers: {
       //   // 'Content-Type': 'application/json'
@@ -51,7 +57,7 @@ function PhotoUploader() {
   const [ photoAddedList, setPhotoAddedList ] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/meeting/6064065b2802a2267bbe0e90`, {
+    fetch(`${process.env.REACT_APP_API_URL}/meeting/6066975e4c8f71296a892d09`, {
       headers : {
         'Content-Type': 'application/json',
         // 'Accept': 'application/json'

@@ -40,10 +40,6 @@ function CreateModify(props) {
   const [meetingLocation, setMeetingLocation] = useState([]);
   const [meetingFriends, setMeetingFriends] = useState([]);
 
-  // 나의 위치정보
-  const [myLatitude, setMyLatitude] = useState(37.571075);
-  const [myLongitude, setMyLongitude] = useState(127.013588);
-
   // 지도 검색 키워드
   const [locationKeyword, setLocationKeyword] = useState("");
 
@@ -246,6 +242,7 @@ function CreateModify(props) {
   //     });
   //   }
   // }, [modalVisible, locationKeyword]);
+
       let ps = new kakao.maps.services.Places();
       ps.keywordSearch(locationKeyword, (data, status, pagination) => {
         if (status === kakao.maps.services.Status.OK) {
@@ -259,14 +256,18 @@ function CreateModify(props) {
 
             // 마커에 이벤트 등록
             kakao.maps.event.addListener(marker, "click", function () {
+              console.info("일단계")
               infowindow.setContent(
                 `<div style="display:flex; width:max-content; padding:10px;"><a href=${data[i].place_url} target="_blank" style="margin-right:10px">${data[i].place_name}</a><Button class="locationAddButton" data-store-name="${data[i].place_name}" data-store-address="${data[i].road_address_name}" data-store-latitude=${data[i].y} data-store-longitude=${data[i].x}>추가</Button></div>`
-              );
+                );
+              infowindow.open(map, marker);
               document
                 .querySelectorAll(".locationAddButton")
                 .forEach((element) => {
+                  console.info("이단계")
                   console.log(element);
                   element.addEventListener("click", function (event) {
+                    console.info("삼단계")
                     const temp = []
                     console.log(element.dataset.storeName);
                     console.log(element.dataset.storeAddress);
@@ -278,7 +279,6 @@ function CreateModify(props) {
                       storeLatitude: element.dataset.storeLatitude,
                       storeLongitude: element.dataset.storeLongitude,
                     });
-<<<<<<< eatda_fe/src/pages/meeting/createModify.js
                     console.info("선택된 장소", temp)
                     // setLocation(location.concat(temp));
                     if (meetingArea.length === 0) {
@@ -291,17 +291,14 @@ function CreateModify(props) {
                     };
                     console.info("약속장소 설정2", meetingArea);
                     // setMeetingLocation(meetingLocation.concat(temp))
-=======
                     setMeetingLocation(meetingLocation);
                     // 모달 끄기
                     setModalVisible(false);
->>>>>>> eatda_fe/src/pages/meeting/createModify.js
                   });
                   console.info("약속장소 설정3", meetingArea);
                 });
                 console.info("약속장소 설정4", meetingArea);
                 console.log(data[i]);
-                infowindow.open(map, marker);
               });
               console.info("약속장소 설정5", meetingArea);
 
