@@ -125,7 +125,18 @@
     .meetingFriendModalList{
         grid-row: 1 / 3;
         border: 2px solid #717171;
-        border-radius:10px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: scroll;
+        
+        .ant-card-grid {
+            float: initial;
+            width: 80%;
+            padding: 1rem;
+            margin: .2rem 0;
+        }
     }
     .meetingFriendConfirmButton{
         grid-row: 3 / 4;

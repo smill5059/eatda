@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { Form, Input, Button, DatePicker, Space } from "antd";
+import { Form, Input, Button, DatePicker, Space, Card, Select, Tag } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
 import RecommendationModal from "components/meeting/recommendationModal";
@@ -11,6 +12,8 @@ import RecommendationModal from "components/meeting/recommendationModal";
 //   };
 
 function CreateModify(props) {
+  const user = useSelector(state => state.userData)
+
   // 모달 관련 상태
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState(null);
@@ -145,34 +148,49 @@ function CreateModify(props) {
     );
   }
 
-  // 추천 모달
-  function recommendationModalItem() {
-    // console.info("모달을 열어볼게요")
+  // 친구 선택
+  const friends = user.friendList.map(friend => { return { label: friend.userName, value: friend.userSeq } })
+  const [selectedFriends, setSelectedFriends] = useState([])
+  console.log(selectedFriends)
+
+  function tagRender(props) {
+    const { label, value, closable, onClose } = props;
+  
     return (
-      <div>
-        <RecommendationModal 
-          setLocationKeyword={setLocationKeyword}
-          meetingArea={meetingArea}
-          setLocation={setLocation} 
-        />
-      </div>
+      <Tag closable={closable} onClose={onClose} style={{ marginRight: 3 }}>
+        { label }
+      </Tag>
     );
   }
 
-  function friendModalItem() {
-    return (
-      <div className="meetingFriendContent">
-        <ul className="meetingFriendModalList"></ul>
-        <Button
-          type="primary"
-          htmlType="button"
-          className="meetingFriendConfirmButton"
-        >
-          확인
-        </Button>
-      </div>
-    );
-  }
+  // function friendModalItem() {
+  //   return (
+  //     <div className="meetingFriendContent">
+  //       <div className="meetingFriendModalList">
+  //         <Select
+  //           mode="multiple"
+  //           showArrow
+  //           tagRender={tagRender}
+  //           defaultValue={['gold', 'cyan']}
+  //           style={{ width: '100%' }}
+  //           options={options}
+  //         />
+  //         { user.friendList.map(friend => (
+  //           <Card.Grid key={friend.userSeq}>
+  //             { friend.userName }
+  //           </Card.Grid>
+  //         )) }
+  //       </div>
+  //       <Button
+  //         type="primary"
+  //         htmlType="button"
+  //         className="meetingFriendConfirmButton"
+  //       >
+  //         확인
+  //       </Button>
+  //     </div>
+  //   );
+  // }
 
   // 모달의 ON/OFF에 따라 작동할 것
   useEffect(() => {
@@ -329,7 +347,7 @@ function CreateModify(props) {
       setModalContent(recommendationModalItem);
     } else if (modalType === "friend") {
       setModalTitle("누구랑 먹을까?");
-      setModalContent(friendModalItem);
+      // setModalContent(friendModalItem);
     }
     // 모달 보여주기
     setModalVisible(true);
@@ -506,16 +524,24 @@ function CreateModify(props) {
             name="meetingFindFriend"
             label="누구랑"
             className="meetingFindFriend"
-            rules={[{ required: true }]}
           >
-            <Input
+            {/* <Input
               //   className="meetingFindFriendButton"
               placeholder="친구를 검색해주세요"
               onClick={(e) => showModal(e, "friend")}
+            /> */}
+            <Select
+              mode="multiple"
+              showArrow
+              tagRender={tagRender}
+              style={{ width: '100%' }}
+              options={friends}
+              value={selectedFriends}
+              onChange={setSelectedFriends}
             />
           </Form.Item>
           {/* 친구 목록   */}
-          <Form.Item className="meetingFriendsListBox">
+          {/* <Form.Item className="meetingFriendsListBox">
             <div className="meetingFriendsList">
               {meetingFriends.length > 0
                 ? meetingFriends.map((item, index) => {
@@ -536,7 +562,7 @@ function CreateModify(props) {
                   })
                 : "친구를 추가해주세요."}
             </div>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item name="meetingCreate" className="meetingCreate">
             <Button
               type="primary"

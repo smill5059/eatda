@@ -29,7 +29,7 @@ function Profile() {
   const [visible, setVisible] = useState(false)
   const [code, setCode] = useState(0)
 
-  const codeInput = value => { setCode(Number(value)) }
+  const codeInput = value => setCode(Number(value))
 
   // 친구 추가 Modal
   const showModal = () => setVisible(true)
@@ -47,14 +47,17 @@ function Profile() {
       }
     })
       .then(res => {
-        console.log(res.data)
-        dispatch(settingUser.addFriend(res.data))
+        setTimeout(() => {
+          setLoading(false)
+          setVisible(false)
+          dispatch(settingUser.addFriend(res.data))
+          codeInput(null)
+        }, 2000)
       })
+      // .then(res => {
+      //   dispatch(settingUser.addFriend(res.data))
+      // })
       .catch(err => console.log(err))
-    setTimeout(() => {
-      setLoading(false)
-      setVisible(false)
-    }, 2000);
   };
   
   // 유저 데이터
@@ -102,7 +105,7 @@ function Profile() {
   )
   
   const friendList = user.friendList.map(friend =>
-    <Card.Grid style={frdCard}>
+    <Card.Grid key={friend.userSeq} style={frdCard}>
       <div className="frdImg">
         <Image src={ friend.userProfileUrl } />
       </div>
