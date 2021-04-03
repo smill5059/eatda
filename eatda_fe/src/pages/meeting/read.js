@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
 import { Button, Dropdown, Menu, Row, Col, Image } from "antd";
 import MeetingInfo from "../../components/meeting/meetInfo";
 import MeetingReview from "../../components/meeting/meetReview";
 import { RestFilled } from "@ant-design/icons";
 
 function MeetingRead(props) {
+  const user = useSelector(state => state.userData)
+
   const { meetingId } = props.match.params;
   const [meetComponent, setMeetComponent] = useState("");
   const [month, setMonth] = useState("");
@@ -17,10 +20,9 @@ function MeetingRead(props) {
     fetch(`${process.env.REACT_APP_API_URL}/meeting/` + meetingId, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        // 디니디니
-        // token: `토큰 넣기~`,
-      },
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('Kakao_token')
+      }
     })
       .then((res) => res.json())
       .then((res) => {
@@ -54,15 +56,15 @@ function MeetingRead(props) {
         setHours(date.getHours());
         setMinutes(date.getMinutes());
 
-        if (!res.isCompleted) {
-          var i = 0;
-          var comment = "";
-
+        if (res.isCompleted) {
+          var i = 0
+          var comment = ""
+          var username = user.username
           for (i = 0; i < res.comments.length; i++) {
-            //디니디니
-            if (res.comments[i].userSeq == 1664038710) {
-              comment = res.comments[i].content;
-              break;
+
+            if (res.comments[i].userSeq == user.usercode) {
+              comment = res.comments[i].content
+              break
             }
           }
 

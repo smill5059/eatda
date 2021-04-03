@@ -21,8 +21,7 @@ function MeetingInfo(props) {
       method: "PUT",
       headers: {
         'Content-Type': 'application/json',
-        // 디니디니
-        'token': `토큰토큰`
+        'token': localStorage.getItem('Kakao_token')
       }
     })
       .then(res => {

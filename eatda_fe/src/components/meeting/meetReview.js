@@ -29,7 +29,7 @@ function MeetingReview(props) {
       <Col className="meetingReadAfterComment">
         <Row className="meetingReadAfterCommentItem">
           <Col span={24} className="meetingReadAfterCommentName">
-            디니디니
+            {props.username}
           </Col>
           <Col span={24} className="meetingReadAfterCommentContent">
             {props.comment}
@@ -46,21 +46,6 @@ class Img extends React.Component {
       <div className="meetingReadImageItem">
         <img src={`${process.env.REACT_APP_API_URL}/files/${this.props.imgUrl}`} />
       </div>
-    );
-  }
-}
-
-class Comment extends React.Component {
-  render() {
-    return (
-      <Row className="meetingReadAfterCommentItem">
-        <Col span={24} className="meetingReadAfterCommentName">
-          이름
-                </Col>
-        <Col span={24} className="meetingReadAfterCommentContent">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum turpis ut augue feugiat, ultricies iaculis augue interdum. Sed et commodo nisl. Vivamus finibus massa eu porttitor maximus. Suspendisse tincidunt lorem nec tortor volutpat vestibulum. Phasellus posuere venenatis ornare. Etiam mollis tincidunt purus, at fermentum nulla maximus at. Phasellus faucibus, felis eu maximus vestibulum, elit odio elementum metus, at bibendum turpis enim id nunc. Integer at hendrerit quam, vel interdum est. Ut sem leo, efficitur in consectetur quis, sagittis ac mi. Nunc eu nisi arcu.
-                </Col>
-      </Row>
     );
   }
 }
