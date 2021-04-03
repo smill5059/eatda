@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
 import { Button, Dropdown, Menu, Row, Col, Image } from "antd";
 import MeetingInfo from "../../components/meeting/meetInfo";
 import MeetingReview from "../../components/meeting/meetReview"
 import { RestFilled } from "@ant-design/icons";
 
 function MeetingRead(props) {
+  const user = useSelector(state => state.userData)
+
   const { meetingId } = props.match.params;
   const [meetComponent, setMeetComponent] = useState("");
   const [month, setMonth] = useState("");
@@ -17,8 +20,7 @@ function MeetingRead(props) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        // 디니디니
-        'token': `토큰 넣기~`
+        'token': localStorage.getItem('Kakao_token')
       }
     })
       .then(res => res.json())
@@ -53,25 +55,25 @@ function MeetingRead(props) {
         setHours(date.getHours())
         setMinutes(date.getMinutes())
 
-        if (!res.isCompleted) {
+        if (res.isCompleted) {
           var i = 0
           var comment = ""
-
+          var username = user.username
           for (i = 0; i < res.comments.length; i++) {
-            //디니디니
-            if (res.comments[i].userSeq == 1664038710) {
+
+            if (res.comments[i].userSeq == user.usercode) {
               comment = res.comments[i].content
               break
             }
           }
 
           if (comment == "") {
-            comment = "수정하기를 눌러 다녀온 후기를 남겨보세요!"
+            comment = "후기 남기삼요~~~"
           }
 
-
           setMeetComponent(<MeetingReview info={res}
-            comment={comment}></MeetingReview>)
+            comment={comment}
+            username={username}></MeetingReview>)
         } else {
           setMeetComponent(<MeetingInfo info={res}></MeetingInfo>)
         }
@@ -82,7 +84,6 @@ function MeetingRead(props) {
   let createUrl = false;
 
   // 드롭다운 메뉴들
-  // 디니디니
   const menu = (
     <Menu>
       <Menu.Item key="0">
