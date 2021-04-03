@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 
 import baseDate from "./baseDate";
 import userData from "./userData";
+import meetingData from "./meetingData";
 import timelineData from "./timelineData";
 const persistConfig = {
   key: "root",
@@ -19,6 +20,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   baseDate,
   userData,
+  meetingData,
   timelineData,
 });
 

@@ -110,11 +110,27 @@
   
   border: solid 0.3px white;
 
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-row-gap: 2px;
+
 }
 
 .outdate {
   color: white;
   background-color: white;
+}
+
+.date-today {
+  color: white;
+  background-color: #EFBF43;
+
+  .meetingBlob {
+    height: 100%;
+    width: 100%;
+  
+    background-color: white;
+  }
 }
 
 .date-sun {
@@ -130,4 +146,13 @@
 .date-weekday {
   color: black;
   background-color: #f8f8f8;
+}
+
+/* 데이 셀 내부 meeting Data 표기 blob*/ 
+
+.meetingBlob {
+  height: 100%;
+  width: 100%;
+
+  background-color: #EFBF43;
 }

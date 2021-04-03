@@ -1,10 +1,13 @@
 import React from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import moment from "moment";
 
 
-function Calendar() {
+function Calendar(props) {
+  /* 해당 유저의 전체 meeting Schedule 불러오기 */
+
+  
 
   /* 캘린더 본문의 요일 부분 */  
 
@@ -23,7 +26,7 @@ function Calendar() {
         }
       }
       return (
-        <div className={className()}>
+        <div className={className()} key={index}>
           { day }
         </div>
       )
@@ -53,25 +56,70 @@ function Calendar() {
     return _days;
   };
   
+  /* 각 날짜에 해당하는 미팅 데이터 불러와 div 생성하기 */
+  
+  // STEP 1. 우선 store에서 전체 meetingData를 불러온다.
+  // STEP 2. 각 day 컴포넌트를 불러올 때, meetingData를 순회하며 일치하는 데이터가 있나 확인한다.
+  // STEP 3. 일치하는 경우에만 "약속있음"을 불러온다.
+
+  const meetingData = useSelector((state) => state)
+  const meetings = meetingData.meetingData.meeting
+  console.info("미팅데이터", meetings)
+
+  const toMeeting = (meetingId) => {
+    console.info("event로 받아온", meetingId);
+    window.location.href="/meeting/"+`${meetingId}`;
+  };
+
   const mapArrayToDate = (Date) => {
     return Date.map((date, index) => {
+      /* day 표기 class 설정 part */
       const className = () => {
         let className = "calBodyContentCell";
         if (date.isSame(curDate, 'month') === false) {
           return className + " outdate"
         } else {
-          if ((index % 7) === 0) {
-            return className + " date-sun"
-          } else if ((index % 7) === 6) {
-            return className + " date-sat"
+          if (date.isSame(moment(), 'day')) {
+            return className + " date-today"
           } else {
-            return className + " date-weekday"
+            if ((index % 7) === 0) {
+              return className + " date-sun"
+            } else if ((index % 7) === 6) {
+              return className + " date-sat"
+            } else {
+              return className + " date-weekday"
+            }
           }
         }
       }
+      /* meeting data 표기 설정 part */
+      const meeting = (date) => {
+        for (let i = 0; i < meetings.length; i ++) {
+          const meetingDate = moment(meetings[i].meetDate).clone()
+          const meetingId = meetings[i].id
+          if (date.isSame(meetingDate, 'day')) {
+            const className = () => {
+              let className = "meetingBlob";
+              if (meetings[i].completed) {
+                return className + " meetingCompletedBlob"
+              } else {
+                return className + " meetingUncompletedBlob"
+              }
+            }
+            return (
+              <div 
+                className={className()}
+                onClick={(e) => {e.preventDefault(); toMeeting(meetingId);}}
+              >
+              </div>
+            )
+          }
+        }}      
       return (
-        <div className={className()}>
+        <div className={className()} key={index}>
           { date.format('D') }
+          { meeting(date) }
+          { meeting(date) }
         </div>
       )
     })

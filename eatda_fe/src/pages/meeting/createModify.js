@@ -3,6 +3,8 @@ import moment from "moment";
 import { Form, Input, Button, DatePicker, Space } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
+import RecommendationModal from "components/meeting/recommendationModal";
+
 // const layout = {
 //     labelCol: { span: 8 },
 //     wrapperCol: { span: 16 },
@@ -37,8 +39,17 @@ function CreateModify(props) {
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingLocation, setMeetingLocation] = useState([]);
   const [meetingFriends, setMeetingFriends] = useState([]);
+
+  // 나의 위치정보
+  const [myLatitude, setMyLatitude] = useState(37.571075);
+  const [myLongitude, setMyLongitude] = useState(127.013588);
+
   // 지도 검색 키워드
   const [locationKeyword, setLocationKeyword] = useState("");
+
+  // 지도 검색해서 가져올 정보들 
+  const [ location, setLocation ] = useState("")
+  const [ meetingArea, setMeetingArea ] = useState([])
 
   const { meetingId } = props.match.params;
   // 리액트에서 폼 세팅
@@ -138,6 +149,20 @@ function CreateModify(props) {
     );
   }
 
+  // 추천 모달
+  function recommendationModalItem() {
+    // console.info("모달을 열어볼게요")
+    return (
+      <div>
+        <RecommendationModal 
+          setLocationKeyword={setLocationKeyword}
+          meetingArea={meetingArea}
+          setLocation={setLocation} 
+        />
+      </div>
+    );
+  }
+
   function friendModalItem() {
     return (
       <div className="meetingFriendContent">
@@ -174,6 +199,53 @@ function CreateModify(props) {
       let infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
       // 장소 검색 객체
+  //     let ps = new kakao.maps.services.Places();
+  //     ps.keywordSearch(locationKeyword, (data, status, pagination) => {
+  //       if (status === kakao.maps.services.Status.OK) {
+  //         let bounds = new kakao.maps.LatLngBounds();
+
+  //         for (let i = 0; i < data.length; i++) {
+  //           let marker = new kakao.maps.Marker({
+  //             map: map,
+  //             position: new kakao.maps.LatLng(data[i].y, data[i].x),
+  //           });
+
+  //           // 마커에 이벤트 등록
+  //           kakao.maps.event.addListener(marker, "click", function () {
+  //             infowindow.setContent(
+  //               `<div style="display:flex; width:max-content; padding:10px;"><a href=${data[i].place_url} target="_blank" style="margin-right:10px">${data[i].place_name}</a><Button class="locationAddButton" data-store-name="${data[i].place_name}" data-store-address="${data[i].road_address_name}" data-store-latitude=${data[i].y} data-store-longitude=${data[i].x}>추가</Button></div>`
+  //             );
+  //             document
+  //               .querySelectorAll(".locationAddButton")
+  //               .forEach((element) => {
+  //                 console.log(element);
+  //                 element.addEventListener("click", function (event) {
+  //                   console.log(element.dataset.storeName);
+  //                   console.log(element.dataset.storeAddress);
+  //                   console.log(element.dataset.storeLatitude);
+  //                   console.log(element.dataset.storeLongitude);
+  //                   meetingLocation.push({
+  //                     storeName: element.dataset.storeName,
+  //                     storeAddress: element.dataset.storeAddress,
+  //                     storeLatitude: element.dataset.storeLatitude,
+  //                     storeLongitude: element.dataset.storeLongitude,
+  //                   });
+  //                   setMeetingLocation(meetingLocation)
+  //                 });
+  //               });
+  //             console.log(data[i]);
+  //             infowindow.open(map, marker);
+  //           });
+
+  //           //   console.log(data[i])
+  //           //   console.log(meetingLocation)
+  //           bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+  //         }
+  //         map.setBounds(bounds);
+  //       }
+  //     });
+  //   }
+  // }, [modalVisible, locationKeyword]);
       let ps = new kakao.maps.services.Places();
       ps.keywordSearch(locationKeyword, (data, status, pagination) => {
         if (status === kakao.maps.services.Status.OK) {
@@ -195,24 +267,43 @@ function CreateModify(props) {
                 .forEach((element) => {
                   console.log(element);
                   element.addEventListener("click", function (event) {
+                    const temp = []
                     console.log(element.dataset.storeName);
                     console.log(element.dataset.storeAddress);
                     console.log(element.dataset.storeLatitude);
                     console.log(element.dataset.storeLongitude);
-                    meetingLocation.push({
+                    temp.push({
                       storeName: element.dataset.storeName,
                       storeAddress: element.dataset.storeAddress,
                       storeLatitude: element.dataset.storeLatitude,
                       storeLongitude: element.dataset.storeLongitude,
                     });
+<<<<<<< eatda_fe/src/pages/meeting/createModify.js
+                    console.info("선택된 장소", temp)
+                    // setLocation(location.concat(temp));
+                    if (meetingArea.length === 0) {
+                      setMeetingArea(temp);
+                      console.info("약속장소 설정1", meetingArea);
+                      // setMeetingArea(meetingArea.concat(temp));
+                    } else {
+                      console.info("약속장소가 0이어야되는데", meetingArea.length)
+                      console.info("약속가게로 넘어갈게요")
+                    };
+                    console.info("약속장소 설정2", meetingArea);
+                    // setMeetingLocation(meetingLocation.concat(temp))
+=======
                     setMeetingLocation(meetingLocation);
                     // 모달 끄기
                     setModalVisible(false);
+>>>>>>> eatda_fe/src/pages/meeting/createModify.js
                   });
+                  console.info("약속장소 설정3", meetingArea);
                 });
-              console.log(data[i]);
-              infowindow.open(map, marker);
-            });
+                console.info("약속장소 설정4", meetingArea);
+                console.log(data[i]);
+                infowindow.open(map, marker);
+              });
+              console.info("약속장소 설정5", meetingArea);
 
             //   console.log(data[i])
             //   console.log(meetingLocation)
@@ -236,6 +327,9 @@ function CreateModify(props) {
       setModalTitle("어디서 먹을까?");
       setModalContent(locationModalItem);
       // 친구 모달
+    } else if (modalType === "recommendation") {
+      setModalTitle("추천받자!");
+      setModalContent(recommendationModalItem);
     } else if (modalType === "friend") {
       setModalTitle("누구랑 먹을까?");
       setModalContent(friendModalItem);
@@ -389,6 +483,11 @@ function CreateModify(props) {
               placeholder="약속 장소를 정해주세요"
               onClick={(e) => showModal(e, "location")}
             />
+            <Button
+              onClick={(e) => showModal(e, "recommendation")}
+            >
+              추천받기
+            </Button>
           </Form.Item>
           {/* 장소 목록   */}
           <Form.Item className="meetingLocationsListBox">
