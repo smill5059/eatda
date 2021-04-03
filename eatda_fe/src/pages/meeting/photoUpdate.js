@@ -12,34 +12,33 @@ function PhotoUploader() {
   };
   
   // 업로드할 사진 보내기 
-  const [ updatedUrls, setUpdatedUrls ] = useState([]);
+  // const [ updatedUrls, setUpdatedUrls ] = useState([]);
   const deletedUrls = [];
   
   const savePhoto = () => {
     for (let i = 0; i < photoToAddList.length; i++) {
-      fetch(`${process.env.REACT_APP_API_URL}/updatePhoto`, {
+      fetch(`${process.env.REACT_APP_API_URL}/review/img/6064065b2802a2267bbe0e90`, {
         method: "POST",
         body: {
-          file: photoToAddList[i].file,
+          updatedFile: photoToAddList[i].file,
         }
       })
       .then((res) => res.json())
       .then((res) => {
         console.log(res)
-        console.log(res.url)
-        setUpdatedUrls(updatedUrls.concat(res.url))
+        // console.log(res.url)
+        // setUpdatedUrls(updatedUrls.concat(res.url))
       })
     }    
-    console.log("추가할 파일", updatedUrls)
+    // console.log("추가할 파일", updatedUrls)
 
     fetch(`${process.env.REACT_APP_API_URL}/review/img/6064065b2802a2267bbe0e90`, {
-      method: "PUT",
+      method: "DELETE",
       // headers: {
       //   // 'Content-Type': 'application/json'
       //   // 'Content-Type': 'multipart/form-data'
       // },
       body: {
-        updatedUrls: updatedUrls,
         deletedUrls: deletedUrls,
       }
     }).then((res) => {

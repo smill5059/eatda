@@ -25,13 +25,16 @@ function CreateModify(props) {
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingLocation, setMeetingLocation] = useState([]);
   const [meetingFriends, setMeetingFriends] = useState([]);
-  
-  
+
   // 나의 위치정보
   const [myLatitude, setMyLatitude] = useState(37.571075);
   const [myLongitude, setMyLongitude] = useState(127.013588);
   // 지도 검색 키워드
   const [locationKeyword, setLocationKeyword] = useState("");
+
+  // 지도 검색해서 가져올 정보들 
+  const [ location, setLocation ] = useState("")
+  const [ meetingArea, setMeetingArea ] = useState([])
 
   const { meetingId } = props.match.params;
   // 리액트에서 폼 세팅
@@ -112,7 +115,11 @@ function CreateModify(props) {
     // console.info("모달을 열어볼게요")
     return (
       <div>
-        <RecommendationModal />
+        <RecommendationModal 
+          setLocationKeyword={setLocationKeyword}
+          meetingArea={meetingArea}
+          setLocation={setLocation} 
+        />
       </div>
     );
   }
@@ -241,12 +248,26 @@ function CreateModify(props) {
                       storeLatitude: element.dataset.storeLatitude,
                       storeLongitude: element.dataset.storeLongitude,
                     });
-                    setMeetingLocation(meetingLocation.concat(temp))
+                    console.info("선택된 장소", temp)
+                    // setLocation(location.concat(temp));
+                    if (meetingArea.length === 0) {
+                      setMeetingArea(temp);
+                      console.info("약속장소 설정1", meetingArea);
+                      // setMeetingArea(meetingArea.concat(temp));
+                    } else {
+                      console.info("약속장소가 0이어야되는데", meetingArea.length)
+                      console.info("약속가게로 넘어갈게요")
+                    };
+                    console.info("약속장소 설정2", meetingArea);
+                    // setMeetingLocation(meetingLocation.concat(temp))
                   });
+                  console.info("약속장소 설정3", meetingArea);
                 });
-              console.log(data[i]);
-              infowindow.open(map, marker);
-            });
+                console.info("약속장소 설정4", meetingArea);
+                console.log(data[i]);
+                infowindow.open(map, marker);
+              });
+              console.info("약속장소 설정5", meetingArea);
 
             //   console.log(data[i])
             //   console.log(meetingLocation)
