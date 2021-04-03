@@ -1,11 +1,9 @@
-import React, { Component, useState, useEffect } from "react";
-
+import React from "react";
 
 import Header from '../../components/calendar/calHeader';
 import Body from '../../components/calendar/calBody';
 
 function Calendar() {
-  
   return (
     <div className="calWrapper">
       <Header />
