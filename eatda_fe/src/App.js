@@ -1,20 +1,21 @@
 import React from "react";
-import { Route, BrowserRouter, Switch, } from "react-router-dom";
-import Layout from './pages/layout/layout';
-import Main from './pages/main/main';
-import Login from './pages/main/login';
-import Profile from './pages/account/profile';
+import { Route, BrowserRouter, Switch } from "react-router-dom";
+import Layout from "./pages/layout/layout";
+import Main from "./pages/main/main";
+import Login from "./pages/main/login";
+import Profile from "./pages/account/profile";
 // 약속 생성
-import CreateModify from './pages/meeting/createModify';
+import CreateModify from "./pages/meeting/createModify";
 // 약속 보기
-import MeetingRead from './pages/meeting/read'
+import MeetingRead from "./pages/meeting/read";
 // 약속 수정 및 기록 남기기
-import PhotoUpdate from './pages/meeting/photoUpdate';
+import PhotoUpdate from "./pages/meeting/photoUpdate";
+// 후기 작성 및 수정
+import MemoUpdate from "./pages/meeting/memoUpdate";
 
+import Navbar from "components/bar/navbar";
 
-import Navbar from 'components/bar/navbar';
-
-import './App.css';
+import "./App.css";
 
 const { Kakao } = window;
 
@@ -31,15 +32,24 @@ function App() {
             <Route exact path="/" component={Main} />
             <Route path="/login" component={Login} />
             <Route path="/profile" component={Profile} />
-            <Route path="/createMeeting" component={CreateModify}/>
-            <Route exact path="/updateMeeting/:meetingId" component={CreateModify}/>
-            <Route path="/updateMeeting/:meetingId/photoUpdate" component={PhotoUpdate}/>
-            <Route path="/meeting/:meetingId" component={MeetingRead}/>
+            <Route path="/createMeeting" component={CreateModify} />
+            <Route
+              exact
+              path="/updateMeeting/:meetingId"
+              component={CreateModify}
+            />
+            <Route
+              path="/updateMeeting/:meetingId/photoUpdate"
+              component={PhotoUpdate}
+            />
+            <Route
+              path="/updateMeeting/:meetingId/memoUpdate"
+              component={MemoUpdate}
+            />
+            <Route path="/meeting/:meetingId" component={MeetingRead} />
           </Switch>
         </div>
-        <div className="Footer">
-          
-        </div>
+        <div className="Footer"></div>
       </div>
     </BrowserRouter>
   );
