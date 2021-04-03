@@ -2,26 +2,47 @@ import React, { useEffect, useState } from "react";
 import { Button, Row, Col } from "antd";
 
 function MeetingInfo(props) {
-  const [data, setData] = useState("");
+  const [info, setInfo] = useState(props.info);
   useEffect(() => {
-    setData(props.data)
+    setInfo(props.info)
     // 지도 로딩
     const { kakao } = window;
     if (document.querySelector(".meetingReadMap") !== null) {
       new kakao.maps.Map(document.querySelector(".meetingReadMap"), {
-        center: new kakao.maps.LatLng(props.data.stores[0].storeLatitude, props.data.stores[0].storeLongitude), //지도의 중심좌표.
+        center: new kakao.maps.LatLng(props.info.stores[0].storeLatitude, props.info.stores[0].storeLongitude), //지도의 중심좌표.
         level: 3, //지도의 레벨(확대, 축소 정도)
       });
     }
   }, []);
+
+  const Complete = (event) => {
+    event.preventDefault();
+    fetch(`${process.env.REACT_APP_API_URL}/meeting/` + info.id, {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+        // 디니디니
+        'token': `토큰토큰`
+      }
+    })
+      .then(res => {
+        if (res.status === 200) {
+          window.location.href = '/meeting/' + info.id;
+        }
+        else {
+          alert("외않데,,,?");
+        }
+      })
+  }
+
   return (
     <div className="contentBody meetingReadContent">
       <Row justify="end" className="meetingReadTitle">
-        <p>{data.title}</p>
+        <p>{info.title}</p>
       </Row>
       <Col className="meetingReadMap"></Col>
       <Col className="meetingReadStore">
-        {data.stores.map((store, i) => {
+        {info.stores.map((store, i) => {
           return (<StoreName name={store.storeName}
             key={i} />);
         })}
@@ -29,7 +50,7 @@ function MeetingInfo(props) {
       <Col className="meetingReadFriend">
         <p>만나는 사람</p>
         <div className="meetingReadFriendList">
-          {data.participants.map((friend, i) => {
+          {info.participants.map((friend, i) => {
             return (<Friends name={friend.userName}
               imgUrl={friend.userProfileUrl}
               key={i} />);
@@ -37,7 +58,7 @@ function MeetingInfo(props) {
         </div>
       </Col>
       <Row className="meetingReadDone" justify="end">
-        <Button className="meetingReadDoneButton">만났어요</Button>
+        <Button className="meetingReadDoneButton" type="submit" onClick={Complete}>만났어요</Button>
       </Row>
     </div>
   );

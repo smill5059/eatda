@@ -2,19 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Col } from 'antd';
 
 function MeetingReview(props) {
-  const data = props.data
-  const [comments, setComments] = useState("")
-  useEffect(() => {
-    // setData(props.data)
-    // // 지도 로딩
-    // const { kakao } = window;
-    // if (document.querySelector(".meetingReadMap") !== null) {
-    //   new kakao.maps.Map(document.querySelector(".meetingReadMap"), {
-    //     center: new kakao.maps.LatLng(props.data.stores[0].storeLatitude, props.data.stores[0].storeLongitude), //지도의 중심좌표.
-    //     level: 3, //지도의 레벨(확대, 축소 정도)
-    //   });
-    // }
-  }, []);
+  const [data, setData] = useState(props.info)
   return (
     <div className="contentBody meetingReadAfterContent">
       <Row justify="end" className="meetingReadTitle">
@@ -25,8 +13,9 @@ function MeetingReview(props) {
           data.imgs.length > 0
             ? (data.imgs.map((img, i) => {
               return (<Img imgUrl={img}
-                key={i} />);
+                key={i} />)
             }))
+            // 디니디니
             : (<img src="http://sokcho35.cafe24.com/web/product/big/201511/301_shop1_961560.jpg" />)
         }
       </Col>
@@ -38,11 +27,14 @@ function MeetingReview(props) {
         })}
       </Col>
       <Col className="meetingReadAfterComment">
-        {data.participants.map((friend, i) => {
-          return (<Friends name={friend.userName}
-            imgUrl={friend.userProfileUrl}
-            key={i} />);
-        })}
+        <Row className="meetingReadAfterCommentItem">
+          <Col span={24} className="meetingReadAfterCommentName">
+            디니디니
+          </Col>
+          <Col span={24} className="meetingReadAfterCommentContent">
+            {props.comment}
+          </Col>
+        </Row>
       </Col>
     </div>
   );
