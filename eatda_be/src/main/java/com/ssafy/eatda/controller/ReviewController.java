@@ -62,7 +62,7 @@ public class ReviewController {
       @RequestParam(value = "file", required = false) MultipartFile updatedFile,
       HttpServletRequest req) {
     String result = reviewSvc.uploadImg(meetingId, updatedFile);
-    if (result == "FAIL")
+    if (result != "SUCCESS")
       return new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);
     return new ResponseEntity<String>(result, HttpStatus.OK);
   }
