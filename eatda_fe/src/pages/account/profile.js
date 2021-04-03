@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Image, Card, Modal, Menu, Dropdown, Button, message, Input } from 'antd';
 import { ExclamationCircleOutlined, PlusSquareOutlined } from '@ant-design/icons';
@@ -9,6 +9,8 @@ import * as settingUser from 'store/modules/userData'
 const SERVER_URL = process.env.REACT_APP_API_URL;
 
 function Profile() {
+  const dispatch = useDispatch()
+
   // 검색 input
   const { Search } = Input;
 
@@ -74,7 +76,7 @@ function Profile() {
     })
       .then(res => {
         console.log(res.data)
-        settingUser.addFriend(res.data)
+        dispatch(settingUser.addFriend(res.data))
       })
       .catch(err => console.log(err))
     setTimeout(() => {
@@ -103,16 +105,10 @@ function Profile() {
     </Card.Grid>
   )
 
-  const test = () => {
-    settingUser.test(1)
-    console.log(user.testNums)
-  }
-
   return (
     <div className="contentWrapper">
       <div className="contentTitle">
         내 정보
-        <div className="" onClick={test}>테스트</div>
       </div>
       <div className="profileBody">
         <div className="profileBox">

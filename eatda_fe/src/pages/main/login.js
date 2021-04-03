@@ -12,7 +12,7 @@ function Login() {
   const history = useHistory()
 
   const user = useSelector(state => state.userData)
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   // const setUser = useCallback(
   //   () => dispatch()

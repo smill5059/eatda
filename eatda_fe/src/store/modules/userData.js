@@ -8,14 +8,12 @@ const TEST = 'userData/TEST';
 
 export const setUser = createAction(SET_USER, data => ({username: data.name, usercode: data.code, friends: data.friends}));
 export const addFriend = createAction(ADD_FRIEND, data => data)
-export const test = createAction(TEST, data => data)
 
 const user = {
   username: '',
   usercode: 0,
   profileUrl: profileUrl,
-  friendList: [],
-  testNums: [2]
+  friendList: []
 }
 
 // Object.assign(state.friendList, )
@@ -26,8 +24,7 @@ const userData = handleActions(
       ...state,
       username: action.payload.username,
       usercode: action.payload.usercode,
-      friendList: action.payload.friends,
-      testNums: []
+      friendList: action.payload.friends
       // friendList: action.payload.friends.map(function(friend) {
       //   let obj = {};
       //   obj[]
@@ -35,11 +32,7 @@ const userData = handleActions(
     }),
     [ADD_FRIEND]: (state, action) => ({
       ...state,
-      friendList: state.friendList.push(action.payload)
-    }),
-    [TEST]: (state, action) => ({
-      ...state,
-      testNums: state.testNums.concat(action.payload)
+      friendList: state.friendList.concat(action.payload)
     })
   },
   user
