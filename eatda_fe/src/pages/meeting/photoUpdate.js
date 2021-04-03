@@ -121,7 +121,7 @@ function PhotoUploader() {
           <input 
             type="file" 
             accept="image/jpg, image/jpeg, image/png" 
-            multiple 
+            multiple="multiple"
             ref={photoInput}
             onChange={(e) => handlePhoto(e)}
             style={{display: 'none'}} 

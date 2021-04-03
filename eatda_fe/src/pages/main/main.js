@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Button } from 'antd';
+import { PlusCircleFilled } from '@ant-design/icons';
 
 import Calendar from '../../components/main/calendar';
 import Timeline from '../../components/main/timeline';
@@ -24,31 +25,29 @@ function Main() {
   const [ data, setData ] = useState({});
   
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/main/timeline`, {
+    fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
       headers : {
-        'token': localStorage.getItem('Kakao_token'),
+        // 'token': localStorage.getItem('Kakao_token'),
+        'token': "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw",
         // 'Content-Type': 'application/json',
       }
     })
     .then((res) => res.json())
     .then((res) => {
-      console.log("타임라인 데이터가 받아져야되는데", res)
-    })
-    .then((response) => {
-      console.log("불러온 전체 미팅", response)
-      setData(response)
+      setData(res)
+      console.info("미팅데이터 불러오기", res)
     })
   },[]);
 
-
   const setMeetingData = useCallback((data) => {
-    console.info("이게 안뜨는거같은데요?")
-    dispatch(actions.meetingData("있었습니다"));
+    dispatch(actions.meetingData(data));
   }, [dispatch])
 
   setMeetingData(data)
-  console.log("데이터 보냈다")
 
+  const toMeetingCreate = () => {
+   window.location.href="/createMeeting"
+  }
 
   return (
     <div className="contentWrapper">
@@ -76,7 +75,11 @@ function Main() {
           </Button>
         </div>
         <div className="mainComponentWrapper">
-           { viewCalendar ? <Calendar/> : <Timeline/> }
+          { viewCalendar ? <Calendar/> : <Timeline/> }
+          <PlusCircleFilled 
+            className="mainMeetingCreateBtn"
+            onClick={toMeetingCreate} 
+          />
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ const MEETING_DATA = "meetingData/MEETING_DATA";
 export const meetingData = createAction(MEETING_DATA, data => ({data: data}));
 
 const initialState = {
-  meeting: "없었는데요",
+  meeting: {},
 }
 
 export default handleActions(

@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import moment from "moment";
 
@@ -26,7 +26,7 @@ function Calendar(props) {
         }
       }
       return (
-        <div className={className()}>
+        <div className={className()} key={index}>
           { day }
         </div>
       )
@@ -66,6 +66,10 @@ function Calendar(props) {
   const meetings = meetingData.meetingData.meeting
   console.info("미팅데이터", meetings)
 
+  const toMeeting = (meetingId) => {
+    console.info("event로 받아온", meetingId);
+    window.location.href="/meeting/"+`${meetingId}`;
+  };
 
   const mapArrayToDate = (Date) => {
     return Date.map((date, index) => {
@@ -75,29 +79,47 @@ function Calendar(props) {
         if (date.isSame(curDate, 'month') === false) {
           return className + " outdate"
         } else {
-          if ((index % 7) === 0) {
-            return className + " date-sun"
-          } else if ((index % 7) === 6) {
-            return className + " date-sat"
+          if (date.isSame(moment(), 'day')) {
+            return className + " date-today"
           } else {
-            return className + " date-weekday"
+            if ((index % 7) === 0) {
+              return className + " date-sun"
+            } else if ((index % 7) === 6) {
+              return className + " date-sat"
+            } else {
+              return className + " date-weekday"
+            }
           }
         }
       }
       /* meeting data 표기 설정 part */
-      const meeting = () => {
-        // for (let i )
-        if (date) {
-          return (
-            <div>
-              약속있음
-            </div>
-          )}
-      }
+      const meeting = (date) => {
+        for (let i = 0; i < meetings.length; i ++) {
+          const meetingDate = moment(meetings[i].meetDate).clone()
+          const meetingId = meetings[i].id
+          if (date.isSame(meetingDate, 'day')) {
+            const className = () => {
+              let className = "meetingBlob";
+              if (meetings[i].completed) {
+                return className + " meetingCompletedBlob"
+              } else {
+                return className + " meetingUncompletedBlob"
+              }
+            }
+            return (
+              <div 
+                className={className()}
+                onClick={(e) => {e.preventDefault(); toMeeting(meetingId);}}
+              >
+              </div>
+            )
+          }
+        }}      
       return (
-        <div className={className()}>
+        <div className={className()} key={index}>
           { date.format('D') }
-          { meeting() }
+          { meeting(date) }
+          { meeting(date) }
         </div>
       )
     })
