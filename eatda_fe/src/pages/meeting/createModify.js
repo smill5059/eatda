@@ -306,7 +306,11 @@ function CreateModify(props) {
       body: JSON.stringify(dataset),
     })
       .then((res) => res.json())
-      .then((response) => console.log(response));
+      .then((response) => {
+        console.log("무야호!");
+        console.log(response.id);
+        window.location.href = `/meeting/${response.id}`;
+      });
 
     // console.log("CREATE!");
   }
