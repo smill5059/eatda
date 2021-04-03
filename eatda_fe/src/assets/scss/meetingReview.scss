@@ -35,43 +35,43 @@
   .meetingReadAfterFriend {
     grid-row: 3 / 4;
     padding: 2%;
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
     overflow: auto;
     white-space: nowrap;
-    .meetingReadAfterFriendItem{
-        display:inline-flex;
-        margin-right:3%;
-        width:35%;
-        height:100%;
-        border: 2px solid #cccccc;
-        border-radius: 10px;
-        .meetingReadAfterFriendImage{
-            img{
-                width:100%;
-                height:100%;
-            }
+    .meetingReadAfterFriendItem {
+      display: inline-flex;
+      margin-right: 3%;
+      width: 35%;
+      height: 100%;
+      border: 2px solid #cccccc;
+      border-radius: 10px;
+      .meetingReadAfterFriendImage {
+        img {
+          width: 100%;
+          height: 100%;
         }
-        .meetingReadAfterFriendName{
-            height:100%;
-            padding-top:10%;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            text-align: center;
-        }
+      }
+      .meetingReadAfterFriendName {
+        height: 100%;
+        padding-top: 10%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        text-align: center;
+      }
     }
   }
   .meetingReadAfterComment {
     grid-row: 4 / 5;
-    overflow:auto;
-    .meetingReadAfterCommentItem{
-        border-bottom:1px solid #717171; 
-        padding:1%;
-        overflow: auto;
-        .meetingReadAfterCommentName{
-            height:10%;
-        }
+    overflow: auto;
+    .meetingReadAfterCommentItem {
+      border-bottom: 1px solid #717171;
+      padding: 1%;
+      overflow: auto;
+      .meetingReadAfterCommentName {
+        height: 10%;
+      }
     }
   }
 }
@@ -146,4 +146,53 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+// 메모 관련 SCSS
+
+.memoContent {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr 4fr 4fr 1fr;
+  .memoTitle {
+    margin: auto;
+    width: 100%;
+    padding: 2%;
+    text-align: end;
+    grid-row: 1 / 2;
+  }
+  .memoCreate {
+    grid-row: 2 / 3;
+    padding: 2%;
+    .memoCreateInput {
+      border: 2px solid #efbf43;
+      height: 96%;
+    }
+  }
+  .starCreate {
+    // background-color: blue;
+    padding: 2%;
+    height: 96%;
+    border-top: 1px solid #cccccc;
+    grid-row: 3 / 4;
+    overflow: auto;
+    .starContent {
+      border: 1px solid #cccccc;
+      border-radius: 10px;
+      padding: 1%;
+      height: 45%;
+      margin-bottom: 2%;
+      .starStoreName {
+        margin: 0 1%;
+      }
+    }
+  }
+  .memoCreateButton {
+    grid-row: 4 / 5;
+    width: 100%;
+    height: 80%;
+    margin: auto;
+    border: 2px solid #efbf43;
+    background: none;
+  }
 }

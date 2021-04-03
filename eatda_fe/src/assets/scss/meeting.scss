@@ -119,10 +119,11 @@
 
 // 친구 검색 SCSS
 .meetingFriendContent{
+    height:100%;
     display:grid;
     grid-template-rows: 2fr 5fr 1fr;
     .meetingFriendModalList{
-        grid-row: 2 / 3;
+        grid-row: 1 / 3;
         border: 2px solid #717171;
         border-radius:10px;
     }
