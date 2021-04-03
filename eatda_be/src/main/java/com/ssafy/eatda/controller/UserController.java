@@ -98,11 +98,12 @@ public class UserController {
   @ApiOperation(value = "친구삭제", notes = "코드(seq)를 받아와서 친구추가(친구에게서도 삭제됨)", response = List.class)
   @DeleteMapping("/deletefriend")
   public ResponseEntity<List<Profile>> deleteFriend(
-      @ApiParam(value = "code(seq)", required = true) @RequestBody Integer code,
+      @ApiParam(value = "code(seq)", required = true) @RequestBody HashMap<String, Object> map,
       HttpServletRequest req) {
     logger.info("deleteFriend - 호출");
     String jwt = req.getHeader("token");
     int userSeq = jwtService.decode(jwt);
+    Integer code = (Integer) map.get("code");
     List<Profile> result = userService.deleteFriend(userSeq, code);
     if (result == null)
       return new ResponseEntity<List<Profile>>(result, HttpStatus.BAD_REQUEST);
