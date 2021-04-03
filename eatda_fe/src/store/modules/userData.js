@@ -6,7 +6,7 @@ import frdImg3 from 'assets/product/frdImg3.jpg'
 
 const SET_USER = 'userData/SET_USER';
 
-export const setUser = createAction(SET_USER, data => ({ username: data.name, usercode: data.code, friends: data.friends }));
+export const setUser = createAction(SET_USER, data => ({username: data.name, usercode: data.code, friends: data.friends}));
 
 const user = {
   username: '',
