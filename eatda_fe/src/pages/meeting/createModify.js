@@ -15,13 +15,16 @@ function CreateModify(props) {
   const [modalContent, setModalContent] = useState(null);
   // 정보 관리 상태
   // 회원 정보
+  // const [userToken, setUserToken] = useState(
+  //   localStorage.getItem("Kakao_token")
+  //     ? localStorage.getItem("Kakao_token")
+  //     : ""
+  // );
   const [userToken, setUserToken] = useState(
-    localStorage.getItem("Kakao_token")
-      ? localStorage.getItem("Kakao_token")
-      : ""
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3MzQ5ODAxLCJzZXEiOjE2NjQwMzg3MTB9.MDMuYXPF16aeQnCwhiwm2n0hRr2bbNbt4H4bFNRFwYY"
   );
   const [myFriends, setMyFriends] = useState([]);
-  const [myId, setMyId] = useState('')
+  const [myId, setMyId] = useState("");
   // 나의 위치정보
   const [myLatitude, setMyLatitude] = useState(37.571075);
   const [myLongitude, setMyLongitude] = useState(127.013588);
@@ -50,14 +53,17 @@ function CreateModify(props) {
     // + 약속 사람에 본인 세팅
     fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
       headers: {
-        token: userToken,
+        token:
+          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw",
       },
     })
       .then((res) => res.json())
       .then((result) => {
         //   console.log(result)
-          setMyFriends(result.friends)
-          setMyId(result.id)
+        setMyFriends(result.friends);
+        setMyId(result.id);
+        console.log("dlafj;sdflkjasdl;f");
+        console.log(result.friends);
         //   meetingFriends.push(result.id)
         //   console.log(meetingFriends)
         //   setMeetingFriends(meetingFriends)
@@ -78,16 +84,17 @@ function CreateModify(props) {
       setPageTitle("약속 만들기");
       setMeetingButtonText("약속 생성하기");
     } else {
-        console.log(meetingId)
+      console.log(meetingId);
       // meetingId가 있으므로 수정
       setPageTitle("약속 수정하기");
       setMeetingButtonText("약속 수정하기");
       // 통신하여 약속정보 가져오기
-      fetch(`${process.env.REACT_APP_API_URL}/meeting/${meetingId}`).then(
-        (res) => {
+      fetch(`${process.env.REACT_APP_API_URL}/meeting/${meetingId}`)
+        .then((res) => {
           res.json().then((response) => {
             console.log(response);
             console.log(response.id);
+            setMeetingTitle(response.title);
             console.log(new Date());
             console.log(response.meetDate);
             let meetDate = new Date(response.meetDate);
@@ -101,8 +108,8 @@ function CreateModify(props) {
               meetingTime: moment(meetDate),
             });
           });
-        }
-      ).catch((err)=>console.log(err));
+        })
+        .catch((err) => console.log(err));
     }
   }, []);
 
@@ -129,10 +136,6 @@ function CreateModify(props) {
         <div className="meetingLocationMap"></div>
       </div>
     );
-  }
-
-  function findFriends(e) {
-    console.log(e.target.value);
   }
 
   function friendModalItem() {
@@ -298,7 +301,7 @@ function CreateModify(props) {
       method: dataMethod,
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(dataset),
     })
