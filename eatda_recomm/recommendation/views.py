@@ -184,11 +184,11 @@ def sim_pearson(data, name1, name2):
 
 # 함수 1 : 유사도 자동 업데이트 함수     
 def Similarity():
-    schedule.every().day.at("05:00").do(update)
+    # schedule.every().day.at("05:00").do(update)
 
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
 
     return "유사도 업데이트도 됩니다!"
 
