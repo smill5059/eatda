@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input, Button } from "antd";
+import { Input, Button, Rate } from "antd";
 import moment from "moment";
 
 function MemoUpdate(props) {
@@ -119,14 +119,36 @@ function MemoUpdate(props) {
           </div>
           <div className="starCreate">
             {meetingStores.map((store, index) => {
+              console.log(store);
               return (
                 <div className="starContent" key={index}>
                   <p className="starStoreName">{store.storeName}</p>
-                  <div className="startStoreStar"></div>
+                  <Rate
+                    className="starRating"
+                    allowHalf
+                    onChange={(value) => console.log(value)}
+                  />
                 </div>
               );
             })}
-            <div className="starContent">테스트</div>
+
+            <div className="starContent">
+              <p className="starStoreName">sadjflkasdflk</p>
+              <Rate
+                className="starRating"
+                allowHalf
+                onChange={(value) => console.log(value)}
+              />
+            </div>
+            <div className="starContent">
+              <p className="starStoreName">sadjflkasdflk</p>
+              <Rate
+                className="starRating"
+                allowHalf
+                onChange={(value) => console.log(value)}
+              />
+            </div>
+
             <div className="starContent">테스트</div>
           </div>
           <Button className="memoCreateButton" onClick={() => createMemo()}>
