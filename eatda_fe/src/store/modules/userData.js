@@ -1,31 +1,19 @@
 import { createAction, handleActions } from 'redux-actions'
 import profileUrl from 'assets/product/profileImg.jpg'
-import frdImg1 from 'assets/product/frdImg1.jpg'
-import frdImg2 from 'assets/product/frdImg2.jpg'
-import frdImg3 from 'assets/product/frdImg3.jpg'
 
 const SET_USER = 'userData/SET_USER';
+const ADD_FRIEND = 'userData/ADD_FRIEND';
+const DELETE_FRIEND = 'userData/DELETE_FRIEND'
 
 export const setUser = createAction(SET_USER, data => ({username: data.name, usercode: data.code, friends: data.friends}));
+export const addFriend = createAction(ADD_FRIEND, data => data);
+export const deleteFriend = createAction(DELETE_FRIEND, data => data);
 
 const user = {
   username: '',
   usercode: 0,
   profileUrl: profileUrl,
-  friendList: [
-    {
-      name: '산딸기',
-      profileImg: frdImg1
-    },
-    {
-      name: '오렌지',
-      profileImg: frdImg2
-    },
-    {
-      name: '청포도',
-      profileImg: frdImg3
-    },
-  ]
+  friendList: []
 }
 
 const userData = handleActions(
@@ -35,11 +23,15 @@ const userData = handleActions(
       username: action.payload.username,
       usercode: action.payload.usercode,
       friendList: action.payload.friends
-      // friendList: action.payload.friends.map(function(friend) {
-      //   let obj = {};
-      //   obj[]
-      // })
-    })
+    }),
+    [ADD_FRIEND]: (state, action) => ({
+      ...state,
+      friendList: state.friendList.concat(action.payload)
+    }),
+    [DELETE_FRIEND]: (state, action) => ({
+      ...state,
+      friendList: action.payload
+    }),
   },
   user
 )
