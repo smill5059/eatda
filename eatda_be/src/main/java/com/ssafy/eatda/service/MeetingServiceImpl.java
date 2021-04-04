@@ -60,13 +60,12 @@ public class MeetingServiceImpl implements MeetingService {
   }
 
   @Override
-  public List<Store> recommend(List<Integer> reviewIds, float latitude, float longitude) {
+  public List<Store> recommend(RecommInfo recommInfo) {
     // MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     // body.put("reviewIds", reviewIds);
     // body.add("latitude", String.valueOf(latitude));
     // body.add("longitude", String.valueOf(longitude));
 
-    RecommInfo recommInfo = new RecommInfo(reviewIds, latitude, longitude);
     String body = new Gson().toJson(recommInfo);
     HttpHeaders header = new HttpHeaders();
     header.set("Contenet-type", MediaType.APPLICATION_JSON_VALUE);
