@@ -267,34 +267,34 @@ function CreateModify(props) {
                   console.info("이단계")
                   console.log(element);
                   element.addEventListener("click", function (event) {
-                    console.info("삼단계")
                     const temp = []
+                    console.info("삼단계")
                     console.log(element.dataset.storeName);
                     console.log(element.dataset.storeAddress);
                     console.log(element.dataset.storeLatitude);
                     console.log(element.dataset.storeLongitude);
                     temp.push({
-                      storeName: element.dataset.storeName,
-                      storeAddress: element.dataset.storeAddress,
-                      storeLatitude: element.dataset.storeLatitude,
-                      storeLongitude: element.dataset.storeLongitude,
+                      locationName: element.dataset.storeName,
+                      locationAddress: element.dataset.storeAddress,
+                      locationLatitude: element.dataset.storeLatitude,
+                      locationLongitude: element.dataset.storeLongitude,
                     });
                     console.info("선택된 장소", temp)
-                    // setLocation(location.concat(temp));
-                    if (meetingArea.length === 0) {
-                      setMeetingArea(temp);
-                      console.info("약속장소 설정1", meetingArea);
-                      // setMeetingArea(meetingArea.concat(temp));
-                    } else {
-                      console.info("약속장소가 0이어야되는데", meetingArea.length)
-                      console.info("약속가게로 넘어갈게요")
-                    };
-                    console.info("약속장소 설정2", meetingArea);
+                    setLocation(temp);
+                    console.info("약속장소 설정1", meetingArea);
                     // setMeetingLocation(meetingLocation.concat(temp))
-                    setMeetingLocation(meetingLocation);
+                    // setMeetingLocation(meetingLocation);
                     // 모달 끄기
-                    setModalVisible(false);
+                    // setModalVisible(false);
                   });
+                  // if (meetingArea.length === 0) {
+                  //   setMeetingArea(temp);
+                  //   console.info("약속장소 설정2", meetingArea);
+                  //   // setMeetingArea(meetingAre.concat(temp));
+                  // } else {
+                  //   console.info("약속장소가 0이어야되는데", meetingArea.length)
+                  //   console.info("약속가게로 넘어갈게요")
+                  // };
                   console.info("약속장소 설정3", meetingArea);
                 });
                 console.info("약속장소 설정4", meetingArea);
@@ -317,6 +317,20 @@ function CreateModify(props) {
       // 나의 친구목록 불러오기
     }
   }, [modalVisible, locationKeyword]);
+
+  // Location이 변화했을 때, 이걸 Area로 (가게 추천받을 지역으로) 보내줄지 아니면 storeLocation으로 보내줄지 결정
+  useEffect(() => {
+    console.info("유즈이펙트 발동!")
+    if (meetingArea.length === 0) {
+      setMeetingArea(location)
+      console.info("미팅에어리어도 바꿔줬다!")
+      console.info(meetingArea)
+      setModalContent(recommendationModalItem)
+    } else {
+      setMeetingLocation(location)
+    }
+  }, [location])
+
 
   function showModal(e, modalType) {
     e.preventDefault();
@@ -481,7 +495,7 @@ function CreateModify(props) {
               onClick={(e) => showModal(e, "location")}
             />
             <Button
-              onClick={(e) => showModal(e, "recommendation")}
+              onClick={(e) => {setMeetingArea([]); showModal(e, "recommendation");}}
             >
               추천받기
             </Button>
