@@ -5,11 +5,12 @@ const SET_USER = 'userData/SET_USER';
 const ADD_FRIEND = 'userData/ADD_FRIEND';
 const DELETE_FRIEND = 'userData/DELETE_FRIEND'
 
-export const setUser = createAction(SET_USER, data => ({username: data.name, usercode: data.code, friends: data.friends}));
+export const setUser = createAction(SET_USER, data => ({userid: data.id, username: data.name, usercode: data.code, friends: data.friends}));
 export const addFriend = createAction(ADD_FRIEND, data => data);
 export const deleteFriend = createAction(DELETE_FRIEND, data => data);
 
 const user = {
+  userId: '',
   username: '',
   usercode: 0,
   profileUrl: profileUrl,
@@ -20,6 +21,7 @@ const userData = handleActions(
   {
     [SET_USER]: (state, action) => ({
       ...state,
+      userId: action.payload.userid,
       username: action.payload.username,
       usercode: action.payload.usercode,
       friendList: action.payload.friends

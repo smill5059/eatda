@@ -28,8 +28,6 @@ function CreateModify(props) {
   const [userToken, setUserToken] = useState(
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3MzQ5ODAxLCJzZXEiOjE2NjQwMzg3MTB9.MDMuYXPF16aeQnCwhiwm2n0hRr2bbNbt4H4bFNRFwYY"
   );
-  const [myFriends, setMyFriends] = useState([]);
-  const [myId, setMyId] = useState("");
   // 나의 위치정보
   const [myLatitude, setMyLatitude] = useState(37.571075);
   const [myLongitude, setMyLongitude] = useState(127.013588);
@@ -41,7 +39,6 @@ function CreateModify(props) {
   const [meetingDate, setMeetingDate] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingLocation, setMeetingLocation] = useState([]);
-  const [meetingFriends, setMeetingFriends] = useState([]);
 
   // 지도 검색 키워드
   const [locationKeyword, setLocationKeyword] = useState("");
@@ -61,23 +58,23 @@ function CreateModify(props) {
     }
     // 회원정보를 바탕으로 친구 목록 가져오기
     // + 약속 사람에 본인 세팅
-    fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
-      headers: {
-        token:
-          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw",
-      },
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        //   console.log(result)
-        setMyFriends(result.friends);
-        setMyId(result.id);
-        console.log("dlafj;sdflkjasdl;f");
-        console.log(result.friends);
-        //   meetingFriends.push(result.id)
-        //   console.log(meetingFriends)
-        //   setMeetingFriends(meetingFriends)
-      });
+    // fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
+    //   headers: {
+    //     token:
+    //       "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw",
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     //   console.log(result)
+    //     setMyFriends(result.friends);
+    //     setMyId(result.id);
+    //     console.log("dlafj;sdflkjasdl;f");
+    //     console.log(result.friends);
+    //     //   meetingFriends.push(result.id)
+    //     //   console.log(meetingFriends)
+    //     //   setMeetingFriends(meetingFriends)
+    //   });
     // 현재 위치 세팅
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -111,7 +108,6 @@ function CreateModify(props) {
             setMeetingDate(moment(meetDate));
             setMeetingTime(moment(meetDate));
             setMeetingLocation(response.stores);
-            setMeetingFriends(response.participants);
             form.setFieldsValue({
               meetingName: response.title,
               meetingDate: moment(meetDate),
@@ -148,8 +144,24 @@ function CreateModify(props) {
     );
   }
 
+  
+  // 추천 모달
+  function recommendationModalItem() {
+    // console.info("모달을 열어볼게요")
+    return (
+      <div>
+        <RecommendationModal 
+          setLocationKeyword={setLocationKeyword}
+          meetingArea={meetingArea}
+          setLocation={setLocation} 
+          />
+      </div>
+    );
+  }
+  
   // 친구 선택
-  const friends = user.friendList.map(friend => { return { label: friend.userName, value: friend.userSeq } })
+  console.log(user.friendList)
+  const friends = user.friendList.map(friend => { return { label: friend.userName, value: friend.id } })
   const [selectedFriends, setSelectedFriends] = useState([])
   console.log(selectedFriends)
 
@@ -379,14 +391,13 @@ function CreateModify(props) {
     //   storeLongitude: "126.926666",
     // });
     setMeetingLocation(meetingLocation);
-    meetingFriends.push("606577812802a2267bbe0e96");
-    setMeetingFriends(meetingFriends);
+    selectedFriends.push(user.userId)
 
     let dataset = {
       title: meetingTitle,
       meetDate: newDate,
       stores: meetingLocation,
-      participants: meetingFriends,
+      participants: selectedFriends,
       tags: [],
       scores: [],
       comments: [],
