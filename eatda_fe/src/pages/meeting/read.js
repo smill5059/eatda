@@ -55,7 +55,7 @@ function MeetingRead(props) {
         setHours(date.getHours())
         setMinutes(date.getMinutes())
 
-        if (res.isCompleted) {
+        if (res.Completed) {
           var i = 0
           var comment = ""
           var username = user.username
