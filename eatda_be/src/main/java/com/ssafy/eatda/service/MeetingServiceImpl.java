@@ -1,15 +1,5 @@
 package com.ssafy.eatda.service;
 
-import com.google.gson.Gson;
-import com.ssafy.eatda.repository.MeetingRepository;
-import com.ssafy.eatda.repository.ProfileRepository;
-import com.ssafy.eatda.repository.UserRepository;
-import com.ssafy.eatda.vo.Profile;
-import com.ssafy.eatda.vo.RecommInfo;
-import com.ssafy.eatda.vo.Schedule;
-import com.ssafy.eatda.vo.ScheduleResult;
-import com.ssafy.eatda.vo.Store;
-import com.ssafy.eatda.vo.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import com.ssafy.eatda.repository.MeetingRepository;
+import com.ssafy.eatda.repository.ProfileRepository;
+import com.ssafy.eatda.repository.UserRepository;
+import com.ssafy.eatda.vo.Profile;
+import com.ssafy.eatda.vo.Schedule;
+import com.ssafy.eatda.vo.ScheduleResult;
+import com.ssafy.eatda.vo.Store;
+import com.ssafy.eatda.vo.User;
 
 @Service
 public class MeetingServiceImpl implements MeetingService {
@@ -39,11 +37,11 @@ public class MeetingServiceImpl implements MeetingService {
 
   @Override
   public Schedule createMeeting(Schedule schedule) {
-    //schedule 저장
-    schedule.setCompleted(false);
+    // schedule 저장
+    schedule.setCompleted(0);
     Schedule result = meetingRepo.insert(schedule);
 
-    //user schedule 정보에 추가
+    // user schedule 정보에 추가
     List<ObjectId> participant = schedule.getParticipants();
     for (ObjectId p : participant) {
       Optional<User> user = userRepo.findById(p);
@@ -65,13 +63,13 @@ public class MeetingServiceImpl implements MeetingService {
     body.add("latitude", String.valueOf(latitude));
     body.add("longitude", String.valueOf(longitude));
 
-//    String body = new Gson().toJson(recommInfo);
+    // String body = new Gson().toJson(recommInfo);
     HttpHeaders header = new HttpHeaders();
     header.set("Contenet-type", MediaType.APPLICATION_JSON_VALUE);
 
     HttpEntity<MultiValueMap> entity = new HttpEntity<>(body, header);
-    ResponseEntity<int[]> stores = restTemplate
-        .getForEntity("http://localhost:8000/recommendation", int[].class, entity);
+    ResponseEntity<int[]> stores =
+        restTemplate.getForEntity("http://localhost:8000/recommendation", int[].class, entity);
 
     System.out.println(stores);
     return null;
@@ -97,7 +95,7 @@ public class MeetingServiceImpl implements MeetingService {
   public Schedule updateIsCompleted(ObjectId id) {
     Optional<Schedule> found = meetingRepo.findById(id);
     if (found.isPresent()) {
-      found.get().setCompleted(true);
+      found.get().setCompleted(1);
       Schedule result = meetingRepo.save(found.get());
       return result;
     }
@@ -123,7 +121,7 @@ public class MeetingServiceImpl implements MeetingService {
   public String deleteMeeting(ObjectId id) {
     Optional<Schedule> found = meetingRepo.findById(id);
     if (found.isPresent()) {
-      //user schedule에서 삭제
+      // user schedule에서 삭제
       List<ObjectId> participants = found.get().getParticipants();
       for (ObjectId p : participants) {
         Optional<User> user = userRepo.findById(p);
@@ -135,7 +133,7 @@ public class MeetingServiceImpl implements MeetingService {
         }
       }
 
-      //schdule 삭제
+      // schdule 삭제
       meetingRepo.deleteById(id);
       return "SUCCESS";
     }
