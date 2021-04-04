@@ -12,43 +12,36 @@ function PhotoUploader() {
   };
   
   // 업로드할 사진 보내기 
-  // const [ updatedUrls, setUpdatedUrls ] = useState([]);
-  const deletedUrls = [];
+  const [ deletedUrls, setDeletedUrls ] = useState([]);
   
   const savePhoto = () => {
-    for (let i = 0; i < photoToAddList.length; i++) {
-      console.info("파일 하나", photoToAddList[i])
-      console.info("그 파일의 내용물", photoToAddList[i].file)
-      fetch(`${process.env.REACT_APP_API_URL}/review/img/6066975e4c8f71296a892d09`, {
-        method: "POST",
-        headers: {
-        // 'Content-Type': 'application/json'
-        // 'Content-Type': 'multipart/form-data',
-      },
-        body: {
-          updatedFile: photoToAddList[i].file,
-        }
-      })
-      // .then((res) => res.json())
-      .then((res) => {
-        console.log(res)
-        // console.log(res.url)
-        // setUpdatedUrls(updatedUrls.concat(res.url))
-      })
-    }    
-    // console.log("추가할 파일", updatedUrls)
+    
+    const formData = new FormData()
 
+    for (let i = 0; i < photoToAddList.length; i++) {
+      formData.append("updatedFile", photoToAddList[i].file)
+      // console.info("넣을 객체는 제가 따로 설정해준것", photoToAddList[i])
+      // console.info("파일만 빼내면", photoToAddList[i].file)
+      // console.info("폼데이터는요", formData.getAll("updatedFile"))
+    }
+    
+    fetch(`${process.env.REACT_APP_API_URL}/review/img/6066975e4c8f71296a892d09`, {
+      method: "POST",
+      body: formData
+    })
+    .then()
+
+    console.info("삭제할 사진", deletedUrls)
     fetch(`${process.env.REACT_APP_API_URL}/review/img/6066975e4c8f71296a892d09`, {
       method: "DELETE",
-      // headers: {
-      //   // 'Content-Type': 'application/json'
-      //   // 'Content-Type': 'multipart/form-data'
-      // },
-      body: {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
         deletedUrls: deletedUrls,
-      }
+      })
     }).then((res) => {
-      alert("사진이 저장되었습니다!");
+      // alert("사진이 저장되었습니다!");
       // window.location.href = '/meeting/6064065b2802a2267bbe0e90';
     })
   };
@@ -60,7 +53,6 @@ function PhotoUploader() {
     fetch(`${process.env.REACT_APP_API_URL}/meeting/6066975e4c8f71296a892d09`, {
       headers : {
         'Content-Type': 'application/json',
-        // 'Accept': 'application/json'
       }
     })
       .then((res) => res.json())
@@ -71,18 +63,19 @@ function PhotoUploader() {
   }, []);
 
   const photoAddedPreview = () => {
-    return photoAddedList.map((photo) => {
-      <div className="photoBox" key={photo.imgSeq} onClick={()=>onRemoveAdded(photo.imgUrl)}>
-        <CloseCircleFilled className="photoBoxDelete"/>
-        저장된 사진
-        <img className="photoPreview" src={photo.imgUrl} />
-      </div>
+    return photoAddedList.map((photo, index) => {
+      return (
+        <div className="photoBox" key={index}>
+          <CloseCircleFilled className="photoBoxDelete" onClick={()=>onRemoveAdded(photo)}/>
+          <img className="photoPreview" src={`${process.env.REACT_APP_API_URL}/files/${photo}`} />
+        </div>
+      )
     })
   };
 
   const onRemoveAdded = (deleteUrl) => {
-    setPhotoAddedList(photoAddedList.filter(photo => photo.imgUrl != deleteUrl))
-    deletedUrls.push(deleteUrl)
+    setPhotoAddedList(photoAddedList.filter(photo => photo != deleteUrl))
+    setDeletedUrls(deletedUrls.concat(deleteUrl))
   }
   
 
