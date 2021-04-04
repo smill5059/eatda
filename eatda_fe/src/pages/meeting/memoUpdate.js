@@ -111,12 +111,23 @@ function MemoUpdate(props) {
   function changeStar(v, storeItem) {
     console.log(v);
     console.log(storeItem);
-    let scoreItem = {
-      storeId: String(storeItem.storeId),
-      userSeq: userSeq,
-      rate: v,
-    };
-    setMeetingScores(meetingScores.concat([scoreItem]));
+    let checkExist = false;
+    storeItem.forEach((item) => {
+      if (item.storeId === storeItem.storeId) {
+        item.rate = v;
+        checkExist = true;
+      }
+    });
+    if (checkExist) {
+      setMeetingScores(meetingScores);
+    } else {
+      let scoreItem = {
+        storeId: String(storeItem.storeId),
+        userSeq: userSeq,
+        rate: v,
+      };
+      setMeetingScores(meetingScores.concat([scoreItem]));
+    }
   }
 
   return (
