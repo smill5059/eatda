@@ -1,9 +1,10 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Logo from 'assets/product/logo.png';
 import kakaoLogin from 'assets/product/kakaoLogin.png';
 import { useHistory } from "react-router";
-import { useSelector, useDispatch } from 'react-redux'
-import * as settingUser from 'store/modules/userData'
+import { useSelector, useDispatch } from 'react-redux';
+import * as settingUser from 'store/modules/userData';
+// import * as settingMeetingData from 'store/modules/meetingData';
 
 const { Kakao } = window;
 const SERVER_URL = process.env.REACT_APP_API_URL;
@@ -17,6 +18,34 @@ function Login() {
   // const setUser = useCallback(
   //   () => dispatch()
   // )
+
+  /* 로그인 성공시 redux store로 dispatch 할 내용물 */
+  // const meetingData = useSelector(state => state.meetingData)
+
+  //   const [ data, setData ] = useState({});
+  
+  //   useEffect(() => {
+  //     fetch(`${process.env.REACT_APP_API_URL}/main/timeline`, {
+  //       headers : {
+  //         'token': localStorage.getItem('Kakao_token'),
+  //         // 'Content-Type': 'application/json',
+  //       }
+  //     })
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       console.log("타임라인 데이터가 받아져야되는데", res)
+  //     })
+  //     .then((response) => {
+  //       console.log("불러온 전체 미팅", response)
+  //       setData(response)
+  //     })
+  //   },[]);
+
+
+  // const setMeetingData = useCallback((data) => {
+  //   dispatch(settingMeetingData.meetingData(data));
+  // }, [dispatch])
+
 
   function loginWithKakao() {
     Kakao.Auth.login({
@@ -50,6 +79,9 @@ function Login() {
                 })
             }
           })
+            // .then((res) => {
+            //   setMeetingData(data)
+            // })
       },
       fail: function(err) {
         console.warn(JSON.stringify(err))
