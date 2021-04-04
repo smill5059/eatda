@@ -135,6 +135,7 @@ public class UserServiceImpl implements UserService {
       userResult.setProfileUrl(user.getProfileUrl());
       userResult.setName(user.getName());
       userResult.setSeq(seq);
+      userResult.setId(user.getId());
 
       ArrayList<Profile> list = new ArrayList<Profile>();
       for (ObjectId id : user.getFriends()) {
