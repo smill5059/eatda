@@ -59,9 +59,9 @@ public class ReviewController {
   @PostMapping("/img/{meetingId}")
   public ResponseEntity<String> uploadImg(
       @ApiParam(value = "meetingId", required = true) @PathVariable ObjectId meetingId,
-      @RequestParam(value = "file", required = false) MultipartFile updatedFile,
+      @RequestParam(value = "updatedFiles", required = false) List<MultipartFile> files,
       HttpServletRequest req) {
-    String result = reviewSvc.uploadImg(meetingId, updatedFile);
+    String result = reviewSvc.uploadImg(meetingId, files);
     if (result != "SUCCESS")
       return new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);
     return new ResponseEntity<String>(result, HttpStatus.OK);
