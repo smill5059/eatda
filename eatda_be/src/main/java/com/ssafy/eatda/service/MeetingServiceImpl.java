@@ -3,6 +3,7 @@ package com.ssafy.eatda.service;
 import com.google.gson.Gson;
 import com.ssafy.eatda.repository.MeetingRepository;
 import com.ssafy.eatda.repository.ProfileRepository;
+import com.ssafy.eatda.repository.StoreRepository;
 import com.ssafy.eatda.repository.UserRepository;
 import com.ssafy.eatda.vo.Profile;
 import com.ssafy.eatda.vo.RecommInfo;
@@ -33,6 +34,8 @@ public class MeetingServiceImpl implements MeetingService {
   private ProfileRepository profileRepo;
   @Autowired
   private UserRepository userRepo;
+  @Autowired
+  private StoreRepository storeRepo;
 
   @Autowired
   private RestTemplate restTemplate;
@@ -59,22 +62,32 @@ public class MeetingServiceImpl implements MeetingService {
   }
 
   @Override
-  public List<Store> recommend(List<String> reviewIds, float latitude, float longitude) {
-    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-    body.put("reviewIds", reviewIds);
-    body.add("latitude", String.valueOf(latitude));
-    body.add("longitude", String.valueOf(longitude));
+  public List<Store> recommend(List<Integer> reviewIds, float latitude, float longitude) {
+//    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+//    body.put("reviewIds", reviewIds);
+//    body.add("latitude", String.valueOf(latitude));
+//    body.add("longitude", String.valueOf(longitude));
 
-//    String body = new Gson().toJson(recommInfo);
+    RecommInfo recommInfo = new RecommInfo(reviewIds, latitude, longitude);
+    String body = new Gson().toJson(recommInfo);
     HttpHeaders header = new HttpHeaders();
     header.set("Contenet-type", MediaType.APPLICATION_JSON_VALUE);
 
-    HttpEntity<MultiValueMap> entity = new HttpEntity<>(body, header);
-    ResponseEntity<int[]> stores = restTemplate
-        .getForEntity("http://localhost:8000/recommendation", int[].class, entity);
+    HttpEntity<String> entity = new HttpEntity<>(body, header);
 
-    System.out.println(stores);
-    return null;
+    ResponseEntity<String[]> response = restTemplate
+        .postForEntity("http://eatda.me:8000/recommendation/", entity, String[].class);
+
+    String[] stores = response.getBody();
+    List<Store> result = new ArrayList<>();
+    int len = stores.length;
+    for (int i = 0; i < len; i++) {
+      Optional<Store> found = storeRepo.findByStoreId(stores[i]);
+      if (found.isPresent()) {
+        result.add(found.get());
+      }
+    }
+    return result;
   }
 
   @Override

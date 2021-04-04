@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Score {
   private int userSeq;
-  private int storeId;
+  private String storeId;
   private int rate;
 }

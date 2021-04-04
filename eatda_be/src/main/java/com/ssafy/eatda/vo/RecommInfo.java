@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RecommInfo {
 
-  private List<String> reviewInfo;
+  private List<Integer> reviewIds;
   private float latitude;
   private float longitude;
 }

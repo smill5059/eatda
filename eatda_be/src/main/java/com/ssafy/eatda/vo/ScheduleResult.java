@@ -42,5 +42,6 @@ public class ScheduleResult {
     this.scores = s.getScores();
     this.comments = s.getComments();
     this.imgs = s.getImgs();
+    this.isCompleted = s.isCompleted();
   }
 }
