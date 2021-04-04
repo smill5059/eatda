@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import Logo from 'assets/product/logo.png';
 import kakaoLogin from 'assets/product/kakaoLogin.png';
 import { useHistory } from "react-router";
@@ -34,11 +34,20 @@ function Login() {
           .then(res => res.json())
           .then(res => {
             // console.log('로그인 결과', res)
-            dispatch(settingUser.setUser({name: res.name, code: res.seq, friends: res.friends}))
+            dispatch(settingUser.setUser({id: res.id, name: res.name, code: res.seq, friends: res.friends}))
             localStorage.setItem('Kakao_token', res.token);
             if (res.token) {
               // console.log('로그인 성공')
-              history.push('/profile')
+              fetch(`${SERVER_URL}/main/schedules`, {
+                headers: {
+                  token: res.token
+                },
+              })
+                .then(res => res.json())
+                .then(res => {
+                  console.log(res)
+                  history.push('/')
+                })
             }
           })
       },

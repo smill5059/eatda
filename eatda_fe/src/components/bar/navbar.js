@@ -6,7 +6,7 @@ const { Kakao } = window;
 
 function Navbar() {
   const history = useHistory()
-
+  
   function logoutWithKakao() {
     Kakao.API.request({
       url: '/v1/user/unlink',
