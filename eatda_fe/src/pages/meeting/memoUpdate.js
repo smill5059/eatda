@@ -17,6 +17,7 @@ function MemoUpdate(props) {
   const [meetingTime, setMeetingTime] = useState("");
   const [memoContent, setMemoContent] = useState("");
   const [meetingStores, setMeetingStores] = useState([]);
+  const [meetingScores, setMeetingScores] = useState([]);
   const [memoCheck, setMemoCheck] = useState(false);
 
   // 바로 실행
@@ -34,6 +35,7 @@ function MemoUpdate(props) {
       .then((res) => res.json())
       .then((result) => {
         userSeq = result.seq;
+        console.log(result.seq);
         setUserSeq(userSeq);
       })
       .then(() => {
@@ -41,6 +43,7 @@ function MemoUpdate(props) {
         fetch(`${process.env.REACT_APP_API_URL}/meeting/${meetingId}`)
           .then((res) => res.json())
           .then((result) => {
+            console.log(result);
             let thisTime = new Date(result.meetDate);
             setMeetingTitle(result.title);
             setMeetingDate(
@@ -49,6 +52,8 @@ function MemoUpdate(props) {
             );
             setMeetingTime(moment(thisTime).format("HH시 mm분"));
             setMeetingStores(result.stores);
+            setMeetingScores(result.scores);
+            console.log(result.stores);
             result.comments.forEach((element) => {
               if (userSeq === element.userSeq) {
                 setMemoCheck(true);
@@ -66,6 +71,7 @@ function MemoUpdate(props) {
       .then((res) => res.json())
       .then((result) => {
         schedule = result;
+        schedule.scores = meetingScores;
         // 이미 댓글이 있었음
         console.log(memoCheck);
         if (memoCheck) {
@@ -83,6 +89,7 @@ function MemoUpdate(props) {
             userSeq: userSeq,
           });
         }
+        console.log(schedule);
       })
       .then(() => {
         fetch(`${process.env.REACT_APP_API_URL}/review/comment`, {
@@ -95,10 +102,21 @@ function MemoUpdate(props) {
         })
           .then((res) => res.json())
           .then((result) => {
-            window.location.href = `meeting/${result.id}`;
+            window.location.href = `/meeting/${result.id}`;
           });
       });
     console.log(schedule);
+  }
+
+  function changeStar(v, storeItem) {
+    console.log(v);
+    console.log(storeItem);
+    let scoreItem = {
+      storeId: String(storeItem.storeId),
+      userSeq: userSeq,
+      rate: v,
+    };
+    setMeetingScores(meetingScores.concat([scoreItem]));
   }
 
   return (
@@ -126,30 +144,11 @@ function MemoUpdate(props) {
                   <Rate
                     className="starRating"
                     allowHalf
-                    onChange={(value) => console.log(value)}
+                    onChange={(value) => changeStar(value, store)}
                   />
                 </div>
               );
             })}
-
-            <div className="starContent">
-              <p className="starStoreName">sadjflkasdflk</p>
-              <Rate
-                className="starRating"
-                allowHalf
-                onChange={(value) => console.log(value)}
-              />
-            </div>
-            <div className="starContent">
-              <p className="starStoreName">sadjflkasdflk</p>
-              <Rate
-                className="starRating"
-                allowHalf
-                onChange={(value) => console.log(value)}
-              />
-            </div>
-
-            <div className="starContent">테스트</div>
           </div>
           <Button className="memoCreateButton" onClick={() => createMemo()}>
             후기 작성

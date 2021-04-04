@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { Form, Input, Button, DatePicker, Space } from "antd";
+import { Form, Input, Button, DatePicker, Space, Card, Select, Tag } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
 import RecommendationModal from "components/meeting/recommendationModal";
@@ -11,6 +12,8 @@ import RecommendationModal from "components/meeting/recommendationModal";
 //   };
 
 function CreateModify(props) {
+  const user = useSelector(state => state.userData)
+
   // 모달 관련 상태
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState(null);
@@ -25,8 +28,6 @@ function CreateModify(props) {
   const [userToken, setUserToken] = useState(
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3MzQ5ODAxLCJzZXEiOjE2NjQwMzg3MTB9.MDMuYXPF16aeQnCwhiwm2n0hRr2bbNbt4H4bFNRFwYY"
   );
-  const [myFriends, setMyFriends] = useState([]);
-  const [myId, setMyId] = useState("");
   // 나의 위치정보
   const [myLatitude, setMyLatitude] = useState(37.571075);
   const [myLongitude, setMyLongitude] = useState(127.013588);
@@ -38,7 +39,6 @@ function CreateModify(props) {
   const [meetingDate, setMeetingDate] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingLocation, setMeetingLocation] = useState([]);
-  const [meetingFriends, setMeetingFriends] = useState([]);
 
   // 지도 검색 키워드
   const [locationKeyword, setLocationKeyword] = useState("");
@@ -58,23 +58,23 @@ function CreateModify(props) {
     }
     // 회원정보를 바탕으로 친구 목록 가져오기
     // + 약속 사람에 본인 세팅
-    fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
-      headers: {
-        token:
-          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw",
-      },
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        //   console.log(result)
-        setMyFriends(result.friends);
-        setMyId(result.id);
-        console.log("dlafj;sdflkjasdl;f");
-        console.log(result.friends);
-        //   meetingFriends.push(result.id)
-        //   console.log(meetingFriends)
-        //   setMeetingFriends(meetingFriends)
-      });
+    // fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
+    //   headers: {
+    //     token:
+    //       "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw",
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     //   console.log(result)
+    //     setMyFriends(result.friends);
+    //     setMyId(result.id);
+    //     console.log("dlafj;sdflkjasdl;f");
+    //     console.log(result.friends);
+    //     //   meetingFriends.push(result.id)
+    //     //   console.log(meetingFriends)
+    //     //   setMeetingFriends(meetingFriends)
+    //   });
     // 현재 위치 세팅
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -108,7 +108,6 @@ function CreateModify(props) {
             setMeetingDate(moment(meetDate));
             setMeetingTime(moment(meetDate));
             setMeetingLocation(response.stores);
-            setMeetingFriends(response.participants);
             form.setFieldsValue({
               meetingName: response.title,
               meetingDate: moment(meetDate),
@@ -145,6 +144,7 @@ function CreateModify(props) {
     );
   }
 
+  
   // 추천 모달
   function recommendationModalItem() {
     // console.info("모달을 열어볼게요")
@@ -154,25 +154,55 @@ function CreateModify(props) {
           setLocationKeyword={setLocationKeyword}
           meetingArea={meetingArea}
           setLocation={setLocation} 
-        />
+          />
       </div>
+    );
+  }
+  
+  // 친구 선택
+  console.log(user.friendList)
+  const friends = user.friendList.map(friend => { return { label: friend.userName, value: friend.id } })
+  const [selectedFriends, setSelectedFriends] = useState([])
+  console.log(selectedFriends)
+
+  function tagRender(props) {
+    const { label, value, closable, onClose } = props;
+  
+    return (
+      <Tag closable={closable} onClose={onClose} style={{ marginRight: 3 }}>
+        { label }
+      </Tag>
     );
   }
 
-  function friendModalItem() {
-    return (
-      <div className="meetingFriendContent">
-        <ul className="meetingFriendModalList"></ul>
-        <Button
-          type="primary"
-          htmlType="button"
-          className="meetingFriendConfirmButton"
-        >
-          확인
-        </Button>
-      </div>
-    );
-  }
+  // function friendModalItem() {
+  //   return (
+  //     <div className="meetingFriendContent">
+  //       <div className="meetingFriendModalList">
+  //         <Select
+  //           mode="multiple"
+  //           showArrow
+  //           tagRender={tagRender}
+  //           defaultValue={['gold', 'cyan']}
+  //           style={{ width: '100%' }}
+  //           options={options}
+  //         />
+  //         { user.friendList.map(friend => (
+  //           <Card.Grid key={friend.userSeq}>
+  //             { friend.userName }
+  //           </Card.Grid>
+  //         )) }
+  //       </div>
+  //       <Button
+  //         type="primary"
+  //         htmlType="button"
+  //         className="meetingFriendConfirmButton"
+  //       >
+  //         확인
+  //       </Button>
+  //     </div>
+  //   );
+  // }
 
   // 모달의 ON/OFF에 따라 작동할 것
   useEffect(() => {
@@ -329,7 +359,7 @@ function CreateModify(props) {
       setModalContent(recommendationModalItem);
     } else if (modalType === "friend") {
       setModalTitle("누구랑 먹을까?");
-      setModalContent(friendModalItem);
+      // setModalContent(friendModalItem);
     }
     // 모달 보여주기
     setModalVisible(true);
@@ -361,14 +391,13 @@ function CreateModify(props) {
     //   storeLongitude: "126.926666",
     // });
     setMeetingLocation(meetingLocation);
-    meetingFriends.push("606577812802a2267bbe0e96");
-    setMeetingFriends(meetingFriends);
+    selectedFriends.push(user.userId)
 
     let dataset = {
       title: meetingTitle,
       meetDate: newDate,
       stores: meetingLocation,
-      participants: meetingFriends,
+      participants: selectedFriends,
       tags: [],
       scores: [],
       comments: [],
@@ -506,16 +535,24 @@ function CreateModify(props) {
             name="meetingFindFriend"
             label="누구랑"
             className="meetingFindFriend"
-            rules={[{ required: true }]}
           >
-            <Input
+            {/* <Input
               //   className="meetingFindFriendButton"
               placeholder="친구를 검색해주세요"
               onClick={(e) => showModal(e, "friend")}
+            /> */}
+            <Select
+              mode="multiple"
+              showArrow
+              tagRender={tagRender}
+              style={{ width: '100%' }}
+              options={friends}
+              value={selectedFriends}
+              onChange={setSelectedFriends}
             />
           </Form.Item>
           {/* 친구 목록   */}
-          <Form.Item className="meetingFriendsListBox">
+          {/* <Form.Item className="meetingFriendsListBox">
             <div className="meetingFriendsList">
               {meetingFriends.length > 0
                 ? meetingFriends.map((item, index) => {
@@ -536,7 +573,7 @@ function CreateModify(props) {
                   })
                 : "친구를 추가해주세요."}
             </div>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item name="meetingCreate" className="meetingCreate">
             <Button
               type="primary"

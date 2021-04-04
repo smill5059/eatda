@@ -5,17 +5,17 @@ import { createAction, handleActions } from "redux-actions";
 
 const MEETING_DATA = "meetingData/MEETING_DATA";
 
-export const meetingData = createAction(MEETING_DATA, data => ({data: data}));
+export const meetingData = createAction(MEETING_DATA, data => data);
 
 const initialState = {
-  meeting: {},
+  meeting: [],
 }
 
 export default handleActions(
   {
     [MEETING_DATA]: (state, action) => ({
       ...state,
-      meeting: action.payload.data
+      meeting: action.payload
     })
   },
   initialState

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Card, Input, Image } from 'antd';
 
 function Timeline() {
-  const meetings = useSelector(state => state.timelineData)
+  const meetings = useSelector(state => state.meetingData)
   // 검색창
   const { Search } = Input;
   const onSearch = value => (
