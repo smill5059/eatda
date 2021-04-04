@@ -76,7 +76,7 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   @Override
-  public String uploadImg(ObjectId meetingId, MultipartFile uploadFile) {
+  public String uploadImg(ObjectId meetingId, List<MultipartFile> files) {
 
     Schedule schedule = reviewRepo.findById(meetingId).get();
     if (schedule == null) {
@@ -84,22 +84,24 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     try {
-      // 새로운 리뷰이미지 업로드
-      String fileName = uploadFile.getOriginalFilename();
-
-      // Random Fild Id
-      UUID uuid = UUID.randomUUID();
-
-      // file extension
-      String extension = FilenameUtils.getExtension(fileName);
-
-      String savingFileName = uuid + "." + extension;
-      File destFile = new File(filePath + "review/" + savingFileName);
-      uploadFile.transferTo(destFile);
-
-      // DB에 새 사진 저장
       List<String> newList = new ArrayList<String>();
-      newList.add("review/" + savingFileName);
+      for (MultipartFile uploadFile : files) {
+        // 새로운 리뷰이미지 업로드
+        String fileName = uploadFile.getOriginalFilename();
+
+        // Random Fild Id
+        UUID uuid = UUID.randomUUID();
+
+        // file extension
+        String extension = FilenameUtils.getExtension(fileName);
+
+        String savingFileName = uuid + "." + extension;
+        File destFile = new File(filePath + "review/" + savingFileName);
+        uploadFile.transferTo(destFile);
+
+        // DB에 새 사진 저장
+        newList.add("review/" + savingFileName);
+      }
       newList.addAll(schedule.getImgs());
 
       schedule.setImgs(newList);
@@ -125,11 +127,12 @@ public class ReviewServiceImpl implements ReviewService {
 
       for (String url : deletedUrls) {
         File deleteFile = new File(filePath + url);
-        if (deleteFile.exists() && !deleteFile.delete())
+        if (deleteFile.exists() && !deleteFile.delete()) {
           return "FAIL";
-        
+        }
+
         schedule.getImgs().remove(url);
-        
+
       }
 
       reviewRepo.save(schedule);
