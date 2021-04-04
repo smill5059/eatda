@@ -25,7 +25,9 @@ SECRET_KEY = '7hww0ews%l&!i$qr4=+2dg1r@)pv*lnjth^rocz2d(b+r)qs$%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'eatda.me',
+]
 
 
 # Application definition
