@@ -4,7 +4,9 @@ import com.ssafy.eatda.service.JwtService;
 import com.ssafy.eatda.service.MeetingService;
 import com.ssafy.eatda.vo.Schedule;
 import com.ssafy.eatda.vo.ScheduleResult;
+import com.ssafy.eatda.vo.Store;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,12 @@ public class MeetingController {
       return new ResponseEntity<>(result, HttpStatus.OK);
     }
     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+  }
+
+  @GetMapping("/recomm")
+  public ResponseEntity<?> recommend(@RequestParam List<Integer> reviewIds, @RequestParam float latitude, @RequestParam float longitude, HttpServletRequest req) {
+    List<Store> result = meetingSvc.recommend(reviewIds, latitude, longitude);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   @ApiOperation(value = "약속 확인")

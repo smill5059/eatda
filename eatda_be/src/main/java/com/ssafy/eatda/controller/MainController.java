@@ -55,6 +55,19 @@ public class MainController {
     return new ResponseEntity<List<ScheduleResult>>(result, HttpStatus.OK);
   }
 
+  // 메인 스케줄 - schedule list
+  @ApiOperation(value = "스케줄 가져오기", notes = "참여 약속들 전체 반환", response = Schedule.class)
+  @GetMapping("/schedules")
+  public ResponseEntity<List<ScheduleResult>> getSchedules(HttpServletRequest req) {
+    logger.info("getSchedules - 호출");
+    String jwt = req.getHeader("token");
+    int userSeq = jwtService.decode(jwt);
+    List<ScheduleResult> result = mainService.getSchedules(userSeq);
+    if (result == null)
+      return new ResponseEntity<List<ScheduleResult>>(result, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<List<ScheduleResult>>(result, HttpStatus.OK);
+  }
+
   // 메인 타임라인- schedule list
   @ApiOperation(value = "타임라인", notes = "참여 약속들 전체 반환", response = Schedule.class)
   @GetMapping("/timeline")

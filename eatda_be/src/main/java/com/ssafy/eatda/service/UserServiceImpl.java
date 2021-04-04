@@ -135,6 +135,7 @@ public class UserServiceImpl implements UserService {
       userResult.setProfileUrl(user.getProfileUrl());
       userResult.setName(user.getName());
       userResult.setSeq(seq);
+      userResult.setId(user.getId());
 
       ArrayList<Profile> list = new ArrayList<Profile>();
       for (ObjectId id : user.getFriends()) {
@@ -231,7 +232,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public List<Profile> addFriend(int userSeq, int code) {
+  public Profile addFriend(int userSeq, int code) {
 
     User user = userRepository.findBySeq(userSeq);
     Profile userProfile = profileRepository.findByUserSeq(userSeq);
@@ -251,13 +252,7 @@ public class UserServiceImpl implements UserService {
       userRepository.save(friend);
     }
 
-    ArrayList<Profile> list = new ArrayList<Profile>();
-    for (ObjectId id : user.getFriends()) {
-      Profile profile = profileRepository.findById(id).get();
-      list.add(profile);
-    }
-
-    return list;
+    return friendProfile;
   }
 
   @Override
