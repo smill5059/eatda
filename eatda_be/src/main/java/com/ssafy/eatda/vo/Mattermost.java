@@ -48,7 +48,7 @@ public class Mattermost {
       StringBuilder sb = new StringBuilder(this.text);
 
 //      sb.append("**Error Message**").append("\n\n");
-      sb.append("```").append(e.getMessage()).append("\n\n");
+      sb.append("```").append(e.getMessage()).append("```").append("\n\n");
 
 //      sb.append("**Request URL**").append("\n\n");
 //      sb.append(uri).append("\n\n");

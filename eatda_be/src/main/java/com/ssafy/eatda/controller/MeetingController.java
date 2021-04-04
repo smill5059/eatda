@@ -36,7 +36,8 @@ public class MeetingController {
     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
-  @GetMapping("/recomm")
+  @ApiOperation(value = "맛집 추천")
+  @PostMapping("/recomm")
   public ResponseEntity<?> recommend(@RequestParam List<Integer> reviewIds, @RequestParam float latitude, @RequestParam float longitude, HttpServletRequest req) {
     List<Store> result = meetingSvc.recommend(reviewIds, latitude, longitude);
     return new ResponseEntity<>(result, HttpStatus.OK);
