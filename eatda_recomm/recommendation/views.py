@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.parsers import JSONParser
 
 # 데이터 디렉토리 설정 및 필요한 모듈 임포트 
 import pandas as pd
@@ -43,7 +44,7 @@ def haversine(lat1, lon1, lat2, lon2):
 def recommendationMulti(reviewId_list, latitude, longitude):
     data = pd.read_pickle(STORE_REVIEW_FILE)
     # total만큼의 가게를 반환
-    total = 5
+    total = 15
     # reviewId 한명당 뽑아올 추천 가게 개수
     limit = int(total / len(reviewId_list))
     if limit == 0:
@@ -95,15 +96,19 @@ def recommendationMulti(reviewId_list, latitude, longitude):
         top = []
         for storeId, value in store_by_reviewId['scores'].items():
             if storeId in stores_within.keys():
-                tmp = (pearsoncorr[storeId] * value)
-                if tmp.max() >= 3:
-                    top.append([tmp.idxmax(), tmp.max()])
-                # tmp = (pearsoncorr[storeId] * value).sort_values(ascending=False)
-                # top.append([tmp.index[0], tmp[0]])
+                tmp = (pearsoncorr[storeId] * value).sort_values(ascending=False)
+                for i in range(len(tmp)):
+                    if tmp[i] < 3:
+                        break
+                    top.append([tmp.index[idx], tmp[i]])
+                # tmp = (pearsoncorr[storeId] * value)
+                # if tmp.max() >= 3:
+                #     top.append([tmp.idxmax(), tmp.max()])
 
         # 추천 가게가 1개 이상 있을 경우 리스트에 limit만큼 추가
         if len(top) > 0:
-            result = pd.DataFrame(data=top, columns=("storeId", "rating")).set_index("storeId", drop=False).groupby(level=0).mean().sort_values(by=["rating"], ascending=False)
+            result = pd.DataFrame(data=top, columns=("storeId", "rating")).set_index("storeId", drop=False).groupby(
+                level=0).mean().sort_values(by=["rating"], ascending=False)
             recomm.extend(list(result.head(limit).index))
 
     # 중복 제거
@@ -184,20 +189,25 @@ def sim_pearson(data, name1, name2):
 
 # 함수 1 : 유사도 자동 업데이트 함수     
 def Similarity():
-    schedule.every().day.at("05:00").do(update)
+    update()
+    # schedule.every().day.at("05:00").do(update)
 
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
 
     return "유사도 업데이트도 됩니다!"
 
 # 함수 2 : user와 지역 정보를 입력받아서, 가게 유사도 돌린 후, 추천 값 반환하는 함수
 @api_view(['POST'])
 def Recommendation(request): 
+  req = JSONParser().parse(request)
+  user = req["reviewIds"]
+  latitude = req["latitude"]
+  longitude = req["longitude"]
 
-  user = request.data.get('reviewId')
-  latitude = request.data.get('latitude')
-  longitude = request.data.get('longitude') 
+#   user = request.data.get('reviewId')
+#   latitude = request.data.get('latitude')
+#   longitude = request.data.get('longitude') 
 
   return Response(recommendationMulti(user, latitude, longitude))

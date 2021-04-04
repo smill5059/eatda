@@ -20,6 +20,6 @@ from recommendation import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    # path('similarity/', views.Similarity),
+    path('similarity/', views.Similarity),
     path('recommendation/', views.Recommendation),
 ]

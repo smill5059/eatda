@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Store {
-    private int storeId;
+    private String storeId;
     private String storeName;
     private String storeAddress;
     private float storeLatitude;
     private float storeLongitude;
+    private float avgRate;
+    private int reviewCount;
 }
