@@ -1,5 +1,16 @@
 package com.ssafy.eatda.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import com.google.gson.Gson;
 import com.ssafy.eatda.repository.MeetingRepository;
 import com.ssafy.eatda.repository.ProfileRepository;
@@ -11,19 +22,6 @@ import com.ssafy.eatda.vo.Schedule;
 import com.ssafy.eatda.vo.ScheduleResult;
 import com.ssafy.eatda.vo.Store;
 import com.ssafy.eatda.vo.User;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class MeetingServiceImpl implements MeetingService {
@@ -42,11 +40,11 @@ public class MeetingServiceImpl implements MeetingService {
 
   @Override
   public Schedule createMeeting(Schedule schedule) {
-    //schedule 저장
-    schedule.setCompleted(false);
+    // schedule 저장
+    schedule.setCompleted(0);
     Schedule result = meetingRepo.insert(schedule);
 
-    //user schedule 정보에 추가
+    // user schedule 정보에 추가
     List<ObjectId> participant = schedule.getParticipants();
     for (ObjectId p : participant) {
       Optional<User> user = userRepo.findById(p);
@@ -63,10 +61,10 @@ public class MeetingServiceImpl implements MeetingService {
 
   @Override
   public List<Store> recommend(List<Integer> reviewIds, float latitude, float longitude) {
-//    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-//    body.put("reviewIds", reviewIds);
-//    body.add("latitude", String.valueOf(latitude));
-//    body.add("longitude", String.valueOf(longitude));
+    // MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+    // body.put("reviewIds", reviewIds);
+    // body.add("latitude", String.valueOf(latitude));
+    // body.add("longitude", String.valueOf(longitude));
 
     RecommInfo recommInfo = new RecommInfo(reviewIds, latitude, longitude);
     String body = new Gson().toJson(recommInfo);
@@ -75,8 +73,8 @@ public class MeetingServiceImpl implements MeetingService {
 
     HttpEntity<String> entity = new HttpEntity<>(body, header);
 
-    ResponseEntity<String[]> response = restTemplate
-        .postForEntity("http://eatda.me:8000/recommendation/", entity, String[].class);
+    ResponseEntity<String[]> response =
+        restTemplate.postForEntity("http://eatda.me:8000/recommendation/", entity, String[].class);
 
     String[] stores = response.getBody();
     List<Store> result = new ArrayList<>();
@@ -110,7 +108,7 @@ public class MeetingServiceImpl implements MeetingService {
   public Schedule updateIsCompleted(ObjectId id) {
     Optional<Schedule> found = meetingRepo.findById(id);
     if (found.isPresent()) {
-      found.get().setCompleted(true);
+      found.get().setCompleted(1);
       Schedule result = meetingRepo.save(found.get());
       return result;
     }
@@ -136,7 +134,7 @@ public class MeetingServiceImpl implements MeetingService {
   public String deleteMeeting(ObjectId id) {
     Optional<Schedule> found = meetingRepo.findById(id);
     if (found.isPresent()) {
-      //user schedule에서 삭제
+      // user schedule에서 삭제
       List<ObjectId> participants = found.get().getParticipants();
       for (ObjectId p : participants) {
         Optional<User> user = userRepo.findById(p);
@@ -148,7 +146,7 @@ public class MeetingServiceImpl implements MeetingService {
         }
       }
 
-      //schdule 삭제
+      // schdule 삭제
       meetingRepo.deleteById(id);
       return "SUCCESS";
     }
