@@ -8,5 +8,5 @@ class MySchedule(AppConfig):
     name = 'recommendation'
     
     def ready(self):
-        Similarity()
+        # Similarity()
         return print("앱 시작시 실행 됩니다!")
