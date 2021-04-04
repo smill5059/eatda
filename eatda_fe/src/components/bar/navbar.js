@@ -6,7 +6,7 @@ const { Kakao } = window;
 
 function Navbar() {
   const history = useHistory()
-
+  
   function logoutWithKakao() {
     Kakao.API.request({
       url: '/v1/user/unlink',
@@ -21,10 +21,17 @@ function Navbar() {
     });
   }
 
+  function toProfile() {
+    history.push('/profile')
+  }
+
   return (
     <div className="navbar">
       <div className="logoutBtn" onClick={logoutWithKakao}>
         로그아웃
+      </div>
+      <div className="profileBtn" onClick={toProfile}>
+        프로필
       </div>
     </div>
   )

@@ -43,6 +43,7 @@
     .frdAddBtn {
       grid-column: 10/13;
       margin: auto;
+      margin-right: 1rem;
     }
 
     .frdList {
@@ -74,4 +75,14 @@
 
 .ant-image-img {
   border-radius: 5vh;
+}
+
+.searchTitle {
+  padding-bottom: 1rem;
+}
+
+.searchFriend {
+  width: 12rem;
+  display: block;
+  margin: auto;
 }

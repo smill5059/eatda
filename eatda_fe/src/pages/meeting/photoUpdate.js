@@ -1,5 +1,5 @@
-import Reac, { useState, useEffect, useRef } from "react";
-import { Button, Dropdown, Menu, Row, Col, Image } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Button, Dropdown, Menu, Row, Col, Image, Form } from "antd";
 
 import { PlusOutlined, CloseCircleFilled, PictureFilled } from '@ant-design/icons';
 
@@ -12,38 +12,47 @@ function PhotoUploader() {
   };
   
   // 업로드할 사진 보내기 
-  const updatedFiles = [];
-  const deletedUrls = [];
+  const [ deletedUrls, setDeletedUrls ] = useState([]);
   
   const savePhoto = () => {
-    // setPhotoList(photoToAddList.concat(photoAddedList)) 
-    // console.info("photoList", photoList)
+    
+    const formData = new FormData()
+
     for (let i = 0; i < photoToAddList.length; i++) {
-      updatedFiles.push(photoToAddList[i].file)
+      formData.append("updatedFile", photoToAddList[i].file)
+      // console.info("넣을 객체는 제가 따로 설정해준것", photoToAddList[i])
+      // console.info("파일만 빼내면", photoToAddList[i].file)
+      // console.info("폼데이터는요", formData.getAll("updatedFile"))
     }
     
-    console.log("추가할 파일", updatedFiles)
-
-    fetch(`${process.env.REACT_APP_API_URL}/review/img/6064065b2802a2267bbe0e90`, {
+    fetch(`${process.env.REACT_APP_API_URL}/review/img/6066975e4c8f71296a892d09`, {
       method: "POST",
+      body: formData
+    })
+    .then()
+
+    console.info("삭제할 사진", deletedUrls)
+    fetch(`${process.env.REACT_APP_API_URL}/review/img/6066975e4c8f71296a892d09`, {
+      method: "DELETE",
       headers: {
         'Content-Type': 'application/json'
       },
-      body : JSON.stringify({
-        updatedFiles : updatedFiles,
-        deletedUrls : deletedUrls,
+      body: JSON.stringify({
+        deletedUrls: deletedUrls,
       })
+    }).then((res) => {
+      // alert("사진이 저장되었습니다!");
+      // window.location.href = '/meeting/6064065b2802a2267bbe0e90';
     })
-  }
+  };
 
   // 저장된 사진 가져오기 구현
   const [ photoAddedList, setPhotoAddedList ] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/meeting/6064065b2802a2267bbe0e90`, {
+    fetch(`${process.env.REACT_APP_API_URL}/meeting/6066975e4c8f71296a892d09`, {
       headers : {
         'Content-Type': 'application/json',
-        // 'Accept': 'application/json'
       }
     })
       .then((res) => res.json())
@@ -54,18 +63,19 @@ function PhotoUploader() {
   }, []);
 
   const photoAddedPreview = () => {
-    return photoAddedList.map((photo) => {
-      <div className="photoBox" key={photo.imgSeq} onClick={()=>onRemoveAdded(photo.imgUrl)}>
-        <CloseCircleFilled className="photoBoxDelete"/>
-        저장된 사진
-        <img className="photoPreview" src={photo.imgUrl} />
-      </div>
+    return photoAddedList.map((photo, index) => {
+      return (
+        <div className="photoBox" key={index}>
+          <CloseCircleFilled className="photoBoxDelete" onClick={()=>onRemoveAdded(photo)}/>
+          <img className="photoPreview" src={`${process.env.REACT_APP_API_URL}/files/${photo}`} />
+        </div>
+      )
     })
   };
 
   const onRemoveAdded = (deleteUrl) => {
-    setPhotoAddedList(photoAddedList.filter(photo => photo.imgUrl != deleteUrl))
-    deletedUrls.push(deleteUrl)
+    setPhotoAddedList(photoAddedList.filter(photo => photo != deleteUrl))
+    setDeletedUrls(deletedUrls.concat(deleteUrl))
   }
   
 
@@ -98,8 +108,6 @@ function PhotoUploader() {
   };
   
 
-
-
   return (
   <div className="contentWrapper">
     <Row className="contentTitle">
@@ -115,18 +123,18 @@ function PhotoUploader() {
         <p>클로이와 홍대 나들이</p>
       </Row>
       <div className="photoUploaderContent">
-        <div className="photoBox addPhoto">
+        <Form className="photoBox addPhoto" encType="multipart/form-data">
           {/* <PlusOutlined /> */}
           <PictureFilled onClick={handleClick} />
           <input 
             type="file" 
             accept="image/jpg, image/jpeg, image/png" 
-            multiple 
+            multiple="multiple"
             ref={photoInput}
             onChange={(e) => handlePhoto(e)}
             style={{display: 'none'}} 
           />
-        </div>
+        </Form>
         { photoToAddPreview() }
         { photoAddedPreview() }
       </div>
