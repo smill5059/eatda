@@ -167,6 +167,7 @@ function CreateModify(props) {
 
   function tagRender(props) {
     const { label, value, closable, onClose } = props;
+  
     return (
       <Tag closable={closable} onClose={onClose} style={{ marginRight: 3 }}>
         { label }
