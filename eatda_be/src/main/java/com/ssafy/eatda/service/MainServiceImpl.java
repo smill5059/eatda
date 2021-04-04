@@ -56,8 +56,36 @@ public class MainServiceImpl implements MainService {
             return null;
           profiles.add(profile);
         }
+        sr.setParticipants(profiles);
         result.add(sr);
       }
+    }
+
+    return result;
+  }
+
+  @Override
+  public List<ScheduleResult> getSchedules(int userSeq) {
+    User user = userRepository.findBySeq(userSeq);
+    if (user == null)
+      return null;
+
+    ArrayList<ScheduleResult> result = new ArrayList<ScheduleResult>();
+
+    for (ObjectId id : user.getSchedules()) {
+      Schedule s = scheduleRepository.findById(id).get();
+      ScheduleResult sr = new ScheduleResult();
+      sr.copy(s);
+      ArrayList<Profile> profiles = new ArrayList<Profile>();
+      for (ObjectId userId : s.getParticipants()) {
+        Profile profile = profileRepository.findById(userId).get();
+        if (profile == null)
+          return null;
+        profiles.add(profile);
+      }
+      sr.setParticipants(profiles);
+      result.add(sr);
+
     }
 
     return result;
@@ -74,7 +102,7 @@ public class MainServiceImpl implements MainService {
 
     for (ObjectId id : user.getSchedules()) {
       Schedule s = scheduleRepository.findById(id).get();
-      if (s.isCompleted()) {
+      if (s.getCompleted() == 1) {
         ScheduleResult sr = new ScheduleResult();
         sr.copy(s);
         ArrayList<Profile> profiles = new ArrayList<Profile>();
@@ -119,7 +147,7 @@ public class MainServiceImpl implements MainService {
       Schedule s = scheduleRepository.findById(id).get();
       Calendar chk = Calendar.getInstance();
       chk.setTime(s.getMeetDate());
-      if (start.before(chk) && end.after(chk) && s.isCompleted()) {
+      if (start.before(chk) && end.after(chk) && s.getCompleted() == 1) {
         ScheduleResult sr = new ScheduleResult();
         sr.copy(s);
         ArrayList<Profile> profiles = new ArrayList<Profile>();
@@ -192,7 +220,7 @@ public class MainServiceImpl implements MainService {
 
     for (ObjectId id : user.getSchedules()) {
       Schedule s = scheduleRepository.findById(id).get();
-      if (s.isCompleted() && s.getTitle() != null && s.getTitle().contains(word)) {
+      if (s.getCompleted() == 1 && s.getTitle() != null && s.getTitle().contains(word)) {
         ScheduleResult sr = new ScheduleResult();
         sr.copy(s);
         ArrayList<Profile> profiles = new ArrayList<Profile>();

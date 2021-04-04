@@ -16,4 +16,6 @@ public interface MainService {
 
   List<ScheduleResult> getTimelineByTitle(int userSeq, String word);
 
+  List<ScheduleResult> getSchedules(int userSeq);
+
 }
