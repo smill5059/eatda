@@ -45,7 +45,7 @@ function PhotoUploader(props) {
       })
     }).then((res) => {
       // alert("사진이 저장되었습니다!");
-      window.location.href = `/meeting/${meetingId}`;
+    //   window.location.href = `/meeting/${meetingId}`;
     })
   };
 
