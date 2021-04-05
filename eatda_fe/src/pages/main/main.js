@@ -35,8 +35,8 @@ function Main() {
         // 'Content-Type': 'application/json',
       }
     })
-    .then((res) => res.json())
-    .then((res) => {
+    .then(res => res.json())
+    .then(res => {
       setData(res)
       console.info("미팅데이터 불러오기", res)
     })
