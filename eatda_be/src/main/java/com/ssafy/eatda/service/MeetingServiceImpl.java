@@ -12,10 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.google.gson.Gson;
+import com.ssafy.eatda.repository.MaxStoreIdRepository;
 import com.ssafy.eatda.repository.MeetingRepository;
 import com.ssafy.eatda.repository.ProfileRepository;
 import com.ssafy.eatda.repository.StoreRepository;
 import com.ssafy.eatda.repository.UserRepository;
+import com.ssafy.eatda.vo.MaxStoreId;
 import com.ssafy.eatda.vo.Profile;
 import com.ssafy.eatda.vo.RecommInfo;
 import com.ssafy.eatda.vo.Schedule;
@@ -34,12 +36,33 @@ public class MeetingServiceImpl implements MeetingService {
   private UserRepository userRepo;
   @Autowired
   private StoreRepository storeRepo;
+  @Autowired
+  private MaxStoreIdRepository maxStoreIdRepo;
 
   @Autowired
   private RestTemplate restTemplate;
 
   @Override
   public Schedule createMeeting(Schedule schedule) {
+
+    // storeId 배정
+    for (Store store : schedule.getStores()) {
+      if (store.getStoreId().equals("0")) {
+        ArrayList<Store> stores =
+            storeRepo.findByStoreNameAndStoreAddress(store.getStoreName(), store.getStoreAddress());
+        if (stores == null) {
+          MaxStoreId maxStoreId =
+              maxStoreIdRepo.findById(new ObjectId("6069d82d4638caa29f1084f1")).get();
+          store.setStoreId(Integer.toString(maxStoreId.getMaxValue()));
+          storeRepo.save(store);
+          maxStoreId.setMaxValue(maxStoreId.getMaxValue() + 1);
+          maxStoreIdRepo.save(maxStoreId);
+        } else {
+          store.setStoreId(stores.get(0).getStoreId());
+        }
+      }
+    }
+
     // schedule 저장
     schedule.setCompleted(0);
     Schedule result = meetingRepo.insert(schedule);
@@ -60,13 +83,12 @@ public class MeetingServiceImpl implements MeetingService {
   }
 
   @Override
-  public List<Store> recommend(List<Integer> reviewIds, float latitude, float longitude) {
+  public List<Store> recommend(RecommInfo recommInfo) {
     // MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     // body.put("reviewIds", reviewIds);
     // body.add("latitude", String.valueOf(latitude));
     // body.add("longitude", String.valueOf(longitude));
 
-    RecommInfo recommInfo = new RecommInfo(reviewIds, latitude, longitude);
     String body = new Gson().toJson(recommInfo);
     HttpHeaders header = new HttpHeaders();
     header.set("Contenet-type", MediaType.APPLICATION_JSON_VALUE);

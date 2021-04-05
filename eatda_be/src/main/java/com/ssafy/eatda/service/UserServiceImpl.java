@@ -20,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.eatda.repository.MaxStoreIdRepository;
 import com.ssafy.eatda.repository.ProfileRepository;
 import com.ssafy.eatda.repository.UserRepository;
+import com.ssafy.eatda.vo.MaxStoreId;
 import com.ssafy.eatda.vo.Profile;
 import com.ssafy.eatda.vo.User;
 import com.ssafy.eatda.vo.UserResult;
@@ -34,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private ProfileRepository profileRepository;
+
+  @Autowired
+  private MaxStoreIdRepository maxStoreIdRepo;
 
   @Autowired
   private JwtService jwtService;
@@ -112,34 +117,43 @@ public class UserServiceImpl implements UserService {
           }
         }
 
+        MaxStoreId maxReviewId =
+            maxStoreIdRepo.findById(new ObjectId("6069d82d4638caa29f1084f1")).get();
+
         user.setFriends(new ArrayList<ObjectId>());
         user.setSchedules(new ArrayList<ObjectId>());
-
+        user.setReviewId(maxReviewId.getReviewIdMaxValue());
         userRepository.save(user);
         user = userRepository.findBySeq(seq);
 
         profile.setId(user.getId());
         profile.setUserSeq(user.getSeq());
+        profile.setReviewId(maxReviewId.getReviewIdMaxValue());
         profile.setUserName(user.getName());
         profile.setUserProfileUrl(user.getProfileUrl());
         profileRepository.save(profile);
+
+        maxReviewId.setReviewIdMaxValue(maxReviewId.getReviewIdMaxValue() + 1);
+        maxStoreIdRepo.save(maxReviewId);
 
       }
 
       // 로그인
       User user = userRepository.findBySeq(seq);
 
-
       UserResult userResult = new UserResult();
       userResult.setToken(jwtService.create(user.getSeq()));
       userResult.setProfileUrl(user.getProfileUrl());
       userResult.setName(user.getName());
       userResult.setSeq(seq);
+      userResult.setReviewId(user.getReviewId());
       userResult.setId(user.getId());
 
       ArrayList<Profile> list = new ArrayList<Profile>();
       for (ObjectId id : user.getFriends()) {
-        Profile profile = profileRepository.findById(id).get();
+        Profile profile = profileRepository.findById(id).orElse(null);
+        if (profile == null)
+          continue;
         list.add(profile);
       }
 
@@ -278,7 +292,9 @@ public class UserServiceImpl implements UserService {
 
     ArrayList<Profile> list = new ArrayList<Profile>();
     for (ObjectId id : user.getFriends()) {
-      Profile profile = profileRepository.findById(id).get();
+      Profile profile = profileRepository.findById(id).orElse(null);
+      if (profile == null)
+        continue;
       list.add(profile);
     }
 
@@ -298,7 +314,9 @@ public class UserServiceImpl implements UserService {
 
     // 친구들의 친구목록에서 삭제
     for (ObjectId friendId : user.getFriends()) {
-      User friend = userRepository.findById(friendId).get();
+      User friend = userRepository.findById(friendId).orElse(null);
+      if (friend == null)
+        continue;
       friend.getFriends().remove(id);
       userRepository.save(friend);
     }

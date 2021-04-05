@@ -2,6 +2,7 @@ package com.ssafy.eatda.controller;
 
 import com.ssafy.eatda.service.JwtService;
 import com.ssafy.eatda.service.MeetingService;
+import com.ssafy.eatda.vo.RecommInfo;
 import com.ssafy.eatda.vo.Schedule;
 import com.ssafy.eatda.vo.ScheduleResult;
 import com.ssafy.eatda.vo.Store;
@@ -38,8 +39,8 @@ public class MeetingController {
 
   @ApiOperation(value = "맛집 추천")
   @PostMapping("/recomm")
-  public ResponseEntity<?> recommend(@RequestParam List<Integer> reviewIds, @RequestParam float latitude, @RequestParam float longitude, HttpServletRequest req) {
-    List<Store> result = meetingSvc.recommend(reviewIds, latitude, longitude);
+  public ResponseEntity<?> recommend(@RequestBody RecommInfo recommInfo, HttpServletRequest req) {
+    List<Store> result = meetingSvc.recommend(recommInfo);
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 

@@ -31,5 +31,5 @@ public class Schedule {
   private List<Comment> comments;
   private List<String> imgs;
 
-  private int Completed;
+  private int completed;
 }
