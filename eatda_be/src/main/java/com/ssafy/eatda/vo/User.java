@@ -19,7 +19,7 @@ public class User {
   private int seq;
   private String name;
   private String profileUrl;
-  private String reviewId;
+  private int reviewId;
   private List<ObjectId> friends;
   private List<ObjectId> schedules;
 }

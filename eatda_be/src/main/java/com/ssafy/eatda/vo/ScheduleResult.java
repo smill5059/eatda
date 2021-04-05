@@ -1,13 +1,13 @@
 package com.ssafy.eatda.vo;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.ssafy.eatda.util.CustomObjectIdSerializer;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.bson.types.ObjectId;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.ssafy.eatda.util.CustomObjectIdSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,9 +29,9 @@ public class ScheduleResult {
   private List<String> tags;
   private List<Score> scores;
   private List<Comment> comments;
-  private List<Img> imgs;
+  private List<String> imgs;
 
-  private boolean isCompleted;
+  private int completed;
 
   public void copy(Schedule s) {
     this.id = s.getId();
@@ -42,5 +42,6 @@ public class ScheduleResult {
     this.scores = s.getScores();
     this.comments = s.getComments();
     this.imgs = s.getImgs();
+    this.completed = s.getCompleted();
   }
 }

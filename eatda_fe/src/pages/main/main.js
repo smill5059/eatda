@@ -22,18 +22,21 @@ function Main() {
 
   /* when main rendering */
   const dispatch = useDispatch();
-  const [ data, setData ] = useState({});
+  const [ data, setData ] = useState([]);
+  const userToken = localStorage.getItem('Kakao_token') ? localStorage.getItem('Kakao_token') : ""
   
   useEffect(() => {
+      if (userToken === ""){
+          window.location.href = "/login"
+      }
     fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
       headers : {
-        // 'token': localStorage.getItem('Kakao_token'),
-        'token': "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NjEzNDA3LCJzZXEiOjE2ODE4ODI0NzR9.5boO0tvNz3dexD5RB1dLLZvg6GLJbzEzb6TKQuXDYgI",
+        'token': userToken,        
         // 'Content-Type': 'application/json',
       }
     })
-    .then((res) => res.json())
-    .then((res) => {
+    .then(res => res.json())
+    .then(res => {
       setData(res)
       console.info("미팅데이터 불러오기", res)
     })

@@ -32,22 +32,36 @@
   
       width: 90%;
       margin: 0 auto;
-      padding: 1rem;
+      padding: .7rem 1rem;
+      grid-row-gap: .5rem;
   
       * {
         text-align: center;
       }
   
       .meetingImg {
-        grid-column: 1/3;
+        grid-row: span 3;
+        grid-column: span 2;
       }
-  
+      
+      .meetingTitle {
+        grid-column: span 8;
+      }
+
       .meetingTime {
-        grid-column: 4/8;
+        grid-column: span 4;
       }
   
       .meetingFr {
-        grid-column: 9/11;
+        grid-column: span 4;
+        
+        .meetingFrName {
+          padding: .3rem;
+        }
+      }
+
+      .meetingLoca {
+        grid-column: 3/11;
       }
     }
   }

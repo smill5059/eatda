@@ -42,9 +42,4 @@ public class GlobalExceptionHandler {
     }
     return sb.toString();
   }
-
-  @Bean
-  public RestTemplate restTemplate(RestTemplateBuilder builder) {
-    return builder.build();
-  }
 }
