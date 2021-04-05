@@ -17,6 +17,7 @@ public class UserResult {
   @JsonSerialize(using = CustomObjectIdSerializer.class)
   private ObjectId id;
   private int seq;
+  private int reviewId;
   private String name;
   private String profileUrl;
   private List<Profile> friends;

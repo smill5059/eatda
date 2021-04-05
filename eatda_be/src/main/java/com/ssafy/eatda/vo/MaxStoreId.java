@@ -16,5 +16,6 @@ public class MaxStoreId {
   @Id
   private ObjectId id;
   private int maxValue;
+  private int reviewIdMaxValue;
 
 }
