@@ -76,7 +76,7 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   @Override
-  public String uploadImg(ObjectId meetingId, List<MultipartFile> files) {
+  public String uploadImg(ObjectId meetingId, MultipartFile[] files) {
 
     Schedule schedule = reviewRepo.findById(meetingId).get();
     if (schedule == null) {

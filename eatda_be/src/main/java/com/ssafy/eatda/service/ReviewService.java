@@ -10,7 +10,7 @@ public interface ReviewService {
 
   Schedule updateComment(Schedule schedule);
 
-  String uploadImg(ObjectId meetingId, List<MultipartFile> files);
+  String uploadImg(ObjectId meetingId, MultipartFile[] updatedFiles);
 
   String deleteImgs(ObjectId meetingId, List<String> deletedUrls);
 }
