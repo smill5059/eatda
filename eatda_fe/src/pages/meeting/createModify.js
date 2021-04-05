@@ -572,16 +572,16 @@ function CreateModify(props) {
             </div>
           </Form.Item>
           {/* 친구 부르기 버튼 */}
-          <Form.Item
+          {/* <Form.Item
             name="meetingFindFriend"
             label="누구랑"
             className="meetingFindFriend"
           >
-            {/* <Input
+            <Input
               //   className="meetingFindFriendButton"
               placeholder="친구를 검색해주세요"
               onClick={(e) => showModal(e, "friend")}
-            /> */}
+            />
             <Select
               mode="multiple"
               showArrow
@@ -591,7 +591,7 @@ function CreateModify(props) {
               value={selectedFriends}
               onChange={setSelectedFriends}
             />
-          </Form.Item>
+          </Form.Item> */}
           {/* 친구 목록   */}
           {/* <Form.Item className="meetingFriendsListBox">
             <div className="meetingFriendsList">

@@ -6,6 +6,7 @@ import moment from "moment";
 function MemoUpdate(props) {
     const user = useSelector(state => state.userData)
     const userSeq = user.usercode
+    const reviewId = user.reviewId
   // 요일 배열
   const weekDays = ["(일)", "(월)", "(화)", "(수)", "(목)", "(금)", "(토)"];
   // 유저 토큰
@@ -105,6 +106,7 @@ function MemoUpdate(props) {
         item.rate = v;
         storeItem.rate = v;
         checkExist = true;
+        item.reviewId = reviewId
       }
     });
     if (checkExist) {
@@ -113,7 +115,8 @@ function MemoUpdate(props) {
       let scoreItem = {
         storeId: String(storeItem.storeId),
         userSeq: userSeq,
-        rate: v,
+        rate: v,        
+        reviewId : reviewId
       };
       setMeetingScores(meetingScores.concat([scoreItem]));
     }
