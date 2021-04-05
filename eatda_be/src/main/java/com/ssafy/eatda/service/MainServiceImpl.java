@@ -44,14 +44,14 @@ public class MainServiceImpl implements MainService {
     ArrayList<ScheduleResult> result = new ArrayList<ScheduleResult>();
 
     for (ObjectId id : user.getSchedules()) {
-      Schedule s = scheduleRepository.findById(id).get();
+      Schedule s = scheduleRepository.findById(id).orElse(null);
       cal.setTime(s.getMeetDate());
       if (cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) == month) {
         ScheduleResult sr = new ScheduleResult();
         sr.copy(s);
         ArrayList<Profile> profiles = new ArrayList<Profile>();
         for (ObjectId userId : s.getParticipants()) {
-          Profile profile = profileRepository.findById(userId).get();
+          Profile profile = profileRepository.findById(userId).orElse(null);
           if (profile == null)
             return null;
           profiles.add(profile);
@@ -73,12 +73,14 @@ public class MainServiceImpl implements MainService {
     ArrayList<ScheduleResult> result = new ArrayList<ScheduleResult>();
 
     for (ObjectId id : user.getSchedules()) {
-      Schedule s = scheduleRepository.findById(id).get();
+      Schedule s = scheduleRepository.findById(id).orElse(null);
+      if (s == null)
+        continue;
       ScheduleResult sr = new ScheduleResult();
       sr.copy(s);
       ArrayList<Profile> profiles = new ArrayList<Profile>();
       for (ObjectId userId : s.getParticipants()) {
-        Profile profile = profileRepository.findById(userId).get();
+        Profile profile = profileRepository.findById(userId).orElse(null);
         if (profile == null)
           return null;
         profiles.add(profile);
@@ -101,13 +103,13 @@ public class MainServiceImpl implements MainService {
     ArrayList<ScheduleResult> result = new ArrayList<ScheduleResult>();
 
     for (ObjectId id : user.getSchedules()) {
-      Schedule s = scheduleRepository.findById(id).get();
+      Schedule s = scheduleRepository.findById(id).orElse(null);
       if (s.getCompleted() == 1) {
         ScheduleResult sr = new ScheduleResult();
         sr.copy(s);
         ArrayList<Profile> profiles = new ArrayList<Profile>();
         for (ObjectId userId : s.getParticipants()) {
-          Profile profile = profileRepository.findById(userId).get();
+          Profile profile = profileRepository.findById(userId).orElse(null);
           if (profile == null)
             return null;
           profiles.add(profile);
@@ -144,7 +146,7 @@ public class MainServiceImpl implements MainService {
     end.set(Calendar.SECOND, 0);
 
     for (ObjectId id : user.getSchedules()) {
-      Schedule s = scheduleRepository.findById(id).get();
+      Schedule s = scheduleRepository.findById(id).orElse(null);
       Calendar chk = Calendar.getInstance();
       chk.setTime(s.getMeetDate());
       if (start.before(chk) && end.after(chk) && s.getCompleted() == 1) {
@@ -152,7 +154,7 @@ public class MainServiceImpl implements MainService {
         sr.copy(s);
         ArrayList<Profile> profiles = new ArrayList<Profile>();
         for (ObjectId userId : s.getParticipants()) {
-          Profile profile = profileRepository.findById(userId).get();
+          Profile profile = profileRepository.findById(userId).orElse(null);
           if (profile == null)
             return null;
           profiles.add(profile);
@@ -176,12 +178,12 @@ public class MainServiceImpl implements MainService {
 
 
     // for (ObjectId friendId : user.getFriends()) {
-    // Profile friend = profileRepository.findById(friendId).get();
+    // Profile friend = profileRepository.findById(friendId).orElse(null);
     // if (friend.getUserName() != null && friend.getUserName().contains(friendName)) {
     // int friendSeq = userRepository.findBySeq(friend.getUserSeq()).getSeq();
     //
     // for (ObjectId id : user.getSchedules()) {
-    // Schedule s = scheduleRepository.findById(id).get();
+    // Schedule s = scheduleRepository.findById(id).orElse(null);
     // if (s.isCompleted()) {
     //
     // }
@@ -192,7 +194,7 @@ public class MainServiceImpl implements MainService {
     // sr.copy(s);
     // ArrayList<Profile> profiles = new ArrayList<Profile>();
     // for (ObjectId userId : s.getParticipants()) {
-    // Profile profile = profileRepository.findById(userId).get();
+    // Profile profile = profileRepository.findById(userId).orElse(null);
     // if (profile == null)
     // return null;
     // if (profile.getUserSeq() == friendSeq) {
@@ -219,13 +221,13 @@ public class MainServiceImpl implements MainService {
     ArrayList<ScheduleResult> result = new ArrayList<ScheduleResult>();
 
     for (ObjectId id : user.getSchedules()) {
-      Schedule s = scheduleRepository.findById(id).get();
+      Schedule s = scheduleRepository.findById(id).orElse(null);
       if (s.getCompleted() == 1 && s.getTitle() != null && s.getTitle().contains(word)) {
         ScheduleResult sr = new ScheduleResult();
         sr.copy(s);
         ArrayList<Profile> profiles = new ArrayList<Profile>();
         for (ObjectId userId : s.getParticipants()) {
-          Profile profile = profileRepository.findById(userId).get();
+          Profile profile = profileRepository.findById(userId).orElse(null);
           if (profile == null)
             return null;
           profiles.add(profile);
