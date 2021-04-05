@@ -64,7 +64,7 @@ function Calendar(props) {
 
   const meetingData = useSelector((state) => state)
   const meetings = meetingData.meetingData.meeting
-  console.info("미팅데이터", meetings)
+  // console.info("미팅데이터", meetings)
 
   const toMeeting = (meetingId) => {
     console.info("event로 받아온", meetingId);
