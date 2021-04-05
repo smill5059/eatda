@@ -26,6 +26,9 @@ function MeetingRead(props) {
     })
       .then((res) => res.json())
       .then((res) => {
+          console.log("_________")
+          console.log(res)
+          console.log("_________")
         function parse(str) {
           var y = str.substr(0, 4);
           var m = str.substr(5, 2);
@@ -38,17 +41,17 @@ function MeetingRead(props) {
         res.meetDate = date;
         setMonth(date.getMonth() + 1);
         setDate(date.getDate());
-        if (date.getDay == 0) {
+        if (date.getDay === 0) {
           setDay("일");
-        } else if (date.getDay() == 1) {
+        } else if (date.getDay() === 1) {
           setDay("월");
-        } else if (date.getDay() == 2) {
+        } else if (date.getDay() === 2) {
           setDay("화");
-        } else if (date.getDay() == 3) {
+        } else if (date.getDay() === 3) {
           setDay("수");
-        } else if (date.getDay() == 4) {
+        } else if (date.getDay() === 4) {
           setDay("목");
-        } else if (date.getDay() == 5) {
+        } else if (date.getDay() === 5) {
           setDay("금");
         } else {
           setDay("토");
@@ -56,21 +59,33 @@ function MeetingRead(props) {
         setHours(date.getHours());
         setMinutes(date.getMinutes());
 
-        if (res.isCompleted) {
+        // 만난 약속
+        if (res.completed === 1) {
           var i = 0
           var comment = ""
           var username = user.username
+          // 유저 후기 텍스트
           for (i = 0; i < res.comments.length; i++) {
-
-            if (res.comments[i].userSeq == user.usercode) {
+            if (res.comments[i].userSeq === user.usercode) {
               comment = res.comments[i].content
               break
             }
           }
 
-          if (comment == "") {
+          if (comment === "") {
             comment = "수정하기를 눌러 다녀온 후기를 남겨보세요!";
           }
+
+          // 유저 매장 별점
+          res.stores.forEach(store => {
+              store.rate = 0
+              res.scores.some(score=>{
+                  if (store.storeId === score.storeId && user.usercode === score.userSeq){
+                    store.rate = score.rate
+                  }
+                  return (store.storeId === score.storeId && user.usercode === score.userSeq)
+              })
+          });
 
           setMeetComponent(
             <MeetingReview info={res} comment={comment}></MeetingReview>
@@ -78,10 +93,10 @@ function MeetingRead(props) {
           setMenu(
             <Menu>
               <Menu.Item key="0">
-                <a href={`/updateMeeting/${meetingId}/photoUpdate`}>사진</a>
+                <a href={`/updateMeeting/${meetingId}/photoUpdate`}>📷 사진</a>
               </Menu.Item>
               <Menu.Item key="1">
-                <a href={`/updateMeeting/${meetingId}/memoUpdate`}>후기</a>
+                <a href={`/updateMeeting/${meetingId}/memoUpdate`}>📝 후기</a>
               </Menu.Item>
             </Menu>
           );

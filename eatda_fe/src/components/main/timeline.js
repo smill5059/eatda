@@ -4,6 +4,7 @@ import { Card, Input, Image } from 'antd';
 
 function Timeline() {
   const meetings = useSelector(state => state.meetingData)
+  console.log(meetings)
   // 검색창
   const { Search } = Input;
   const onSearch = value => (
