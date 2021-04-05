@@ -1,27 +1,162 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
 
 import { Form, Input, Button, DatePicker, Space } from "antd";
 
 
 
 function RecommendationModal(props) {
+  const {setLocationKeyword, meetingArea, setMeetingLocation, meetingLocation, selectedFriends, showModal, setModalContent, locationModalItem } = props;
+  const user = useSelector(state => state.userData)
 
   console.info("props", props)
-  // console.info("모달 렌더링 됐어요")
-
-  // const [ meetingArea, setMeetingArea ] = useState(false);
-  const meetingArea = Boolean(props.meetingArea.length === 0)
-  console.info("받아온 미팅에어리어", props.meetingArea)
-  console.info("미팅장소 미정일때", meetingArea)
-
+  console.info("모달 렌더링 됐어요")
   
+  const meetingAreaSettled = Boolean(meetingArea.length !== 0)
+  
+  const [ recommStores, setRecommStores ] = useState([]);
+  // const [ recommStores, setRecommStores ] = useState([
+  //   {
+  //     "storeId": "20954",
+  //     "storeName": "개성편수",
+  //     "storeAddress": "서울특별시 강남구 개포동 1257-7",
+  //     "storeLatitude": 37.479263,
+  //     "storeLongitude": 127.0479,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "322320",
+  //     "storeName": "이가네면옥",
+  //     "storeAddress": "서울특별시 강남구 개포동 1260-8",
+  //     "storeLatitude": 37.479454,
+  //     "storeLongitude": 127.04964,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "163039",
+  //     "storeName": "밀케이커피",
+  //     "storeAddress": "서울특별시 서초구 양재동 2-44",
+  //     "storeLatitude": 37.48477,
+  //     "storeLongitude": 127.04141,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "45473",
+  //     "storeName": "그집갈비탕",
+  //     "storeAddress": "서울특별시 강남구 개포동 1217-1",
+  //     "storeLatitude": 37.478672,
+  //     "storeLongitude": 127.047905,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "162471",
+  //     "storeName": "밀란",
+  //     "storeAddress": "서울특별시 강남구 개포동 1215-1",
+  //     "storeLatitude": 37.478447,
+  //     "storeLongitude": 127.04917,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "194390",
+  //     "storeName": "브라운브레드",
+  //     "storeAddress": "서울시 강남구 도곡동 424-8",
+  //     "storeLatitude": 37.483173,
+  //     "storeLongitude": 127.04464,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "19857",
+  //     "storeName": "강중범초밥집",
+  //     "storeAddress": "서울특별시 강남구 도곡동 414-6",
+  //     "storeLatitude": 37.48455,
+  //     "storeLongitude": 127.04363,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "194456",
+  //     "storeName": "브라이언스커피",
+  //     "storeAddress": "서울특별시 강남구 도곡동 457",
+  //     "storeLatitude": 37.483925,
+  //     "storeLongitude": 127.04583,
+  //     "avgRate": 5,
+  //     "reviewCount": 3
+  //   },
+  //   {
+  //     "storeId": "124902",
+  //     "storeName": "리거양꼬치",
+  //     "storeAddress": "서울특별시 강남구 도곡동 412-13",
+  //     "storeLatitude": 37.484955,
+  //     "storeLongitude": 127.04252,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "116487",
+  //     "storeName": "뚝뗀",
+  //     "storeAddress": "서울특별시 강남구 도곡동 467-24",
+  //     "storeLatitude": 37.486515,
+  //     "storeLongitude": 127.05188,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "125239",
+  //     "storeName": "리스토랑",
+  //     "storeAddress": "서울특별시 강남구 도곡동 412-9",
+  //     "storeLatitude": 37.48506,
+  //     "storeLongitude": 127.0432,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "223889",
+  //     "storeName": "성천동치미막국수",
+  //     "storeAddress": "서울특별시 서초구 양재2동 275-1",
+  //     "storeLatitude": 37.47721,
+  //     "storeLongitude": 127.04444,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "51116",
+  //     "storeName": "김밥대학",
+  //     "storeAddress": "서울특별시 강남구 개포4동 1230-9",
+  //     "storeLatitude": 37.4768,
+  //     "storeLongitude": 127.048,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "221667",
+  //     "storeName": "설마중",
+  //     "storeAddress": "서울특별시 서초구 양재1동 2-3",
+  //     "storeLatitude": 37.484985,
+  //     "storeLongitude": 127.04035,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   },
+  //   {
+  //     "storeId": "93604",
+  //     "storeName": "데니스 타코",
+  //     "storeAddress": "서울특별시 서초구 양재동 2-28 오성빌딩 101호",
+  //     "storeLatitude": 37.484413,
+  //     "storeLongitude": 127.040825,
+  //     "avgRate": 5,
+  //     "reviewCount": 1
+  //   }
+  // ]);
+
+
   const meetingAreaPage = () => {
     console.info("미팅페이지 렌더링 됐어요")
-    // const 
     return (
-      // <div>
-      //   미팅페이지에요
-      // </div>
       <div className="meetingLocationContent">
         <Form layout="vertical">
           <Form.Item
@@ -33,7 +168,7 @@ function RecommendationModal(props) {
               placeholder="만날 장소를 검색해주세요"
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
-                  props.setLocationKeyword(e.target.value);
+                  setLocationKeyword(e.target.value);
                 }
               }}
               />
@@ -44,38 +179,108 @@ function RecommendationModal(props) {
     )
   };
   
+  
+  const [ loading, setLoading ] = useState(false);
+  const [ currentPage, setCurrentPage ] = useState(1);
+  const [ postsPerPage, setPostsPerPage ] = useState(5);
+
+  const indexOfLast = currentPage * postsPerPage;
+  const indexOfFirst = indexOfLast - postsPerPage;
+
+  function currentPosts(tmp) {
+    let currentPosts = 0;
+    currentPosts = tmp.slice(indexOfFirst, indexOfLast);
+    return currentPosts;
+  }
+  
+
+  useEffect(() => {
+    const reviewIds = [];
+    for (let i = 0; i < selectedFriends.length; i++) {
+      for (let j = 0; j < user.friendList.length; j++) {
+        if (user.friendList[j].id === selectedFriends[i]) {
+          reviewIds.push(user.friendList[j].reviewId)
+        }
+      }
+    }
+    console.info("내 정보", user)
+    reviewIds.push(user.reviewId)
+    if (meetingArea.length !== 0) {
+      console.info("recomm으로 통신을 보내겠습니다", reviewIds)
+      setLoading(true)
+      // fetch(`${process.env.REACT_APP_API_URL}/meeting/recomm?reviewIds=4506&reviewIds=1345&latitude=${parseFloat(meetingArea[0].locationLatitude)}&longitude=${parseFloat(meetingArea[0].locationLongitude)}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/meeting/recomm`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            reviewIds: reviewIds,
+            // reviewIds: selectedFriends,
+            latitude: parseFloat(meetingArea[0].locationLatitude),
+            longitude: parseFloat(meetingArea[0].locationLongitude),
+          })
+        })
+      .then((res) => res.json())
+      .then((response) => {
+        console.log("받아온 가게목록~!~!!~!~!~!~!~", response)
+        setRecommStores(response)
+      })
+    }
+  }, [meetingArea])
+
   const recommendationPage = () => {
-    console.info("추천페이지 렌더링 됐어요")
+    
+    const Posts = (recommStores, loading) => {
+      console.info("표기할 recommStores", recommStores)
+      return (
+        <div>
+          { loading && <div> { meetingArea[0].locationName } 주변 맛집을 찾고 있어요~! </div>}
+          <div>
+            { recommStores.map((item) =>
+              <div 
+                key={item.storeId}
+                onClick={() => setMeetingLocation(meetingLocation.concat(item))}
+              >
+                { item.storeName } 이에요!
+              </div>
+            ) }
+          </div>
+        </div>
+      )
+    }
+
+    const nextButton = () => {
+      if (currentPage === 3) {
+        return (
+          <Button
+            onClick={(e) => showModal(e, "location")}
+          >
+            직접 고를게요!
+          </Button>
+        )
+      } else if (loading === false) {
+        return(
+        <Button
+          onClick={() => {setCurrentPage(currentPage + 1)}}
+        >
+          다른 추천을 볼게요!
+        </Button>
+        )
+      }
+    }
+
     return (
       <div>
-        추천페이지예요
+        { Posts(currentPosts(recommStores), loading) }
+        { nextButton() }
       </div>
-      // <div className="meetingLocationContent">
-      //   <Form layout="vertical">
-      //     <Form.Item
-      //       name="meetingLocationForm"
-      //       className="meetingLocationForm"
-      //       label="맛집 추천받을 위치 검색하기"
-      //     >
-      //       <Input
-      //         placeholder="약속 장소를 검색해 주세요! EX) 홍대입구, 이태원"
-      //         onKeyUp={(e) => {
-      //           if (e.key === "Enter") {
-      //             props.setLocationKeyword(e.target.value);
-      //           }
-      //         }}
-      //       />
-      //     </Form.Item>
-      //   </Form>
-      //   <div className="meetingLocationMap"></div>
-      // </div>
-    )
+    );
   };
   
   return (
-    // { recommendationPage() }
     <div>
-      { (meetingArea) ? (meetingAreaPage()) : (recommendationPage()) }
+      { (meetingAreaSettled) ? (recommendationPage()) : (meetingAreaPage()) }
     </div>
   );
 }

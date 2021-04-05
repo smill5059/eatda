@@ -27,9 +27,9 @@ function Header() {
 
   return (
     <div className="calHeaderWrapper">
-      <div className="calHeaderBtn calHeaderBeforeBtn">
+      <div className="calHeaderBeforeBtn">
         <LeftOutlined 
-          style={{ color: "#EFBF43"}}
+          className="calHeaderBtn"
           onClick={() => { 
             decMonth(); 
           }}
@@ -38,9 +38,9 @@ function Header() {
       <div className="calHeaderNow">
         { viewMonth }
       </div>
-      <div className="calHeaderBtn calHeaderAfterBtn">
+      <div className="calHeaderAfterBtn">
         <RightOutlined 
-          style={{ color: "#EFBF43"}}
+          className="calHeaderBtn"
           onClick={() => { 
             incMonth();
           }}
