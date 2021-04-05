@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col } from 'antd';
+import { Row, Col, Rate } from 'antd';
 
 function MeetingReview(props) {
   const [data, setData] = useState(props.info)
+  console.log("얘는 받아온 자식")
+  console.log(data)
   return (
     <div className="contentBody meetingReadAfterContent">
       <Row justify="end" className="meetingReadTitle">
@@ -16,7 +18,7 @@ function MeetingReview(props) {
                 key={i} />)
             }))
             // 디니디니
-            : (<img src="http://sokcho35.cafe24.com/web/product/big/201511/301_shop1_961560.jpg" />)
+            : null
         }
       </Col>
       <Col className="meetingReadAfterFriend">
@@ -25,6 +27,19 @@ function MeetingReview(props) {
             imgUrl={friend.userProfileUrl}
             key={i} />);
         })}
+      </Col>
+      <Col className="meetingReadAfterStore">
+          {
+              data.stores.map((store, index)=>{
+                  console.log(store.rate)
+                  return (
+                    <Row className="meetingReadAfterStoreItem" align="middle" justify="space-between" key={index}>
+                    <p>{store.storeName}</p>
+                    <Rate disabled defaultValue={store.rate}/>
+                </Row>
+                  )
+              })
+          }
       </Col>
       <Col className="meetingReadAfterComment">
         <Row className="meetingReadAfterCommentItem">
@@ -53,11 +68,11 @@ class Img extends React.Component {
 class Friends extends React.Component {
   render() {
     return (
-      <Row className="meetingReadFriendItem">
-        <Col span={8} className="meetingReadFriendImage">
+      <Row className="meetingReadAfterFriendItem">
+        <Col span={8} className="meetingReadAfterFriendImage">
           <img src={`${process.env.REACT_APP_API_URL}/files/${this.props.imgUrl}`} />
         </Col>
-        <Col span={16} className="meetingReadFriendName">
+        <Col span={16} className="meetingReadAfterFriendName">
           {this.props.name}
         </Col>
       </Row>

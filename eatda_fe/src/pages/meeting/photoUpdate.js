@@ -3,8 +3,8 @@ import { Button, Dropdown, Menu, Row, Col, Image, Form } from "antd";
 
 import { PlusOutlined, CloseCircleFilled, PictureFilled } from '@ant-design/icons';
 
-function PhotoUploader() {
-  
+function PhotoUploader(props) {
+  const {meetingId} = props.match.params
   // 사진 업로드 버튼 이벤트 핸들러
   const photoInput = useRef();
   const handleClick = () => {
@@ -20,19 +20,22 @@ function PhotoUploader() {
 
     for (let i = 0; i < photoToAddList.length; i++) {
       formData.append("updatedFile", photoToAddList[i].file)
-      // console.info("넣을 객체는 제가 따로 설정해준것", photoToAddList[i])
-      // console.info("파일만 빼내면", photoToAddList[i].file)
-      // console.info("폼데이터는요", formData.getAll("updatedFile"))
+      console.info("넣을 객체는 제가 따로 설정해준것", photoToAddList[i])
+      console.info("파일만 빼내면", photoToAddList[i].file)
+      console.info("폼데이터는요", formData.getAll("updatedFile"))
+    }
+
+    if(photoToAddList.length > 0){
+        fetch(`${process.env.REACT_APP_API_URL}/review/img/${meetingId}`, {
+            method: "POST",
+            body: formData
+          })
     }
     
-    fetch(`${process.env.REACT_APP_API_URL}/review/img/6066975e4c8f71296a892d09`, {
-      method: "POST",
-      body: formData
-    })
-    .then()
+    
 
     console.info("삭제할 사진", deletedUrls)
-    fetch(`${process.env.REACT_APP_API_URL}/review/img/6066975e4c8f71296a892d09`, {
+    fetch(`${process.env.REACT_APP_API_URL}/review/img/${meetingId}`, {
       method: "DELETE",
       headers: {
         'Content-Type': 'application/json'
@@ -42,7 +45,7 @@ function PhotoUploader() {
       })
     }).then((res) => {
       // alert("사진이 저장되었습니다!");
-      // window.location.href = '/meeting/6064065b2802a2267bbe0e90';
+    //   window.location.href = `/meeting/${meetingId}`;
     })
   };
 
@@ -50,7 +53,7 @@ function PhotoUploader() {
   const [ photoAddedList, setPhotoAddedList ] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/meeting/6066975e4c8f71296a892d09`, {
+    fetch(`${process.env.REACT_APP_API_URL}/meeting/${meetingId}`, {
       headers : {
         'Content-Type': 'application/json',
       }
