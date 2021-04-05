@@ -139,7 +139,9 @@ public class UserServiceImpl implements UserService {
 
       ArrayList<Profile> list = new ArrayList<Profile>();
       for (ObjectId id : user.getFriends()) {
-        Profile profile = profileRepository.findById(id).get();
+        Profile profile = profileRepository.findById(id).orElse(null);
+        if (profile == null)
+          continue;
         list.add(profile);
       }
 
@@ -278,7 +280,9 @@ public class UserServiceImpl implements UserService {
 
     ArrayList<Profile> list = new ArrayList<Profile>();
     for (ObjectId id : user.getFriends()) {
-      Profile profile = profileRepository.findById(id).get();
+      Profile profile = profileRepository.findById(id).orElse(null);
+      if (profile == null)
+        continue;
       list.add(profile);
     }
 
@@ -298,7 +302,9 @@ public class UserServiceImpl implements UserService {
 
     // 친구들의 친구목록에서 삭제
     for (ObjectId friendId : user.getFriends()) {
-      User friend = userRepository.findById(friendId).get();
+      User friend = userRepository.findById(friendId).orElse(null);
+      if (friend == null)
+        continue;
       friend.getFriends().remove(id);
       userRepository.save(friend);
     }

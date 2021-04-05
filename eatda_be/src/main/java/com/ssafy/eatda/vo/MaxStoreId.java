@@ -1,9 +1,5 @@
 package com.ssafy.eatda.vo;
 
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -15,21 +11,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Schedule {
+public class MaxStoreId {
   @JsonSerialize(using = CustomObjectIdSerializer.class)
   @Id
   private ObjectId id;
-  private String title;
+  private int maxValue;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date meetDate;
-
-  private List<Store> stores;
-  private List<ObjectId> participants;
-  private List<String> tags;
-  private List<Score> scores;
-  private List<Comment> comments;
-  private List<String> imgs;
-
-  private int completed;
 }
