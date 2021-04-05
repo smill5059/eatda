@@ -22,13 +22,16 @@ function Main() {
 
   /* when main rendering */
   const dispatch = useDispatch();
-  const [ data, setData ] = useState({});
+  const [ data, setData ] = useState([]);
+  const userToken = localStorage.getItem('Kakao_token') ? localStorage.getItem('Kakao_token') : ""
   
   useEffect(() => {
+      if (userToken === ""){
+          window.location.href = "/login"
+      }
     fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
       headers : {
-        // 'token': localStorage.getItem('Kakao_token'),
-        'token': localStorage.getItem('Kakao_token'),
+        'token': userToken,        
         // 'Content-Type': 'application/json',
       }
     })
