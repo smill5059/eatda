@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -22,9 +23,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.eatda.repository.MaxStoreIdRepository;
 import com.ssafy.eatda.repository.ProfileRepository;
+import com.ssafy.eatda.repository.ReviewUpdateRepository;
 import com.ssafy.eatda.repository.UserRepository;
 import com.ssafy.eatda.vo.MaxStoreId;
 import com.ssafy.eatda.vo.Profile;
+import com.ssafy.eatda.vo.Review;
 import com.ssafy.eatda.vo.User;
 import com.ssafy.eatda.vo.UserResult;
 
@@ -39,6 +42,9 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private MaxStoreIdRepository maxStoreIdRepo;
+
+  @Autowired
+  private ReviewUpdateRepository reviewUpdateRepo;
 
   @Autowired
   private JwtService jwtService;
@@ -118,7 +124,7 @@ public class UserServiceImpl implements UserService {
         }
 
         MaxStoreId maxReviewId =
-            maxStoreIdRepo.findById(new ObjectId("6069d82d4638caa29f1084f1")).get();
+            maxStoreIdRepo.findById(new ObjectId("606ad4b5180a4b670d79d0a4")).get();
 
         user.setFriends(new ArrayList<ObjectId>());
         user.setSchedules(new ArrayList<ObjectId>());
@@ -132,6 +138,11 @@ public class UserServiceImpl implements UserService {
         profile.setUserName(user.getName());
         profile.setUserProfileUrl(user.getProfileUrl());
         profileRepository.save(profile);
+
+        Review review = new Review();
+        review.setReviewId(maxReviewId.getReviewIdMaxValue());
+        review.setScores(new HashMap<String, Integer>());
+        reviewUpdateRepo.save(review);
 
         maxReviewId.setReviewIdMaxValue(maxReviewId.getReviewIdMaxValue() + 1);
         maxStoreIdRepo.save(maxReviewId);

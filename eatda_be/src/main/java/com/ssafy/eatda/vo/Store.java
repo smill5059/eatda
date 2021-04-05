@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Store {
-    private String storeId;
-    private String storeName;
-    private String storeAddress;
-    private float storeLatitude;
-    private float storeLongitude;
-    private float avgRate;
-    private int reviewCount;
+  private String storeId;
+  private String storeName;
+  private String storeAddress;
+  private double storeLatitude;
+  private double storeLongitude;
+  private float avgRate;
+  private int reviewCount;
 }
