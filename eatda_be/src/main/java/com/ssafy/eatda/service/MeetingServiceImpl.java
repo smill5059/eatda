@@ -228,12 +228,37 @@ public class MeetingServiceImpl implements MeetingService {
   public Schedule updateMeeting(Schedule schedule) {
     Optional<Schedule> found = meetingRepo.findById(schedule.getId());
     if (found.isPresent()) {
+
+      // 참여자 정보 삭제
+      for (ObjectId p : found.get().getParticipants()) {
+        Optional<User> user = userRepo.findById(p);
+        if (user.isPresent()) {
+          List<ObjectId> s = user.get().getSchedules();
+          s.remove(schedule.getId());
+          user.get().setSchedules(s);
+          userRepo.save(user.get());
+        }
+      }
+
       found.get().setTitle(schedule.getTitle());
       found.get().setMeetDate(schedule.getMeetDate());
       found.get().setStores(schedule.getStores());
       found.get().setParticipants(schedule.getParticipants());
       found.get().setTags(schedule.getTags());
+      found.get().setReviewIds(schedule.getReviewIds());
       Schedule result = meetingRepo.save(found.get());
+
+      // user schedule 정보에 추가
+      for (ObjectId p : schedule.getParticipants()) {
+        Optional<User> user = userRepo.findById(p);
+        if (user.isPresent()) {
+          List<ObjectId> s = user.get().getSchedules();
+          s.add(result.getId());
+          user.get().setSchedules(s);
+          userRepo.save(user.get());
+        }
+      }
+
       return result;
     }
     return null;
