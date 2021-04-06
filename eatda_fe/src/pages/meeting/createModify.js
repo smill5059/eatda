@@ -107,34 +107,37 @@ function CreateModify(props) {
       // 통신하여 약속정보 가져오기
       fetch(`${process.env.REACT_APP_API_URL}/meeting/${meetingId}`)
         .then((res) => {
-          res.json().then((response) => {
-            console.log(response);
-            console.log(response.id);
-            setMeetingTitle(response.title);
-            console.log(new Date());
-            console.log(response.meetDate);
-            let meetDate = new Date(response.meetDate);
-            setMeetingDate(moment(meetDate));
-            setMeetingTime(moment(meetDate));
-            setMeetingLocation(response.stores);
-            form.setFieldsValue({
-              meetingName: response.title,
-              meetingDate: moment(meetDate),
-              meetingTime: moment(meetDate),
+          res
+            .json()
+            .then((response) => {
+              console.log(response);
+              console.log(response.id);
+              setMeetingTitle(response.title);
+              console.log(new Date());
+              console.log(response.meetDate);
+              let meetDate = new Date(response.meetDate);
+              setMeetingDate(moment(meetDate));
+              setMeetingTime(moment(meetDate));
+              setMeetingLocation(response.stores);
+              form.setFieldsValue({
+                meetingName: response.title,
+                meetingDate: moment(meetDate),
+                meetingTime: moment(meetDate),
+              });
+            })
+            .catch(() => {
+              window.location.href = "/";
             });
-          }).catch(() => {
-            window.location.href = '/'
-        });;
         })
         .catch(() => {
-            window.location.href = '/'
+          window.location.href = "/";
         });
     }
   }, []);
 
   useEffect(() => {
-    setModalVisible(false)
-  }, [meetingLocation])
+    setModalVisible(false);
+  }, [meetingLocation]);
 
   // 장소 모달
   function locationModalItem() {
@@ -171,11 +174,11 @@ function CreateModify(props) {
           meetingArea={meetingArea}
           setMeetingLocation={setMeetingLocation}
           meetingLocation={meetingLocation}
-          selectedFriends={selectedFriends} 
+          selectedFriends={selectedFriends}
           showModal={showModal}
           setModalContent={setModalContent}
           locationModalItem={locationModalItem}
-          />
+        />
       </div>
     );
   }
@@ -322,18 +325,20 @@ function CreateModify(props) {
                     // console.log(element.dataset.storeAddress);
                     // console.log(element.dataset.storeLatitude);
                     // console.log(element.dataset.storeLongitude);
-                    const temp = [{
-                      locationName: element.dataset.storeName,
-                      locationAddress: element.dataset.storeAddress,
-                      locationLatitude: element.dataset.storeLatitude,
-                      locationLongitude: element.dataset.storeLongitude,
-                    }];
-                    console.info("선택된 장소", temp)
+                    const temp = [
+                      {
+                        locationName: element.dataset.storeName,
+                        locationAddress: element.dataset.storeAddress,
+                        locationLatitude: element.dataset.storeLatitude,
+                        locationLongitude: element.dataset.storeLongitude,
+                      },
+                    ];
+                    console.info("선택된 장소", temp);
                     setLocation(temp);
                   });
                 });
-                console.log(data[i]);
-              });
+              console.log(data[i]);
+            });
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
           }
           map.setBounds(bounds);
@@ -351,23 +356,26 @@ function CreateModify(props) {
   // Location이 변화했을 때, 이걸 Area로 (가게 추천받을 지역으로) 보내줄지 아니면 storeLocation으로 보내줄지 결정
   useEffect(() => {
     if (meetingArea.length === 0) {
-      setMeetingArea(location)
+      setMeetingArea(location);
     } else {
-      console.info("새로 추가할 가게", location)
-      setMeetingLocation(meetingLocation.concat([{
-        "storeId": "0",
-        "storeName": location[0].locationName,
-        "storeAddress": location[0].locationAddress,
-        "storeLatitude": location[0].locationLatitude,
-        "storeLongitude": location[0].locationLongitude,
-      }]))
+      console.info("새로 추가할 가게", location);
+      setMeetingLocation(
+        meetingLocation.concat([
+          {
+            storeId: "0",
+            storeName: location[0].locationName,
+            storeAddress: location[0].locationAddress,
+            storeLatitude: location[0].locationLatitude,
+            storeLongitude: location[0].locationLongitude,
+          },
+        ])
+      );
     }
-  }, [location])
-  
-  useEffect(() => {
-    setModalContent(recommendationModalItem)
-  }, [meetingArea])
+  }, [location]);
 
+  useEffect(() => {
+    setModalContent(recommendationModalItem);
+  }, [meetingArea]);
 
   function showModal(e, modalType) {
     e.preventDefault();
@@ -537,7 +545,7 @@ function CreateModify(props) {
               mode="multiple"
               showArrow
               tagRender={tagRender}
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               options={friends}
               value={selectedFriends}
               onChange={setSelectedFriends}
@@ -554,9 +562,7 @@ function CreateModify(props) {
               placeholder="약속 장소를 정해주세요"
               onClick={(e) => showModal(e, "location")}
             /> */}
-            <Button
-              onClick={(e) => showModal(e, "recommendation")}
-            >
+            <Button onClick={(e) => showModal(e, "recommendation")}>
               추천받기
             </Button>
           </Form.Item>
@@ -638,7 +644,12 @@ function CreateModify(props) {
             <div className="modalTitle">
               <p>{modalTitle}</p>
               <p className="modalCloseButton">
-                <CloseOutlined onClick={() => {setMeetingArea([]); setModalVisible(false)}} />
+                <CloseOutlined
+                  onClick={() => {
+                    setMeetingArea([]);
+                    setModalVisible(false);
+                  }}
+                />
               </p>
             </div>
             <div className="modalContent">{modalContent}</div>
