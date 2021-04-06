@@ -14,7 +14,7 @@ public class Scheduler {
   @Autowired
   private RestTemplate restTemplate;
 
-  @Scheduled(cron = "0 * * * * *")
+  @Scheduled(cron = "* * 5 * * *")
   public void updateSimilarity() {
     HttpEntity<String> entity = new HttpEntity<>("");
     restTemplate.postForEntity("http://eatda.me:8000/similarity/", entity, String.class);
