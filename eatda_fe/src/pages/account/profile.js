@@ -9,6 +9,8 @@ import * as settingUser from 'store/modules/userData'
 const SERVER_URL = process.env.REACT_APP_API_URL;
 
 function Profile() {
+  const { Kakao } = window;
+
   const dispatch = useDispatch()
 
   // 검색 input
@@ -95,6 +97,14 @@ function Profile() {
     })
   }
 
+  
+  // 친구 초대
+  const inviteFriend = code => {
+    // 친구 초대 
+    // Kakao.Link.
+  }
+
+
   // 친구 관리
   const friendMenu = friend => (
     <Menu>
@@ -140,6 +150,9 @@ function Profile() {
             나의 친구 목록
           </div>
           <div className="frdAddBtn">
+            <div className="" onClick={inviteFriend(user.usercode)}>
+              친구 초대
+            </div>
             <PlusSquareOutlined style={{fontSize: 'larger', color: '#EFBF43'}} onClick={showModal} />
             <Modal
               visible={visible}
@@ -164,7 +177,7 @@ function Profile() {
           </Card>
         </div>
       </div>
-      </div>
+    </div>
   );
 }
 
