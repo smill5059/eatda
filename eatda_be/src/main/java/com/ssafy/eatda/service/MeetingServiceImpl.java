@@ -1,6 +1,8 @@
 package com.ssafy.eatda.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;
@@ -12,14 +14,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.google.gson.Gson;
+import com.ssafy.eatda.repository.GroupRepository;
 import com.ssafy.eatda.repository.MaxStoreIdRepository;
 import com.ssafy.eatda.repository.MeetingRepository;
 import com.ssafy.eatda.repository.ProfileRepository;
+import com.ssafy.eatda.repository.ReviewUpdateRepository;
 import com.ssafy.eatda.repository.StoreRepository;
 import com.ssafy.eatda.repository.UserRepository;
+import com.ssafy.eatda.vo.Group;
 import com.ssafy.eatda.vo.MaxStoreId;
 import com.ssafy.eatda.vo.Profile;
 import com.ssafy.eatda.vo.RecommInfo;
+import com.ssafy.eatda.vo.Review;
 import com.ssafy.eatda.vo.Schedule;
 import com.ssafy.eatda.vo.ScheduleResult;
 import com.ssafy.eatda.vo.Store;
@@ -38,21 +44,60 @@ public class MeetingServiceImpl implements MeetingService {
   private StoreRepository storeRepo;
   @Autowired
   private MaxStoreIdRepository maxStoreIdRepo;
+  @Autowired
+  private GroupRepository groupRepo;
+  @Autowired
+  private ReviewUpdateRepository reviewUpdateRepo;
 
   @Autowired
   private RestTemplate restTemplate;
 
   @Override
   public Schedule createMeeting(Schedule schedule) {
+    // 그룹 reviewId 생성
+    if (schedule.getReviewIds().size() == 0) {
+      return null;
+    }
+
+    Collections.sort(schedule.getReviewIds());
+
+    if (schedule.getReviewIds().size() > 1) {
+      Collections.sort(schedule.getReviewIds());
+      String groupId = "";
+      for (Integer reviewId : schedule.getReviewIds()) {
+        groupId += Integer.toString(reviewId);
+      }
+      Group group = groupRepo.findByGroupId(groupId);
+      if (group == null) {
+        group = new Group();
+        group.setCnt(0);
+        group.setGroupId(groupId);
+        group.setMembers((ArrayList<Integer>) schedule.getReviewIds());
+
+        MaxStoreId maxReviewId =
+            maxStoreIdRepo.findById(new ObjectId("606ad4b5180a4b670d79d0a4")).get();
+        group.setReviewId(maxReviewId.getReviewIdMaxValue());
+        groupRepo.save(group);
+
+        Review review = new Review();
+        review.setReviewId(maxReviewId.getReviewIdMaxValue());
+        review.setScores(new HashMap<String, Integer>());
+        reviewUpdateRepo.save(review);
+
+        maxReviewId.setReviewIdMaxValue(maxReviewId.getReviewIdMaxValue() + 1);
+        maxStoreIdRepo.save(maxReviewId);
+      }
+    }
 
     // storeId 배정
     for (Store store : schedule.getStores()) {
       if (store.getStoreId().equals("0")) {
         ArrayList<Store> stores =
             storeRepo.findByStoreNameAndStoreAddress(store.getStoreName(), store.getStoreAddress());
-        if (stores == null) {
+
+        if (stores == null || stores.size() == 0) {
           MaxStoreId maxStoreId =
-              maxStoreIdRepo.findById(new ObjectId("6069d82d4638caa29f1084f1")).get();
+              maxStoreIdRepo.findById(new ObjectId("606ad4b5180a4b670d79d0a4")).get();
           store.setStoreId(Integer.toString(maxStoreId.getMaxValue()));
           storeRepo.save(store);
           maxStoreId.setMaxValue(maxStoreId.getMaxValue() + 1);
@@ -89,6 +134,48 @@ public class MeetingServiceImpl implements MeetingService {
     // body.add("latitude", String.valueOf(latitude));
     // body.add("longitude", String.valueOf(longitude));
 
+    ArrayList<Integer> list = (ArrayList<Integer>) recommInfo.getReviewIds();
+    if (list.size() == 0) {
+      return null;
+    }
+
+    if (list.size() > 1) {
+      Collections.sort(list);
+      String groupId = "";
+      for (Integer reviewId : list) {
+        groupId += Integer.toString(reviewId);
+      }
+      Group group = groupRepo.findByGroupId(groupId);
+      if (group != null) {
+        // 그룹의 추천 횟수가 3회 이상일 경우 reviewId하나로 추천
+        if (group.getCnt() >= 3) {
+          ArrayList<Integer> tmp = new ArrayList<Integer>();
+          tmp.add(group.getReviewId());
+          recommInfo.setReviewIds(tmp);
+        }
+      } else {
+        group = new Group();
+        group.setCnt(0);
+        group.setGroupId(groupId);
+        group.setMembers((ArrayList<Integer>) recommInfo.getReviewIds());
+
+        MaxStoreId maxReviewId =
+            maxStoreIdRepo.findById(new ObjectId("606ad4b5180a4b670d79d0a4")).get();
+        group.setReviewId(maxReviewId.getReviewIdMaxValue());
+        groupRepo.save(group);
+
+        Review review = new Review();
+        review.setReviewId(maxReviewId.getReviewIdMaxValue());
+        review.setScores(new HashMap<String, Integer>());
+        reviewUpdateRepo.save(review);
+
+        maxReviewId.setReviewIdMaxValue(maxReviewId.getReviewIdMaxValue() + 1);
+        maxStoreIdRepo.save(maxReviewId);
+
+      }
+
+    }
+
     String body = new Gson().toJson(recommInfo);
     HttpHeaders header = new HttpHeaders();
     header.set("Contenet-type", MediaType.APPLICATION_JSON_VALUE);
@@ -102,9 +189,9 @@ public class MeetingServiceImpl implements MeetingService {
     List<Store> result = new ArrayList<>();
     int len = stores.length;
     for (int i = 0; i < len; i++) {
-      Optional<Store> found = storeRepo.findByStoreId(stores[i]);
-      if (found.isPresent()) {
-        result.add(found.get());
+      Store found = storeRepo.findByStoreId(stores[i]);
+      if (found != null) {
+        result.add(found);
       }
     }
     return result;

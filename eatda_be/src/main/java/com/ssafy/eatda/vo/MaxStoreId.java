@@ -15,6 +15,7 @@ public class MaxStoreId {
   @JsonSerialize(using = CustomObjectIdSerializer.class)
   @Id
   private ObjectId id;
+  private int seq;
   private int maxValue;
   private int reviewIdMaxValue;
 
