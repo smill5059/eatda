@@ -12,31 +12,19 @@ import {
   Tag,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-
 import RecommendationModal from "components/meeting/recommendationModal";
 
-// const layout = {
-//     labelCol: { span: 8 },
-//     wrapperCol: { span: 16 },
-//   };
-
 function CreateModify(props) {
-  const user = useSelector((state) => state.userData);
-
   // 모달 관련 상태
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState(null);
   const [modalContent, setModalContent] = useState(null);
   // 정보 관리 상태
   // 회원 정보
-  const [userToken, setUserToken] = useState(
-    localStorage.getItem("Kakao_token")
-      ? localStorage.getItem("Kakao_token")
-      : ""
-  );
-  //   const [userToken, setUserToken] = useState(
-  //     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3MzQ5ODAxLCJzZXEiOjE2NjQwMzg3MTB9.MDMuYXPF16aeQnCwhiwm2n0hRr2bbNbt4H4bFNRFwYY"
-  //   );
+  const user = useSelector((state) => state.userData);
+  const userToken = localStorage.getItem("Kakao_token")
+    ? localStorage.getItem("Kakao_token")
+    : "";
   // 나의 위치정보
   const [myLatitude, setMyLatitude] = useState(37.571075);
   const [myLongitude, setMyLongitude] = useState(127.013588);
@@ -49,42 +37,24 @@ function CreateModify(props) {
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingLocation, setMeetingLocation] = useState([]);
   const [selectedFriends, setSelectedFriends] = useState([]);
-
+  const [selectedReviewIds, setSelectedReviewIds] = useState([]);
   // 지도 검색 키워드
   const [locationKeyword, setLocationKeyword] = useState("");
-
   // 지도 검색해서 가져올 정보들
   const [location, setLocation] = useState("");
   const [meetingArea, setMeetingArea] = useState([]);
-
+  // 업데이트 페이지일 경우 약속의 16진수 id
   const { meetingId } = props.match.params;
   // 리액트에서 폼 세팅
   const [form] = Form.useForm();
-
+  // 친구 폼에서 값을 담을 정보
+  const [selectedList, setSelectedList] = useState([])
   // 페이지 렌더 이후 1번 실행 => 기본 정보 세팅
   useEffect(() => {
+    // 로그인 확인
     if (userToken === "") {
       window.location.href = "/login";
     }
-    // 회원정보를 바탕으로 친구 목록 가져오기
-    // + 약속 사람에 본인 세팅
-    // fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
-    //   headers: {
-    //     token:
-    //       "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3NDQwODc1LCJzZXEiOjE2NjQwMzg3MTB9.FQG3Qzw1QN_z8u4l68Zw9Mr-bOZXjRQDhtUh46ljaxw",
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((result) => {
-    //     //   console.log(result)
-    //     setMyFriends(result.friends);
-    //     setMyId(result.id);
-    //     console.log("dlafj;sdflkjasdl;f");
-    //     console.log(result.friends);
-    //     //   meetingFriends.push(result.id)
-    //     //   console.log(meetingFriends)
-    //     //   setMeetingFriends(meetingFriends)
-    //   });
     // 현재 위치 세팅
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -100,8 +70,9 @@ function CreateModify(props) {
     if (meetingId === undefined) {
       setPageTitle("약속 만들기");
       setMeetingButtonText("약속 생성하기");
-    } else {
-      console.log(meetingId);
+    }
+    // Update 할때
+    else {
       // meetingId가 있으므로 수정
       setPageTitle("약속 수정하기");
       setMeetingButtonText("약속 수정하기");
@@ -111,25 +82,41 @@ function CreateModify(props) {
           res
             .json()
             .then((response) => {
-              console.log(response);
-              console.log(response.id);
+              // 약속 이름
               setMeetingTitle(response.title);
-              console.log(new Date());
-              console.log(response.meetDate);
+              // 약속 날짜
               let meetDate = new Date(response.meetDate);
+              meetDate.setHours(meetDate.getHours() - 9)
               setMeetingDate(moment(meetDate));
               setMeetingTime(moment(meetDate));
+              // 약속 장소
               setMeetingLocation(response.stores);
-              let newPart = response.participants.filter((part) => {
-                return part.id !== user.userId;
-              }).map((part)=>part.id);
-              console.log("NEWPART", newPart)
-                setSelectedFriends(newPart)
+              // 친구 IDs
+              let newFriendsList = response.participants
+                .filter((part) => {
+                  return part.id !== user.userId;
+                })
+                .map((part) => part.id);
+              // 친구 세팅
+              setSelectedFriends(newFriendsList);
+              // ReviewIds 세팅
+              let newReviewIdList = response.reviewIds.filter((review)=>{
+                  return review !== user.reviewId
+              })
+              setSelectedReviewIds(newReviewIdList);
+              // 폼에 값 세팅
+              let newSelectedList = []
+              for (let i = 0; i < newReviewIdList.length; i++){
+                newSelectedList.push(`${newFriendsList[i]}|${newReviewIdList[i].toString()}`)
+              }
+              setSelectedList(newSelectedList)
+
+              // 폼에 값 세팅
               form.setFieldsValue({
                 meetingName: response.title,
                 meetingDate: moment(meetDate),
                 meetingTime: moment(meetDate),
-                meetingFindFriend: newPart
+                meetingFindFriend: newSelectedList,
               });
             })
             .catch(() => {
@@ -190,52 +177,23 @@ function CreateModify(props) {
     );
   }
 
-  // 친구 선택
-  console.log(user.friendList);
+  // 선택 가능한 친구 세팅
   const friends = user.friendList.map((friend) => {
-    return { label: friend.userName, value: friend.id };
+    return { label: friend.userName, value: `${friend.id}|${friend.reviewId.toString()}` };
   });
 
-  console.log(selectedFriends);
-
   function tagRender(props) {
+    console.log(props)
     const { label, value, closable, onClose } = props;
+    console.log("택택")
+    console.log(label)
 
     return (
-      <Tag closable={closable} onClose={onClose} style={{ marginRight: 3 }}>
+      <Tag closable={closable} onClose={onClose} style={{ marginRight: 3 }} value={value}>
         {label}
       </Tag>
     );
   }
-
-  // function friendModalItem() {
-  //   return (
-  //     <div className="meetingFriendContent">
-  //       <div className="meetingFriendModalList">
-  //         <Select
-  //           mode="multiple"
-  //           showArrow
-  //           tagRender={tagRender}
-  //           defaultValue={['gold', 'cyan']}
-  //           style={{ width: '100%' }}
-  //           options={options}
-  //         />
-  //         { user.friendList.map(friend => (
-  //           <Card.Grid key={friend.userSeq}>
-  //             { friend.userName }
-  //           </Card.Grid>
-  //         )) }
-  //       </div>
-  //       <Button
-  //         type="primary"
-  //         htmlType="button"
-  //         className="meetingFriendConfirmButton"
-  //       >
-  //         확인
-  //       </Button>
-  //     </div>
-  //   );
-  // }
 
   // 모달의 ON/OFF에 따라 작동할 것
   useEffect(() => {
@@ -257,55 +215,6 @@ function CreateModify(props) {
       // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
       let infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
-      // 장소 검색 객체
-      //     let ps = new kakao.maps.services.Places();
-      //     ps.keywordSearch(locationKeyword, (data, status, pagination) => {
-      //       if (status === kakao.maps.services.Status.OK) {
-      //         let bounds = new kakao.maps.LatLngBounds();
-
-      //         for (let i = 0; i < data.length; i++) {
-      //           let marker = new kakao.maps.Marker({
-      //             map: map,
-      //             position: new kakao.maps.LatLng(data[i].y, data[i].x),
-      //           });
-
-      //           // 마커에 이벤트 등록
-      //           kakao.maps.event.addListener(marker, "click", function () {
-      //             infowindow.setContent(
-      //               `<div style="display:flex; width:max-content; padding:10px;"><a href=${data[i].place_url} target="_blank" style="margin-right:10px">${data[i].place_name}</a><Button class="locationAddButton" data-store-name="${data[i].place_name}" data-store-address="${data[i].road_address_name}" data-store-latitude=${data[i].y} data-store-longitude=${data[i].x}>추가</Button></div>`
-      //             );
-      //             document
-      //               .querySelectorAll(".locationAddButton")
-      //               .forEach((element) => {
-      //                 console.log(element);
-      //                 element.addEventListener("click", function (event) {
-      //                   console.log(element.dataset.storeName);
-      //                   console.log(element.dataset.storeAddress);
-      //                   console.log(element.dataset.storeLatitude);
-      //                   console.log(element.dataset.storeLongitude);
-      //                   meetingLocation.push({
-      //                     storeName: element.dataset.storeName,
-      //                     storeAddress: element.dataset.storeAddress,
-      //                     storeLatitude: element.dataset.storeLatitude,
-      //                     storeLongitude: element.dataset.storeLongitude,
-      //                   });
-      //                   setMeetingLocation(meetingLocation)
-      //                 });
-      //               });
-      //             console.log(data[i]);
-      //             infowindow.open(map, marker);
-      //           });
-
-      //           //   console.log(data[i])
-      //           //   console.log(meetingLocation)
-      //           bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-      //         }
-      //         map.setBounds(bounds);
-      //       }
-      //     });
-      //   }
-      // }, [modalVisible, locationKeyword]);
-
       let ps = new kakao.maps.services.Places();
       ps.keywordSearch(locationKeyword, (data, status, pagination) => {
         if (status === kakao.maps.services.Status.OK) {
@@ -326,12 +235,7 @@ function CreateModify(props) {
               document
                 .querySelectorAll(".locationAddButton")
                 .forEach((element) => {
-                  console.log(element);
-                  element.addEventListener("click", function (event) {
-                    // console.log(element.dataset.storeName);
-                    // console.log(element.dataset.storeAddress);
-                    // console.log(element.dataset.storeLatitude);
-                    // console.log(element.dataset.storeLongitude);
+                  element.addEventListener("click", function () {
                     const temp = [
                       {
                         locationName: element.dataset.storeName,
@@ -344,7 +248,6 @@ function CreateModify(props) {
                     setLocation(temp);
                   });
                 });
-              console.log(data[i]);
             });
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
           }
@@ -353,11 +256,6 @@ function CreateModify(props) {
       });
     }
     // 지도 끝
-    // 친구
-    else if (document.querySelector(".meetingFriendForm") !== null) {
-      console.log("칭구!");
-      // 나의 친구목록 불러오기
-    }
   }, [modalVisible, locationKeyword]);
 
   // Location이 변화했을 때, 이걸 Area로 (가게 추천받을 지역으로) 보내줄지 아니면 storeLocation으로 보내줄지 결정
@@ -365,7 +263,6 @@ function CreateModify(props) {
     if (meetingArea.length === 0) {
       setMeetingArea(location);
     } else {
-      console.info("새로 추가할 가게", location);
       setMeetingLocation(
         meetingLocation.concat([
           {
@@ -430,13 +327,22 @@ function CreateModify(props) {
     //   storeLongitude: "126.926666",
     // });
     setMeetingLocation(meetingLocation);
+    // 본인 설정
     selectedFriends.push(user.userId);
+    selectedReviewIds.push(user.reviewId);
+
+    selectedList.forEach((item)=>{
+        const tempList = item.split('|')
+        selectedFriends.push(tempList[0])
+        selectedReviewIds.push(parseInt(tempList[1]))
+    })
 
     let dataset = {
       title: meetingTitle,
       meetDate: newDate,
       stores: meetingLocation,
       participants: selectedFriends,
+      reviewIds: selectedReviewIds,
       tags: [],
       scores: [],
       comments: [],
@@ -446,14 +352,9 @@ function CreateModify(props) {
     let dataMethod = "POST";
     // 수정일때
     if (meetingId !== undefined) {
-      // dataset["id"] = meetingId
       dataset.id = meetingId;
       dataMethod = "PUT";
     }
-
-    console.log("이거", dataset);
-    console.log(JSON.stringify(dataset));
-    console.log(dataMethod);
 
     // 데이터 보내기
     fetch(`${process.env.REACT_APP_API_URL}/meeting`, {
@@ -466,17 +367,11 @@ function CreateModify(props) {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log("무야호!");
-        console.log(response.id);
         window.location.href = `/meeting/${response.id}`;
       });
-
-    // console.log("CREATE!");
   }
 
   function deleteStore(store) {
-    console.log(store);
-
     setMeetingLocation(
       meetingLocation.filter((item) => {
         return item !== store;
@@ -516,11 +411,6 @@ function CreateModify(props) {
                   setMeetingDate(e);
                 }}
               />
-              {/* <Input
-                span={8}
-                placeholder="약속 날짜"
-                onClick={(e) => showModal(e, "date")}
-              /> */}
             </Form.Item>
             <Form.Item
               name="meetingTime"
@@ -543,19 +433,14 @@ function CreateModify(props) {
             label="누구랑"
             className="meetingFindFriend"
           >
-            {/* <Input
-              //   className="meetingFindFriendButton"
-              placeholder="친구를 검색해주세요"
-              onClick={(e) => showModal(e, "friend")}
-            /> */}
             <Select
               mode="multiple"
               showArrow
               tagRender={tagRender}
               style={{ width: "100%" }}
               options={friends}
-              value={selectedFriends}
-              onChange={setSelectedFriends}
+              value={selectedList}
+              onChange={setSelectedList}
             />
           </Form.Item>
 
@@ -565,10 +450,6 @@ function CreateModify(props) {
             label="어디서"
             rules={[{ required: true, message: "약속 장소를 정해주세요" }]}
           >
-            {/* <Input
-              placeholder="약속 장소를 정해주세요"
-              onClick={(e) => showModal(e, "location")}
-            /> */}
             <Button onClick={(e) => showModal(e, "recommendation")}>
               추천받기
             </Button>
@@ -588,50 +469,7 @@ function CreateModify(props) {
                 : "장소를 정해주세요"}
             </div>
           </Form.Item>
-          {/* 친구 부르기 버튼 */}
-          {/* <Form.Item
-            name="meetingFindFriend"
-            label="누구랑"
-            className="meetingFindFriend"
-          >
-            <Input
-              //   className="meetingFindFriendButton"
-              placeholder="친구를 검색해주세요"
-              onClick={(e) => showModal(e, "friend")}
-            />
-            <Select
-              mode="multiple"
-              showArrow
-              tagRender={tagRender}
-              style={{ width: "100%" }}
-              options={friends}
-              value={selectedFriends}
-              onChange={setSelectedFriends}
-            />
-          </Form.Item> */}
-          {/* 친구 목록   */}
-          {/* <Form.Item className="meetingFriendsListBox">
-            <div className="meetingFriendsList">
-              {meetingFriends.length > 0
-                ? meetingFriends.map((item, index) => {
-                    let imgUrl =
-                      process.env.REACT_APP_API_URL +
-                      "/files/" +
-                      item.userProfileUrl;
-                    return (
-                      <div className="meetingFriendsItem" key={index}>
-                        <div className="meetingFriendsProfile">
-                          <img src={imgUrl} />
-                        </div>
-
-                        <p>{item.userName}</p>
-                        <CloseOutlined />
-                      </div>
-                    );
-                  })
-                : "친구를 추가해주세요."}
-            </div>
-          </Form.Item> */}
+          
           <Form.Item name="meetingCreate" className="meetingCreate">
             <Button
               type="primary"

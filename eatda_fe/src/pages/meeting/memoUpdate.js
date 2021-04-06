@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import { Input, Button, Rate, Row } from "antd";
 import moment from "moment";
 
 function MemoUpdate(props) {
-    const user = useSelector(state => state.userData)
-    const userSeq = user.usercode
-    const reviewId = user.reviewId
+  const user = useSelector((state) => state.userData);
+  const userSeq = user.usercode;
+  const reviewId = user.reviewId;
   // 요일 배열
   const weekDays = ["(일)", "(월)", "(화)", "(수)", "(목)", "(금)", "(토)"];
   // 유저 토큰
@@ -31,38 +31,45 @@ function MemoUpdate(props) {
     // 유저 정보 확인
     // 미팅 정보 확인
     fetch(`${process.env.REACT_APP_API_URL}/meeting/${meetingId}`)
-    .then((res) => res.json())
-    .then((result) => {
-      let thisTime = new Date(result.meetDate);
-      setMeetingTitle(result.title);
-      setMeetingDate(
-        moment(thisTime).format("MM월 DD일") +
-          weekDays[moment(thisTime).format("E")]
-      );
-      setMeetingTime(moment(thisTime).format("HH시 mm분"));
-      
-      // 유저 매장 별점
-      result.stores.forEach(store => {
-        store.rate = 0
-        result.scores.some(score=>{
-            if (store.storeId === score.storeId && user.usercode === score.userSeq){
-              store.rate = score.rate
+      .then((res) => res.json())
+      .then((result) => {
+        let thisTime = new Date(result.meetDate);
+        thisTime.setHours(thisTime.getHours() - 9)
+        setMeetingTitle(result.title);
+        setMeetingDate(
+          moment(thisTime).format("MM월 DD일") +
+            weekDays[moment(thisTime).format("E")]
+        );
+        setMeetingTime(moment(thisTime).format("HH시 mm분"));
+
+        // 유저 매장 별점
+        result.stores.forEach((store) => {
+          store.rate = 0;
+          result.scores.some((score) => {
+            if (
+              store.storeId === score.storeId &&
+              user.usercode === score.userSeq
+            ) {
+              store.rate = score.rate;
             }
-            return (store.storeId === score.storeId && user.usercode === score.userSeq)
-        })
-    }).catch(()=>{
-        alert("잘못된 접근입니다. ")
-        window.location.href = `/meeting/${meetingId}`
-    });
-    setMeetingStores(result.stores);
-      setMeetingScores(result.scores);
-      result.comments.forEach((element) => {
-        if (userSeq === element.userSeq) {
-          setMemoCheck(true);
-          setMemoContent(element.content);
-        }
+            return (
+              store.storeId === score.storeId && user.usercode === score.userSeq
+            );
+          });
+        });
+        setMeetingStores(result.stores);
+        setMeetingScores(result.scores);
+        result.comments.forEach((element) => {
+          if (userSeq === element.userSeq) {
+            setMemoCheck(true);
+            setMemoContent(element.content);
+          }
+        });
+      })
+      .catch(() => {
+        alert("잘못된 접근입니다. ");
+        window.location.href = `/meeting/${meetingId}`;
       });
-    });
   }, []);
 
   function createMemo() {
@@ -109,7 +116,7 @@ function MemoUpdate(props) {
         item.rate = v;
         storeItem.rate = v;
         checkExist = true;
-        item.reviewId = reviewId
+        item.reviewId = reviewId;
       }
     });
     if (checkExist) {
@@ -118,8 +125,8 @@ function MemoUpdate(props) {
       let scoreItem = {
         storeId: String(storeItem.storeId),
         userSeq: userSeq,
-        rate: v,        
-        reviewId : reviewId
+        rate: v,
+        reviewId: reviewId,
       };
       setMeetingScores(meetingScores.concat([scoreItem]));
     }
@@ -144,7 +151,12 @@ function MemoUpdate(props) {
           <div className="starCreate">
             {meetingStores.map((store, index) => {
               return (
-                <Row className="starContent" key={index} justify="space-between" align="center">
+                <Row
+                  className="starContent"
+                  key={index}
+                  justify="space-between"
+                  align="center"
+                >
                   <p className="starStoreName">{store.storeName}</p>
                   <Rate
                     className="starRating"

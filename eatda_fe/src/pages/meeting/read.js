@@ -146,7 +146,7 @@ function MeetingRead(props) {
     <div className="contentWrapper">
       <Row className="contentTitle">
         <Col span={20}>
-          {month}월 {date}일 ({day}) {hours}시 {minutes}분
+          {month}월 {date}일({day}) {hours}시 {minutes}분
         </Col>
         <Col span={4}>
           <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
