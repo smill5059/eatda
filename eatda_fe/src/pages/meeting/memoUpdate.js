@@ -50,6 +50,9 @@ function MemoUpdate(props) {
             }
             return (store.storeId === score.storeId && user.usercode === score.userSeq)
         })
+    }).catch(()=>{
+        alert("잘못된 접근입니다. ")
+        window.location.href = `/meeting/${meetingId}`
     });
     setMeetingStores(result.stores);
       setMeetingScores(result.scores);

@@ -113,7 +113,7 @@ function MeetingRead(props) {
             </Menu>
           );
         }
-      });
+      }).catch(()=>window.location.href = "/");
   }, []);
 
   let createUrl = false;

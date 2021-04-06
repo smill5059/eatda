@@ -62,7 +62,7 @@ function PhotoUploader(props) {
       .then((response) => {
         console.log("보자", response.imgs)
         setPhotoAddedList(response.imgs)
-      });
+      }).catch(()=>window.location.href=`meeting/${meetingId}`);
   }, []);
 
   const photoAddedPreview = () => {
@@ -70,7 +70,7 @@ function PhotoUploader(props) {
       return (
         <div className="photoBox" key={index}>
           <CloseCircleFilled className="photoBoxDelete" onClick={()=>onRemoveAdded(photo)}/>
-          <img className="photoPreview" src={`${process.env.REACT_APP_API_URL}/files/${photo}`} />
+          <img className="photoPreview" src={`${process.env.REACT_APP_API_URL}/files/${photo}`} alt="meetingImg"/>
         </div>
       )
     })

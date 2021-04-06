@@ -122,9 +122,13 @@ function CreateModify(props) {
               meetingDate: moment(meetDate),
               meetingTime: moment(meetDate),
             });
-          });
+          }).catch(() => {
+            window.location.href = '/'
+        });;
         })
-        .catch((err) => console.log(err));
+        .catch(() => {
+            window.location.href = '/'
+        });
     }
   }, []);
 
