@@ -16,48 +16,56 @@ function Login() {
   const dispatch = useDispatch()
 
   function loginWithKakao() {
-    Kakao.Auth.login({
-      success: function(obj) {
-        // console.log(obj, SERVER_URL)
-        fetch(`${SERVER_URL}/user/kakao/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            access_token: obj.access_token
+      Kakao.Auth.loginForm({
+        success: function(obj) {
+          fetch(`${SERVER_URL}/user/kakao/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              access_token: obj.access_token
+            })
           })
-        })
-          .then(res => res.json())
-          .then(res => {
-            // console.log('로그인 결과', res)
-            dispatch(settingUser.setUser({id: res.id, name: res.name, code: res.seq, friends: res.friends, reviewId: res.reviewId}))
-            localStorage.setItem('Kakao_token', res.token);
-            if (res.token) {
-                history.push('/')
-                // 밑에 굳이 안해도 될 듯
-                // 어차피 / 로 이동하면 실행됨
-              // console.log('로그인 성공')
-            //   fetch(`${SERVER_URL}/main/schedules`, {
-            //     headers: {
-            //       token: res.token
-            //     },
-            //   })
-            //     .then(res => res.json())
-            //     .then(res => {
-            //       console.log(res)
-            //       history.push('/')
-            //     })
-            }
-          })
-            // .then((res) => {
-            //   setMeetingData(data)
-            // })
-      },
-      fail: function(err) {
-        console.warn(JSON.stringify(err))
-      }
-    })
+            .then(res => res.json())
+            .then(res => {
+              // console.log('로그인 결과', res)
+              dispatch(settingUser.setUser({id: res.id, name: res.name, code: res.seq, friends: res.friends, reviewId: res.reviewId}))
+              localStorage.setItem('Kakao_token', res.token);
+              if (res.token) {
+                  history.push('/')
+              }
+            })
+        },
+        fail: function(err) {
+          console.warn(JSON.stringify(err))
+        }
+      })
+    // Kakao.Auth.login({
+    //   success: function(obj) {
+    //     fetch(`${SERVER_URL}/user/kakao/login`, {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json'
+    //       },
+    //       body: JSON.stringify({
+    //         access_token: obj.access_token
+    //       })
+    //     })
+    //       .then(res => res.json())
+    //       .then(res => {
+    //         // console.log('로그인 결과', res)
+    //         dispatch(settingUser.setUser({id: res.id, name: res.name, code: res.seq, friends: res.friends, reviewId: res.reviewId}))
+    //         localStorage.setItem('Kakao_token', res.token);
+    //         if (res.token) {
+    //             history.push('/')
+    //         }
+    //       })
+    //   },
+    //   fail: function(err) {
+    //     console.warn(JSON.stringify(err))
+    //   }
+    // })
   }
 
   return (
