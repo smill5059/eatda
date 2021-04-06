@@ -31,7 +31,7 @@ public class ScheduleResult {
   private List<Comment> comments;
   private List<String> imgs;
 
-  private int Completed;
+  private int completed;
 
   public void copy(Schedule s) {
     this.id = s.getId();
@@ -42,6 +42,6 @@ public class ScheduleResult {
     this.scores = s.getScores();
     this.comments = s.getComments();
     this.imgs = s.getImgs();
-    this.Completed = s.getCompleted();
+    this.completed = s.getCompleted();
   }
 }

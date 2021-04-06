@@ -76,7 +76,7 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   @Override
-  public String uploadImg(ObjectId meetingId, List<MultipartFile> files) {
+  public String uploadImg(ObjectId meetingId, MultipartFile[] files) {
 
     Schedule schedule = reviewRepo.findById(meetingId).get();
     if (schedule == null) {
@@ -118,7 +118,7 @@ public class ReviewServiceImpl implements ReviewService {
   @Override
   public String deleteImgs(ObjectId meetingId, List<String> deletedUrls) {
 
-    Schedule schedule = reviewRepo.findById(meetingId).get();
+    Schedule schedule = reviewRepo.findById(meetingId).orElse(null);
     if (schedule == null) {
       return "No Valid meetingId";
     }

@@ -15,38 +15,6 @@ function Login() {
   const user = useSelector(state => state.userData)
   const dispatch = useDispatch()
 
-  // const setUser = useCallback(
-  //   () => dispatch()
-  // )
-
-  /* 로그인 성공시 redux store로 dispatch 할 내용물 */
-  // const meetingData = useSelector(state => state.meetingData)
-
-  //   const [ data, setData ] = useState({});
-  
-  //   useEffect(() => {
-  //     fetch(`${process.env.REACT_APP_API_URL}/main/timeline`, {
-  //       headers : {
-  //         'token': localStorage.getItem('Kakao_token'),
-  //         // 'Content-Type': 'application/json',
-  //       }
-  //     })
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       console.log("타임라인 데이터가 받아져야되는데", res)
-  //     })
-  //     .then((response) => {
-  //       console.log("불러온 전체 미팅", response)
-  //       setData(response)
-  //     })
-  //   },[]);
-
-
-  // const setMeetingData = useCallback((data) => {
-  //   dispatch(settingMeetingData.meetingData(data));
-  // }, [dispatch])
-
-
   function loginWithKakao() {
     Kakao.Auth.login({
       success: function(obj) {
@@ -63,7 +31,7 @@ function Login() {
           .then(res => res.json())
           .then(res => {
             // console.log('로그인 결과', res)
-            dispatch(settingUser.setUser({id: res.id, name: res.name, code: res.seq, friends: res.friends}))
+            dispatch(settingUser.setUser({id: res.id, name: res.name, code: res.seq, friends: res.friends, reviewId: res.reviewId}))
             localStorage.setItem('Kakao_token', res.token);
             if (res.token) {
                 history.push('/')

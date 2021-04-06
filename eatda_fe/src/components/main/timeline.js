@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from 'react-redux';
 import { Card, Input, Image } from 'antd';
 import { useHistory } from "react-router";
+import noImg from "assets/product/no_photo.png"
 
 import moment from 'moment';
 
@@ -29,10 +30,15 @@ function Timeline() {
   )
 
   // 약속 리스트 출력
-  const timeline = meetings.map(meeting => 
+  const timeline = meetings.map(meeting => {
+      let imgUrl = noImg
+      if (meeting.imgs.length > 0){
+          imgUrl = `${process.env.REACT_APP_API_URL}/files/${meeting.imgs[0]}`
+      }
+    return (
     <Card.Grid key={meeting.id} onClick={() => meetingInfo(meeting)}>
       <div className="meetingImg">
-        <Image alt="image" />
+        <Image alt="image" src={imgUrl}/>
       </div>
       <div className="meetingTitle">
         { meeting.title }
@@ -47,6 +53,8 @@ function Timeline() {
         { meeting.stores[0].storeName }
       </div>
     </Card.Grid>
+    )
+}
   )
 
   return (

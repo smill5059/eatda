@@ -10,18 +10,18 @@
 .Nav {
   grid-row: 1 / 2;
   grid-column: 1 / 10;
-  background-color: #EFBF43;
+  background-color: #E8CDBB;
 }
 
 .Content {
     width:100vw;
   grid-row: 2 / 19;
   grid-column: 1 / 10;
-  background-color: floralwhite;
+  /* background-color: floralwhite; */
 }
 
 .Footer {
   grid-row: 19 / 20;
   grid-column: 1 / 10;
-  background-color: #EFBF43;
+  background-color: #E8CDBB;
 }
