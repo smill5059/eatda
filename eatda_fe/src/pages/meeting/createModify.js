@@ -29,14 +29,14 @@ function CreateModify(props) {
   const [modalContent, setModalContent] = useState(null);
   // 정보 관리 상태
   // 회원 정보
-  // const [userToken, setUserToken] = useState(
-  //   localStorage.getItem("Kakao_token")
-  //     ? localStorage.getItem("Kakao_token")
-  //     : ""
-  // );
   const [userToken, setUserToken] = useState(
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3MzQ5ODAxLCJzZXEiOjE2NjQwMzg3MTB9.MDMuYXPF16aeQnCwhiwm2n0hRr2bbNbt4H4bFNRFwYY"
+    localStorage.getItem("Kakao_token")
+      ? localStorage.getItem("Kakao_token")
+      : ""
   );
+  //   const [userToken, setUserToken] = useState(
+  //     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBMTAzIiwiZXhwIjoxNjE3MzQ5ODAxLCJzZXEiOjE2NjQwMzg3MTB9.MDMuYXPF16aeQnCwhiwm2n0hRr2bbNbt4H4bFNRFwYY"
+  //   );
   // 나의 위치정보
   const [myLatitude, setMyLatitude] = useState(37.571075);
   const [myLongitude, setMyLongitude] = useState(127.013588);
@@ -48,6 +48,7 @@ function CreateModify(props) {
   const [meetingDate, setMeetingDate] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingLocation, setMeetingLocation] = useState([]);
+  const [selectedFriends, setSelectedFriends] = useState([]);
 
   // 지도 검색 키워드
   const [locationKeyword, setLocationKeyword] = useState("");
@@ -119,10 +120,16 @@ function CreateModify(props) {
               setMeetingDate(moment(meetDate));
               setMeetingTime(moment(meetDate));
               setMeetingLocation(response.stores);
+              let newPart = response.participants.filter((part) => {
+                return part.id !== user.userId;
+              }).map((part)=>part.id);
+              console.log("NEWPART", newPart)
+                setSelectedFriends(newPart)
               form.setFieldsValue({
                 meetingName: response.title,
                 meetingDate: moment(meetDate),
                 meetingTime: moment(meetDate),
+                meetingFindFriend: newPart
               });
             })
             .catch(() => {
@@ -188,7 +195,7 @@ function CreateModify(props) {
   const friends = user.friendList.map((friend) => {
     return { label: friend.userName, value: friend.id };
   });
-  const [selectedFriends, setSelectedFriends] = useState([]);
+
   console.log(selectedFriends);
 
   function tagRender(props) {
