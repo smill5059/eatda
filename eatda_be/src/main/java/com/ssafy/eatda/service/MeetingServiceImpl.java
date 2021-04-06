@@ -54,6 +54,40 @@ public class MeetingServiceImpl implements MeetingService {
 
   @Override
   public Schedule createMeeting(Schedule schedule) {
+    // 그룹 reviewId 생성
+    if (schedule.getReviewIds().size() == 0) {
+      return null;
+    }
+
+    Collections.sort(schedule.getReviewIds());
+
+    if (schedule.getReviewIds().size() > 1) {
+      Collections.sort(schedule.getReviewIds());
+      String groupId = "";
+      for (Integer reviewId : schedule.getReviewIds()) {
+        groupId += Integer.toString(reviewId);
+      }
+      Group group = groupRepo.findByGroupId(groupId);
+      if (group == null) {
+        group = new Group();
+        group.setCnt(0);
+        group.setGroupId(groupId);
+        group.setMembers((ArrayList<Integer>) schedule.getReviewIds());
+
+        MaxStoreId maxReviewId =
+            maxStoreIdRepo.findById(new ObjectId("606ad4b5180a4b670d79d0a4")).get();
+        group.setReviewId(maxReviewId.getReviewIdMaxValue());
+        groupRepo.save(group);
+
+        Review review = new Review();
+        review.setReviewId(maxReviewId.getReviewIdMaxValue());
+        review.setScores(new HashMap<String, Integer>());
+        reviewUpdateRepo.save(review);
+
+        maxReviewId.setReviewIdMaxValue(maxReviewId.getReviewIdMaxValue() + 1);
+        maxStoreIdRepo.save(maxReviewId);
+      }
+    }
 
     // storeId 배정
     for (Store store : schedule.getStores()) {
@@ -155,9 +189,9 @@ public class MeetingServiceImpl implements MeetingService {
     List<Store> result = new ArrayList<>();
     int len = stores.length;
     for (int i = 0; i < len; i++) {
-      Optional<Store> found = storeRepo.findByStoreId(stores[i]);
-      if (found.isPresent()) {
-        result.add(found.get());
+      Store found = storeRepo.findByStoreId(stores[i]);
+      if (found != null) {
+        result.add(found);
       }
     }
     return result;

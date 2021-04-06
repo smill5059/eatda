@@ -33,7 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
   @Autowired
   private ReviewUpdateRepository reviewUpdateRepo;
   @Autowired
-  private GroupRepository groupoRepo;
+  private GroupRepository groupRepo;
   @Autowired
   private StoreRepository storeRepo;
 
@@ -82,6 +82,7 @@ public class ReviewServiceImpl implements ReviewService {
 
   @Override
   public Schedule updateComment(Schedule schedule) {
+
     Optional<Schedule> found = reviewRepo.findById(schedule.getId());
     if (found.isPresent()) {
       found.get().setComments(schedule.getComments());
@@ -89,12 +90,12 @@ public class ReviewServiceImpl implements ReviewService {
 
       // 점수 반영
       List<Score> scoreList = schedule.getScores();
-      Collections.sort(scoreList, (Score s1, Score s2) -> s1.getUserSeq() - s2.getUserSeq());
+      Collections.sort(scoreList, (Score s1, Score s2) -> s1.getReviewId() - s2.getReviewId());
       HashMap<String, int[]> map = new HashMap<String, int[]>();
-      String groupId = "";
       for (Score score : scoreList) {
         Review review = reviewUpdateRepo.findByReviewId(score.getReviewId());
-        if (review == null)
+        Store store = storeRepo.findByStoreId(score.getStoreId());
+        if (review == null || store == null)
           return null;
         if (map.containsKey(score.getStoreId())) {
           map.put(score.getStoreId(), new int[] {map.get(score.getStoreId())[0] + 1,
@@ -102,44 +103,65 @@ public class ReviewServiceImpl implements ReviewService {
         } else {
           map.put(score.getStoreId(), new int[] {1, score.getRate()});
         }
-        groupId += Integer.toString(score.getUserSeq());
         review.getScores().put(score.getStoreId(), score.getRate());
+        store.getReviewers().put(Integer.toString(score.getReviewId()), score.getRate());
         reviewUpdateRepo.save(review);
+        storeRepo.save(store);
       }
 
-      // 가게 및 전체 그룹에 점수 반영
-      Group group = groupoRepo.findByGroupId(groupId);
-      if (group != null) {
-        Review review = reviewUpdateRepo.findByReviewId(group.getReviewId());
-        if (review == null)
-          return null;
-        for (Entry<String, int[]> entry : map.entrySet()) {
-          review.getScores().put(entry.getKey(), entry.getValue()[1] / entry.getValue()[0]);
-          Optional<Store> store = storeRepo.findByStoreId(entry.getKey());
-          if (store.isPresent()) {
-            float avgRate = store.get().getAvgRate();
-            int cnt = store.get().getReviewCount();
-            store.get()
-                .setAvgRate(avgRate * cnt + entry.getValue()[1] / (cnt + entry.getValue()[0]));
-            store.get().setReviewCount(cnt + entry.getValue()[0]);
-            storeRepo.save(store.get());
-          }
+      // 그룹에 점수 반영 및 가게 평점 업데이트
+      if (schedule.getReviewIds().size() > 1) {
+        String groupId = "";
+        Collections.sort(schedule.getReviewIds());
+        for (Integer reviewId : schedule.getReviewIds()) {
+
+          groupId += Integer.toString(reviewId);
         }
-        reviewUpdateRepo.save(review);
+        System.out.println(groupId);
+        Group group = groupRepo.findByGroupId(groupId);
+        if (group != null) {
+          Review review = reviewUpdateRepo.findByReviewId(group.getReviewId());
+          if (review == null)
+            return null;
+          for (Entry<String, int[]> entry : map.entrySet()) {
+            review.getScores().put(entry.getKey(), entry.getValue()[1] / entry.getValue()[0]);
+            Store store = storeRepo.findByStoreId(entry.getKey());
+            if (store != null) {
+              store.getReviewers().put(Integer.toString(group.getReviewId()),
+                  entry.getValue()[1] / entry.getValue()[0]);
+
+              int cnt = 0;
+              int sum = 0;
+              for (Entry<String, Integer> scoreEntry : store.getReviewers().entrySet()) {
+                cnt++;
+                sum += scoreEntry.getValue();
+              }
+
+              store.setAvgRate((float) sum / (float) cnt);
+              store.setReviewCount(cnt);
+              storeRepo.save(store);
+            }
+          }
+          reviewUpdateRepo.save(review);
+        }
+        // 가게 평점 업데이트
       } else {
         for (Entry<String, int[]> entry : map.entrySet()) {
-          Optional<Store> store = storeRepo.findByStoreId(entry.getKey());
-          if (store.isPresent()) {
-            float avgRate = store.get().getAvgRate();
-            int cnt = store.get().getReviewCount();
-            store.get()
-                .setAvgRate(avgRate * cnt + entry.getValue()[1] / (cnt + entry.getValue()[0]));
-            store.get().setReviewCount(cnt + entry.getValue()[0]);
-            storeRepo.save(store.get());
+          Store store = storeRepo.findByStoreId(entry.getKey());
+          if (store != null) {
+            int cnt = 0;
+            int sum = 0;
+            for (Entry<String, Integer> scoreEntry : store.getReviewers().entrySet()) {
+              cnt++;
+              sum += scoreEntry.getValue();
+            }
+
+            store.setAvgRate((float) sum / (float) cnt);
+            store.setReviewCount(cnt);
+            storeRepo.save(store);
           }
         }
       }
-
 
       return reviewRepo.save(found.get());
     }
