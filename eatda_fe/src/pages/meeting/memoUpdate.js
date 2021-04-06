@@ -92,6 +92,7 @@ function MemoUpdate(props) {
             userSeq: userSeq,
           });
         }
+        console.log(JSON.stringify(schedule))
       })
       .then(() => {
         fetch(`${process.env.REACT_APP_API_URL}/review/comment`, {

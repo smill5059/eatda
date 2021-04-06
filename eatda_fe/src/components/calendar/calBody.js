@@ -37,13 +37,13 @@ function Calendar(props) {
   // STEP 3. 날짜마다 요일 정보를 확인하고 div의 className을 설정한다.
 
   const baseDate = useSelector((state) => state.baseDate);
-  // console.info("자식 컴포넌트도 받아왔는데요", baseDate)
+  console.info("자식 컴포넌트도 받아왔는데요", baseDate)
   const curDate = moment(baseDate.date).clone();
   const firstDateOfMonth = curDate.clone().startOf("month");
   const firstDayOfMonth = firstDateOfMonth.get("d");
   const firstDate = firstDateOfMonth.clone().add(-firstDayOfMonth, "days");
 
-  const Date = (firstDate) => {
+  const Dates = (firstDate) => {
     const _days = [];
 
     for (let i = 0; i < 42; i++) {
@@ -68,8 +68,8 @@ function Calendar(props) {
     window.location.href = "/meeting/" + `${meetingId}`;
   };
 
-  const mapArrayToDate = (Date) => {
-    return Date.map((date, index) => {
+  const mapArrayToDate = (Dates) => {
+    return Dates.map((date, index) => {
       /* day 표기 class 설정 part */
       const className = () => {
         let className = "calBodyContentCell";
@@ -92,7 +92,9 @@ function Calendar(props) {
       /* meeting data 표기 설정 part */
       const meeting = (date) => {
           let meetingList = meetings.map((meeting)=>{
-            const meetingDate = moment(meeting.meetDate).clone();
+              let settingDate = new Date(meeting.meetDate)
+              settingDate.setHours(settingDate.getHours() - 9)
+            const meetingDate = moment(settingDate).clone();
             const meetingId = meeting.id;
             if (date.isSame(meetingDate, "day")) {
               const className = () => {
@@ -105,6 +107,7 @@ function Calendar(props) {
               };
               return (
                 <div
+                key={meeting.id}
                   className={className()}
                   onClick={(e) => {
                     e.preventDefault();
@@ -128,7 +131,7 @@ function Calendar(props) {
   return (
     <div className="calBodyWrapper">
       <div className="calBodyHeader">{mapArrayToDay(dayArray)}</div>
-      <div className="calBodyContent">{mapArrayToDate(Date(firstDate))}</div>
+      <div className="calBodyContent">{mapArrayToDate(Dates(firstDate))}</div>
     </div>
   );
 }

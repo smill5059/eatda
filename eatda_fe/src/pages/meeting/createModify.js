@@ -98,12 +98,12 @@ function CreateModify(props) {
                 })
                 .map((part) => part.id);
               // 친구 세팅
-              setSelectedFriends(newFriendsList);
+            //   setSelectedFriends(newFriendsList);
               // ReviewIds 세팅
               let newReviewIdList = response.reviewIds.filter((review)=>{
                   return review !== user.reviewId
               })
-              setSelectedReviewIds(newReviewIdList);
+            //   setSelectedReviewIds(newReviewIdList);
               // 폼에 값 세팅
               let newSelectedList = []
               for (let i = 0; i < newReviewIdList.length; i++){
@@ -258,6 +258,10 @@ function CreateModify(props) {
     // 지도 끝
   }, [modalVisible, locationKeyword]);
 
+  console.log("추가추가__________________")
+  console.log(selectedList)
+  console.log("추가추가__________________")
+
   // Location이 변화했을 때, 이걸 Area로 (가게 추천받을 지역으로) 보내줄지 아니면 storeLocation으로 보내줄지 결정
   useEffect(() => {
     if (meetingArea.length === 0) {
@@ -319,13 +323,6 @@ function CreateModify(props) {
     let date_text = meetingDate.format("YYYY-MM-DD");
     let time_text = meetingTime.format("HH:mm:ss");
     let newDate = date_text + "T" + time_text;
-    // meetingLocation.push({
-    //   storeId: "1",
-    //   storeName: "Agal",
-    //   storeAddress: "서울특별시 마포구 동교동 170-13",
-    //   storeLatitude: "37.556862",
-    //   storeLongitude: "126.926666",
-    // });
     setMeetingLocation(meetingLocation);
     // 본인 설정
     selectedFriends.push(user.userId);
@@ -337,12 +334,19 @@ function CreateModify(props) {
         selectedReviewIds.push(parseInt(tempList[1]))
     })
 
+    let newSelectedFriends = [...new Set(selectedFriends)]
+    let newSelectedReviewIds = [...new Set(selectedReviewIds)]
+    let newSelectedList = [...new Set(selectedList)]
+    setSelectedFriends(newSelectedFriends)
+    setSelectedReviewIds(newSelectedReviewIds)
+    setSelectedList(newSelectedList)
+
     let dataset = {
       title: meetingTitle,
       meetDate: newDate,
       stores: meetingLocation,
-      participants: selectedFriends,
-      reviewIds: selectedReviewIds,
+      participants: newSelectedFriends,
+      reviewIds: newSelectedReviewIds,
       tags: [],
       scores: [],
       comments: [],
