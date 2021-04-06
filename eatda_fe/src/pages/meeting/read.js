@@ -7,6 +7,7 @@ import { RestFilled } from "@ant-design/icons";
 
 function MeetingRead(props) {
   const user = useSelector(state => state.userData)
+  const userToken = localStorage.getItem('Kakao_token') ? localStorage.getItem('Kakao_token') : ""
 
   const { meetingId } = props.match.params;
   const [meetComponent, setMeetComponent] = useState("");
@@ -17,11 +18,14 @@ function MeetingRead(props) {
   const [minutes, setMinutes] = useState("");
   const [menu, setMenu] = useState("");
   useEffect(() => {
+      if (userToken === ""){
+          window.location.href = "/login"
+      }
     fetch(`${process.env.REACT_APP_API_URL}/meeting/` + meetingId, {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
-        'token': localStorage.getItem('Kakao_token')
+        'token': userToken
       }
     })
       .then((res) => res.json())
@@ -105,16 +109,33 @@ function MeetingRead(props) {
           setMenu(
             <Menu>
               <Menu.Item key="0">
-                <a href={`/updateMeeting/${meetingId}`}>수정</a>
+                <a href={`/updateMeeting/${meetingId}`}>💬 수정</a>
               </Menu.Item>
               <Menu.Item key="1">
-                <div>삭제</div>
+                <div onClick={()=> deleteMeeting()}>❌ 삭제</div>
               </Menu.Item>
             </Menu>
           );
         }
       }).catch(()=>window.location.href = "/");
   }, []);
+
+  function deleteMeeting(){
+      fetch(`${process.env.REACT_APP_API_URL}/meeting/${meetingId}`, {
+          method:"DELETE",
+          headers: {
+            'Content-Type': 'application/json',
+            'token': userToken
+          }
+      }).then((res)=>{
+          if (res.status === 200){
+              alert("삭제됐습니다.")
+              window.location.href = "/"
+          }else{
+              alert("관리자에게 문의해주세요.")
+          }
+      }).catch(()=>alert("관리자에게 문의해주세요."))
+  }
 
   let createUrl = false;
 
