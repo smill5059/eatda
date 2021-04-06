@@ -7,11 +7,32 @@ function MeetingInfo(props) {
     setInfo(props.info)
     // 지도 로딩
     const { kakao } = window;
+    console.log("일단 데이터 확인")
+    console.log(props.info)
     if (document.querySelector(".meetingReadMap") !== null) {
-      new kakao.maps.Map(document.querySelector(".meetingReadMap"), {
+      let meetingMap = new kakao.maps.Map(document.querySelector(".meetingReadMap"), {
         center: new kakao.maps.LatLng(props.info.stores[0].storeLatitude, props.info.stores[0].storeLongitude), //지도의 중심좌표.
         level: 3, //지도의 레벨(확대, 축소 정도)
       });
+      let infoWindow = new kakao.maps.InfoWindow({zIndex : 1})
+      let bounds = new kakao.maps.LatLngBounds();
+
+      props.info.stores.forEach(store => {
+          if (store.storeLatitude > 0 && store.storeLongitude > 0){
+            let marker = new kakao.maps.Marker({
+                map:meetingMap,
+                position: new kakao.maps.LatLng(store.storeLatitude, store.storeLongitude)
+            })
+            kakao.maps.event.addListener(marker, "click", function(){
+                infoWindow.setContent(`<div>${store.storeName}</div>`)
+                infoWindow.open(meetingMap, marker)
+            })
+            bounds.extend(new kakao.maps.LatLng(store.storeLatitude, store.storeLongitude))
+          }          
+      });
+
+      meetingMap.setBounds(bounds)
+
     }
   }, []);
 
