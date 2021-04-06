@@ -34,10 +34,10 @@ function Login() {
             dispatch(settingUser.setUser({id: res.id, name: res.name, code: res.seq, friends: res.friends, reviewId: res.reviewId}))
             localStorage.setItem('Kakao_token', res.token);
             if (res.token) {
-                history.push('/')
+              history.push('/')
                 // 밑에 굳이 안해도 될 듯
                 // 어차피 / 로 이동하면 실행됨
-              // console.log('로그인 성공')
+              console.log('로그인 성공')
             //   fetch(`${SERVER_URL}/main/schedules`, {
             //     headers: {
             //       token: res.token
@@ -69,7 +69,6 @@ function Login() {
       <img src={Logo} className="logoImg" />
       
       <img src={kakaoLogin} className="kakaoLogin" onClick={loginWithKakao} />
-
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, BrowserRouter, Switch } from "react-router-dom";
+import { Route, BrowserRouter, Switch, Redirect } from "react-router-dom";
 import Layout from "./pages/layout/layout";
 import Main from "./pages/main/main";
 import Login from "./pages/main/login";
@@ -14,6 +14,7 @@ import PhotoUpdate from "./pages/meeting/photoUpdate";
 import MemoUpdate from "./pages/meeting/memoUpdate";
 
 import Navbar from "components/bar/navbar";
+import PrivateRoute from 'helpers/privateRoute';
 
 import "./App.css";
 
@@ -28,25 +29,24 @@ function App() {
         </div>
         <div className="Content">
           <Switch>
-            {/* <Route path="/" component={Layout} /> */}
-            <Route exact path="/" component={Main} />
             <Route path="/login" component={Login} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/createMeeting" component={CreateModify} />
-            <Route
+            <PrivateRoute exact path="/" component={Main} />
+            <PrivateRoute path="/profile" component={Profile} />
+            <PrivateRoute path="/createMeeting" component={CreateModify} />
+            <PrivateRoute
               exact
               path="/updateMeeting/:meetingId"
               component={CreateModify}
             />
-            <Route
+            <PrivateRoute
               path="/updateMeeting/:meetingId/photoUpdate"
               component={PhotoUpdate}
             />
-            <Route
+            <PrivateRoute
               path="/updateMeeting/:meetingId/memoUpdate"
               component={MemoUpdate}
             />
-            <Route path="/meeting/:meetingId" component={MeetingRead} />
+            <PrivateRoute path="/meeting/:meetingId" component={MeetingRead} />
           </Switch>
         </div>
         <div className="Footer"></div>
