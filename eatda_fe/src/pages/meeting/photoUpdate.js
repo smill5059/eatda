@@ -141,10 +141,10 @@ function PhotoUploader(props) {
         { photoToAddPreview() }
         { photoAddedPreview() }
       </div>
+      <Row justify="center">
+        <Button className="photoUploadComplete" onClick={ savePhoto }>기록하기</Button>
+      </Row>
     </div>
-    <Row justify="center">
-      <Button className="photoUploadComplete" onClick={ savePhoto }>기록하기</Button>
-    </Row>
   </div>
   );
 }
