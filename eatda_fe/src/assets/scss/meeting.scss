@@ -8,6 +8,25 @@
     margin:2%;
 }
 
+.meetingCreateBody{
+    display:grid;
+    grid-template-rows: 10fr 1fr;
+    .meetingCreateForm{
+        grid-row: 1 / 2;
+    }
+    .meetingCreateButton{
+        width:100%;
+        border-radius: 10px;
+        color:#717171;
+        background-color:#ffffff;
+        border:2px solid #EFBF43;
+    }
+}
+.meetingFindLocationButton{
+    border:none;
+    background: none;
+}
+
 .meetingFriendsList, .meetingLocationsList{
     display:flex;
     flex-direction: row;
@@ -72,19 +91,6 @@
     }
 }
 
-
-.meetingCreate{
-    .ant-form-item-control{
-        width:100%;
-        .meetingCreateButton{
-            width:100%;
-            border-radius: 10px;
-            color:#717171;
-            background-color:#ffffff;
-            border:2px solid #EFBF43;
-        }
-    }    
-}
 
 // 날짜 모달 SCSS
 .meetingDateContent{

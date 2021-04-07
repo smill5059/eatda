@@ -1,10 +1,60 @@
 import React, { useEffect, useState } from "react";
 import { Button, Row, Col } from "antd";
+import storeImage from 'assets/product/store_icon.png'
+import moment from 'moment'
 
 function MeetingInfo(props) {
+    function parse(str) {
+        var y = str.substr(0, 4);
+        var m = str.substr(5, 2);
+        var d = str.substr(8, 2);
+        var h = str.substr(11, 2);
+        var minutes = str.substr(14, 2);
+        return new Date(y, m - 1, d, h, minutes, 0);
+      }  
+  const [month, setMonth] = useState("");
+  const [date, setDate] = useState("");
+  const [day, setDay] = useState("");
+  const [hours, setHours] = useState("");
+  const [minutes, setMinutes] = useState("");
+
   const [info, setInfo] = useState(props.info);
+  const [meetingDate, setMeetingDate] = useState(moment())
+  const [meetingDateText, setMeetingDateText] = useState(moment().format("YYYY년 MM월 DD일 hh시 mm분"))
   useEffect(() => {
     setInfo(props.info)
+    console.log("____________________")
+    console.log(typeof(props.info.meetDate))
+    console.log(props.info.meetDate)
+    let meetingD = new Date(props.info.meetDate)
+    console.log("날짜")
+    console.log(meetingD)
+    // meetingD.setHours(meetingD.getHours() - 9)
+    setMeetingDate(moment(meetingD))
+    setMeetingDateText(moment(meetingD).format("YYYY년 MM월 DD일 HH시 mm분"))
+    let date = parse(props.info.meetDate.toString());
+    // props.info.meetDate = date;
+    setMonth(date.getMonth() + 1);
+    setDate(date.getDate());
+    if (date.getDay === 0) {
+      setDay("일");
+    } else if (date.getDay() === 1) {
+      setDay("월");
+    } else if (date.getDay() === 2) {
+      setDay("화");
+    } else if (date.getDay() === 3) {
+      setDay("수");
+    } else if (date.getDay() === 4) {
+      setDay("목");
+    } else if (date.getDay() === 5) {
+      setDay("금");
+    } else {
+      setDay("토");
+    }
+    setHours(date.getHours());
+    setMinutes(date.getMinutes());
+
+
     // 지도 로딩
     const { kakao } = window;
     console.log("일단 데이터 확인")
@@ -36,6 +86,8 @@ function MeetingInfo(props) {
     }
   }, []);
 
+  console.log(meetingDate.milliseconds())
+
   const Complete = (event) => {
     event.preventDefault();
     fetch(`${process.env.REACT_APP_API_URL}/meeting/` + info.id, {
@@ -58,7 +110,7 @@ function MeetingInfo(props) {
   return (
     <div className="contentBody meetingReadContent">
       <Row justify="end" className="meetingReadTitle">
-        <p>{info.title}</p>
+        <p>{meetingDateText}</p>
       </Row>
       <Col className="meetingReadMap"></Col>
       <Col className="meetingReadStore">
@@ -78,7 +130,7 @@ function MeetingInfo(props) {
         </div>
       </Col>
       <Row className="meetingReadDone" justify="end">
-        <Button className="meetingReadDoneButton" type="submit" onClick={Complete}>만났어요</Button>
+          {meetingDate < moment(new Date()) ? <Button className="meetingReadDoneButton" type="submit" onClick={Complete}>만났어요</Button> : <Button disabled className="meetingReadDoneButton" type="submit">아직 날짜가 안 지났습니다.</Button>}        
       </Row>
     </div>
   );
@@ -88,7 +140,9 @@ class StoreName extends React.Component {
   render() {
     return (
       <Row className="meetingReadStoreItem">
-        <Col span={3}></Col>
+        <Col span={3} className="meetingReadStoreImage">
+            <img src={storeImage}/>
+        </Col>
         <Col span={21} className="meetingReadStoreName">
           {this.props.name}
         </Col>
@@ -105,7 +159,7 @@ class Friends extends React.Component {
           <img src={`${process.env.REACT_APP_API_URL}/files/${this.props.imgUrl}`} />
         </Col>
         <Col span={16} className="meetingReadFriendName">
-          {this.props.name}
+          <strong>{this.props.name}</strong>
         </Col>
       </Row>
     );
