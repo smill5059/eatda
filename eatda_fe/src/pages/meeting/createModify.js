@@ -161,7 +161,7 @@ function CreateModify(props) {
   function recommendationModalItem() {
     // console.info("모달을 열어볼게요")
     return (
-      <div>
+      <div className="recommModal">
         <RecommendationModal
           setLocationKeyword={setLocationKeyword}
           meetingArea={meetingArea}
@@ -572,26 +572,6 @@ function CreateModify(props) {
             </div>
           </Form.Item>
           {/* 친구 부르기 버튼 */}
-          <Form.Item
-            name="meetingFindFriend"
-            label="누구랑"
-            className="meetingFindFriend"
-          >
-            {/* <Input
-              //   className="meetingFindFriendButton"
-              placeholder="친구를 검색해주세요"
-              onClick={(e) => showModal(e, "friend")}
-            /> */}
-            <Select
-              mode="multiple"
-              showArrow
-              tagRender={tagRender}
-              style={{ width: "100%" }}
-              options={friends}
-              value={selectedFriends}
-              onChange={setSelectedFriends}
-            />
-          </Form.Item>
           {/* 친구 목록   */}
           {/* <Form.Item className="meetingFriendsListBox">
             <div className="meetingFriendsList">

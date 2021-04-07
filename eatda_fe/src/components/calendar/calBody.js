@@ -119,7 +119,6 @@ function Calendar(props) {
         <div className={className()} key={index}>
           { date.format('D') }
           { meeting(date) }
-          { meeting(date) }
         </div>
       )
     })
