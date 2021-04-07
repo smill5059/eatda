@@ -9,11 +9,12 @@ import Calendar from '../../components/main/calendar';
 import Timeline from '../../components/main/timeline';
 
 import * as actions from 'store/modules/meetingData';
+import * as settingUser from 'store/modules/userData';
 
 
 function Main() {
   const history = useHistory()
-  
+
   // 버튼을 클릭할 때 마다 calendar와 timeline을 toggle하는 함수를 작성해 보겠습니다.
 
   // STEP 1. calendar를 보여주는 state 값을 Boolean으로 설정한다. 기본값을 true
@@ -25,25 +26,65 @@ function Main() {
 
   /* when main rendering */
   const dispatch = useDispatch();
-  const [ data, setData ] = useState([]);
-  const userToken = localStorage.getItem('Kakao_token') ? localStorage.getItem('Kakao_token') : ""
-  
+  const [data, setData] = useState([]);
+
+  const user = useSelector(state => state.userData)
+
   useEffect(() => {
-      if (userToken === ""){
-          window.location.href = "/login"
-      }
-    fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
-      headers : {
-        'token': userToken,        
-        // 'Content-Type': 'application/json',
-      }
-    })
-    .then(res => res.json())
-    .then(res => {
-      setData(res)
-      console.info("미팅데이터 불러오기", res)
-    })
-  },[]);
+
+    console.log(localStorage.getItem('refresh_token'))
+
+    if ((localStorage.getItem('refresh_token') ? localStorage.getItem('refresh_token') : "") === "") {
+      window.location.href = "/login"
+    }
+
+
+    fetch(`https://kauth.kakao.com/oauth/token`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `grant_type=refresh_token&client_id=${process.env.REACT_APP_KAKAO_API_KEY}&refresh_token=${localStorage.getItem('refresh_token')}`
+
+    }).then(obj => obj.json())
+      .then(obj => {
+
+        if (obj.refresh_token != undefined) {
+          localStorage.setItem("refresh_token", obj.refresh_token)
+          console.log("gmlgml")
+        }
+
+        fetch(`${process.env.REACT_APP_API_URL}/user/kakao/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            access_token: obj.access_token
+          })
+        })
+          .then(res => res.json())
+          .then(res => {
+            console.log('로그인 결과', res)
+            dispatch(settingUser.setUser({ id: res.id, name: res.name, profileUrl: res.profileUrl, code: res.seq, friends: res.friends, reviewId: res.reviewId }))
+            localStorage.setItem('Kakao_token', res.token);
+
+            fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
+              headers: {
+                'token': localStorage.getItem('Kakao_token'),
+                // 'Content-Type': 'application/json',
+              }
+            })
+              .then(res => res.json())
+              .then(res => {
+                setData(res)
+                console.info("미팅데이터 불러오기", res)
+              })
+          })
+      })
+
+  }, []);
+
 
   const setMeetingData = useCallback((data) => {
     dispatch(actions.meetingData(data));
@@ -52,7 +93,7 @@ function Main() {
   setMeetingData(data)
 
   const toMeetingCreate = () => {
-   window.location.href="/createMeeting"
+    window.location.href = "/createMeeting"
   }
 
   if (!localStorage.getItem('Kakao_token')) {
@@ -84,17 +125,17 @@ function Main() {
             </Button>
           </div>
           <div className="mainComponentWrapper">
-            { viewCalendar ? <Calendar/> : <Timeline/> }
-            <PlusCircleFilled 
+            {viewCalendar ? <Calendar /> : <Timeline />}
+            <PlusCircleFilled
               className="mainMeetingCreateBtn"
-              onClick={toMeetingCreate} 
+              onClick={toMeetingCreate}
             />
           </div>
         </div>
       </div>
     );
   }
-  
+
 }
 
 export default Main;
