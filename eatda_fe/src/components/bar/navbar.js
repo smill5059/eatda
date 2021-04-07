@@ -33,11 +33,11 @@ function Navbar() {
 
   const content = (
     <div>
-      <div className="logoutBtn" onClick={logoutWithKakao}>
-        로그아웃
-      </div>
       <div className="profileBtn" onClick={toProfile}>
         프로필
+      </div>
+      <div className="logoutBtn" onClick={logoutWithKakao}>
+        로그아웃
       </div>
     </div>
   );
