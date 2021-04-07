@@ -99,6 +99,7 @@ public class MeetingServiceImpl implements MeetingService {
           MaxStoreId maxStoreId =
               maxStoreIdRepo.findById(new ObjectId("606ad4b5180a4b670d79d0a4")).get();
           store.setStoreId(Integer.toString(maxStoreId.getMaxValue()));
+          store.setReviewers(new HashMap<String, Integer>());
           storeRepo.save(store);
           maxStoreId.setMaxValue(maxStoreId.getMaxValue() + 1);
           maxStoreIdRepo.save(maxStoreId);
