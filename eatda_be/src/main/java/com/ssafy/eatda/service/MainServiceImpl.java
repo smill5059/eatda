@@ -2,6 +2,7 @@ package com.ssafy.eatda.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -90,6 +91,8 @@ public class MainServiceImpl implements MainService {
 
     }
 
+    Collections.sort(result,
+        (ScheduleResult s1, ScheduleResult s2) -> s2.getMeetDate().compareTo(s1.getMeetDate()));
     return result;
   }
 
