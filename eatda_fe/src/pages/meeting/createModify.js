@@ -49,6 +49,10 @@ function CreateModify(props) {
   const [form] = Form.useForm();
   // 친구 폼에서 값을 담을 정보
   const [selectedList, setSelectedList] = useState([])
+  const friends = user.friendList.map((friend) => {
+    return { label: friend.userName, value: `${friend.id}|${friend.reviewId.toString()}` };
+  })
+  console.log(user.friendList)
   // 페이지 렌더 이후 1번 실행 => 기본 정보 세팅
   useEffect(() => {
     // 로그인 확인
@@ -91,25 +95,29 @@ function CreateModify(props) {
               setMeetingTime(moment(meetDate));
               // 약속 장소
               setMeetingLocation(response.stores);
+              console.log(response.participants)
               // 친구 IDs
-              let newFriendsList = response.participants
+              let newSelectedList = response.participants
                 .filter((part) => {
                   return part.id !== user.userId;
                 })
-                .map((part) => part.id);
+                .map((part) => {
+                    return `${part.id}|${part.reviewId.toString()}`
+                });
               // 친구 세팅
             //   setSelectedFriends(newFriendsList);
-              // ReviewIds 세팅
-              let newReviewIdList = response.reviewIds.filter((review)=>{
-                  return review !== user.reviewId
-              })
+            //   // ReviewIds 세팅
+            //   let newReviewIdList = response.reviewIds.filter((review)=>{
+            //       return review !== user.reviewId
+            //   })
             //   setSelectedReviewIds(newReviewIdList);
-              // 폼에 값 세팅
-              let newSelectedList = []
-              for (let i = 0; i < newReviewIdList.length; i++){
-                newSelectedList.push(`${newFriendsList[i]}|${newReviewIdList[i].toString()}`)
-              }
-              setSelectedList(newSelectedList)
+            // 폼에 값 세팅
+            // let newSelectedList = []
+
+            setSelectedList(newSelectedList)
+            // 선택 가능한 친구 세팅
+  
+              
 
               // 폼에 값 세팅
               form.setFieldsValue({
@@ -177,16 +185,10 @@ function CreateModify(props) {
     );
   }
 
-  // 선택 가능한 친구 세팅
-  const friends = user.friendList.map((friend) => {
-    return { label: friend.userName, value: `${friend.id}|${friend.reviewId.toString()}` };
-  });
+  
 
   function tagRender(props) {
-    console.log(props)
     const { label, value, closable, onClose } = props;
-    console.log("택택")
-    console.log(label)
 
     return (
       <Tag closable={closable} onClose={onClose} style={{ marginRight: 3 }} value={value}>
