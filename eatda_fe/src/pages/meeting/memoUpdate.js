@@ -136,11 +136,13 @@ function MemoUpdate(props) {
   return (
     <div className="contentWrapper">
       <div className="contentTitle">
-        {meetingDate} {meetingTime}
+        {meetingTitle}
+        {/* {meetingDate} {meetingTime} */}
       </div>
       <div className="contentBody">
         <div className="memoContent">
-          <p className="memoTitle">{meetingTitle}</p>
+          {/* <p className="memoTitle">{meetingTitle}</p> */}
+          <p className="memoTitle">{meetingDate} {meetingTime}</p>
           <div className="memoCreate">
             <Input.TextArea
               placeholder="약속 후기를 작성해주세요."
@@ -153,14 +155,14 @@ function MemoUpdate(props) {
             {meetingStores.map((store, index) => {
               return (
                 <Row
-                  className="starContent"
+                  className="starContent storeCard"
                   key={index}
                   justify="space-between"
                   align="center"
                 >
                   <p className="starStoreName">{store.storeName}</p>
                   <Rate
-                    className="starRating"
+                    className="starRating storeCardRating"
                     defaultValue={store.rate}
                     onChange={(value) => changeStar(value, store)}
                   />
