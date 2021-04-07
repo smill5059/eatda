@@ -1,10 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { Button, Row, Col } from "antd";
+import storeImage from 'assets/product/store_icon.png'
+
+
 
 function MeetingInfo(props) {
+    function parse(str) {
+        var y = str.substr(0, 4);
+        var m = str.substr(5, 2);
+        var d = str.substr(8, 2);
+        var h = str.substr(11, 2);
+        var minutes = str.substr(14, 2);
+        return new Date(y, m - 1, d, h, minutes, 0);
+      }  
+  const [month, setMonth] = useState("");
+  const [date, setDate] = useState("");
+  const [day, setDay] = useState("");
+  const [hours, setHours] = useState("");
+  const [minutes, setMinutes] = useState("");
+
   const [info, setInfo] = useState(props.info);
   useEffect(() => {
     setInfo(props.info)
+    console.log("____________________")
+    console.log(typeof(props.info.meetDate))
+    console.log(props.info.meetDate)
+    let date = parse(props.info.meetDate.toString());
+    console.log(props.info.meetDate.toString())
+    props.info.meetDate = date;
+    setMonth(date.getMonth() + 1);
+    setDate(date.getDate());
+    if (date.getDay === 0) {
+      setDay("일");
+    } else if (date.getDay() === 1) {
+      setDay("월");
+    } else if (date.getDay() === 2) {
+      setDay("화");
+    } else if (date.getDay() === 3) {
+      setDay("수");
+    } else if (date.getDay() === 4) {
+      setDay("목");
+    } else if (date.getDay() === 5) {
+      setDay("금");
+    } else {
+      setDay("토");
+    }
+    setHours(date.getHours());
+    setMinutes(date.getMinutes());
+
+
     // 지도 로딩
     const { kakao } = window;
     console.log("일단 데이터 확인")
@@ -58,7 +102,7 @@ function MeetingInfo(props) {
   return (
     <div className="contentBody meetingReadContent">
       <Row justify="end" className="meetingReadTitle">
-        <p>{info.title}</p>
+        <p>{month}월 {date}일({day}) {hours}시 {minutes}분</p>
       </Row>
       <Col className="meetingReadMap"></Col>
       <Col className="meetingReadStore">
@@ -88,7 +132,9 @@ class StoreName extends React.Component {
   render() {
     return (
       <Row className="meetingReadStoreItem">
-        <Col span={3}></Col>
+        <Col span={3} className="meetingReadStoreImage">
+            <img src={storeImage}/>
+        </Col>
         <Col span={21} className="meetingReadStoreName">
           {this.props.name}
         </Col>
