@@ -1,6 +1,8 @@
 import React from 'react';
-
 import { useHistory } from "react-router";
+import { Button, Popover } from 'antd';
+import { AppstoreOutlined } from '@ant-design/icons';
+
 
 const { Kakao } = window;
 
@@ -25,14 +27,24 @@ function Navbar() {
     history.push('/profile')
   }
 
-  return (
-    <div className="navbar">
+  const content = (
+    <div>
       <div className="logoutBtn" onClick={logoutWithKakao}>
         로그아웃
       </div>
       <div className="profileBtn" onClick={toProfile}>
         프로필
       </div>
+    </div>
+  );
+
+  return (
+    <div className="navbar">
+      { localStorage.getItem('Kakao_token') && 
+        <Popover content={content} placement="bottomRight" trigger="click">
+          <AppstoreOutlined className="navButton" />
+        </Popover>
+      }
     </div>
   )
 }
