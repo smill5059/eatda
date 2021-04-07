@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, Dropdown, Menu, Row, Col, Image, Form } from "antd";
 
 import { PlusOutlined, CloseCircleFilled, PictureFilled } from '@ant-design/icons';
+import moment from 'moment'
 
 function PhotoUploader(props) {
   const {meetingId} = props.match.params
@@ -13,7 +14,11 @@ function PhotoUploader(props) {
   
   // 업로드할 사진 보내기 
   const [ deletedUrls, setDeletedUrls ] = useState([]);
-  
+  // 날짜, 약속 이름
+  const meetingDays = ['일', '월', '화', '수', '목', '금', '토']
+  const [meetingDate, setMeetingDate] = useState('')
+  const [meetingTitle, setMeetingTitle] = useState('')
+
   const savePhoto = () => {
     
     const formData = new FormData()
@@ -31,8 +36,6 @@ function PhotoUploader(props) {
             body: formData
           })
     }
-    
-    
 
     console.info("삭제할 사진", deletedUrls)
     fetch(`${process.env.REACT_APP_API_URL}/review/img/${meetingId}`, {
@@ -45,7 +48,7 @@ function PhotoUploader(props) {
       })
     }).then((res) => {
       // alert("사진이 저장되었습니다!");
-    //   window.location.href = `/meeting/${meetingId}`;
+      window.location.href = `/meeting/${meetingId}`;
     })
   };
 
@@ -60,9 +63,14 @@ function PhotoUploader(props) {
     })
       .then((res) => res.json())
       .then((response) => {
+          console.log(response.meetDate)
+          let receivedDate = new Date(response.meetDate)
+          receivedDate.setHours(receivedDate.getHours() - 9)
+          setMeetingDate(`${receivedDate.getMonth()+1}월 ${receivedDate.getDate()}일(${meetingDays[receivedDate.getDay()]}) ${receivedDate.getHours()}시 ${receivedDate.getMinutes()}분`)
+          setMeetingTitle(response.title)
         console.log("보자", response.imgs)
         setPhotoAddedList(response.imgs)
-      });
+      }).catch(()=>window.location.href=`/meeting/${meetingId}`);
   }, []);
 
   const photoAddedPreview = () => {
@@ -70,7 +78,7 @@ function PhotoUploader(props) {
       return (
         <div className="photoBox" key={index}>
           <CloseCircleFilled className="photoBoxDelete" onClick={()=>onRemoveAdded(photo)}/>
-          <img className="photoPreview" src={`${process.env.REACT_APP_API_URL}/files/${photo}`} />
+          <img className="photoPreview" src={`${process.env.REACT_APP_API_URL}/files/${photo}`} alt="meetingImg"/>
         </div>
       )
     })
@@ -114,7 +122,8 @@ function PhotoUploader(props) {
   return (
   <div className="contentWrapper">
     <Row className="contentTitle">
-      <Col span={20}>3월 23일(화) 오후 5시</Col>
+      {/* <Col span={20}>3월 23일(화) 오후 5시</Col> */}
+      <Col span={20}>{meetingDate}</Col>
       <Col span={4}>
         {/* <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
           <Button>...</Button>
@@ -123,7 +132,7 @@ function PhotoUploader(props) {
     </Row>
     <div className="contentBody photoUploaderWrapper">
       <Row justify="end">
-        <p>클로이와 홍대 나들이</p>
+        <p>{meetingTitle}</p>
       </Row>
       <div className="photoUploaderContent">
         <Form className="photoBox addPhoto" encType="multipart/form-data">
