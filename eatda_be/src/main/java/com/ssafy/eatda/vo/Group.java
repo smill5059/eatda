@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class Group {
   private ObjectId id;
   private String groupId;
+  private int reviewId;
   private ArrayList<Integer> members;
   private int cnt;
 }
