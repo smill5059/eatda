@@ -54,6 +54,17 @@
     width: 100%;
     height: 100%;
 }
+
+.recommModalLoading {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
 .recommModalContent {
     width: 100%;
     height: 100%;
@@ -64,6 +75,7 @@
 
     display: grid;
     grid-template-rows: 8fr 1fr;
+    grid-gap: 10px;
 }
 
 .recommModalStoreWrapper {
@@ -96,7 +108,8 @@
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr;
 
-    background-color: $eatdaYellow;
+    background-color: $eatdaGray3;
+    border-radius: 10px;
     
 }
 
@@ -109,6 +122,10 @@
     align-items: end;
     padding-top: 10%;
     padding-left: 15%;
+
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
     
 }
 .rMStoreAddress {
@@ -117,6 +134,12 @@
     
     font-size: small;
     align-items: start;
+    padding: 2% 8%;
+    // padding-left: 8%;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     
 }
 .rMStoreRate {
@@ -124,6 +147,16 @@
     grid-column: 2 / 3 ;
     
     font-size: larger;
+
+    display: flex;
+    justify-content: flex-end;
     align-items: end;
     padding-top: 10%;
+    padding-right: 15%;
+}
+
+.rMBtnWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

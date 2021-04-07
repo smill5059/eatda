@@ -61,8 +61,11 @@
   height: 100%;
   width: 100%;
 
-  background-color: $themeColor;
+  // background-color: $themeColor;
+  border-bottom: solid 1px $themeColor;
   
+  font-weight: 600;
+
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 
@@ -109,7 +112,7 @@
   font-size: x-small;
   text-align: center;
   
-  padding: 15%;
+  padding: 15% 5% 5%;
   
   border: solid 0.3px white;
 
@@ -120,20 +123,35 @@
 }
 
 .outdate {
+  visibility: hidden;
+
   color: white;
   background-color: white;
+
+  .meetingBlob {
+    height: 100%;
+    width: 100%;
+
+    // background-color: white;
+  }
 }
 
 .date-today {
-  color: white;
-  background-color: $subColor;
+  color: $eatdaBrown1;
+  // background-color: $eatdaGray3;
+  background: linear-gradient(135deg, $eatdaGray3 0%, $eatdaBeige2 100%);
+  border-radius: 10px;
+
+  // outline: 3px solid $eatdaBeige1;
+  // border-image-source: linear-gradient(45deg, $eatdaBeige1, $eatdaBeige2);
+  // border-image-slice: 1;
 
   .meetingBlob {
     height: 100%;
     width: 100%;
 
     background-color: $eatdaBrown1;
-  }
+      }
 }
 
 .date-sun {
@@ -158,4 +176,6 @@
   width: 100%;
 
   background-color: $subColor;
+
+  border-radius: 10px;
 }
