@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Row, Col } from "antd";
 import storeImage from 'assets/product/store_icon.png'
-
-
+import moment from 'moment'
 
 function MeetingInfo(props) {
     function parse(str) {
@@ -20,14 +19,21 @@ function MeetingInfo(props) {
   const [minutes, setMinutes] = useState("");
 
   const [info, setInfo] = useState(props.info);
+  const [meetingDate, setMeetingDate] = useState(moment())
+  const [meetingDateText, setMeetingDateText] = useState(moment().format("YYYY년 MM월 DD일 hh시 mm분"))
   useEffect(() => {
     setInfo(props.info)
     console.log("____________________")
     console.log(typeof(props.info.meetDate))
     console.log(props.info.meetDate)
+    let meetingD = new Date(props.info.meetDate)
+    console.log("날짜")
+    console.log(meetingD)
+    // meetingD.setHours(meetingD.getHours() - 9)
+    setMeetingDate(moment(meetingD))
+    setMeetingDateText(moment(meetingD).format("YYYY년 MM월 DD일 HH시 mm분"))
     let date = parse(props.info.meetDate.toString());
-    console.log(props.info.meetDate.toString())
-    props.info.meetDate = date;
+    // props.info.meetDate = date;
     setMonth(date.getMonth() + 1);
     setDate(date.getDate());
     if (date.getDay === 0) {
@@ -80,6 +86,8 @@ function MeetingInfo(props) {
     }
   }, []);
 
+  console.log(meetingDate.milliseconds())
+
   const Complete = (event) => {
     event.preventDefault();
     fetch(`${process.env.REACT_APP_API_URL}/meeting/` + info.id, {
@@ -102,7 +110,7 @@ function MeetingInfo(props) {
   return (
     <div className="contentBody meetingReadContent">
       <Row justify="end" className="meetingReadTitle">
-        <p>{month}월 {date}일({day}) {hours}시 {minutes}분</p>
+        <p>{meetingDateText}</p>
       </Row>
       <Col className="meetingReadMap"></Col>
       <Col className="meetingReadStore">
@@ -122,7 +130,7 @@ function MeetingInfo(props) {
         </div>
       </Col>
       <Row className="meetingReadDone" justify="end">
-        <Button className="meetingReadDoneButton" type="submit" onClick={Complete}>만났어요</Button>
+          {meetingDate < moment(new Date()) ? <Button className="meetingReadDoneButton" type="submit" onClick={Complete}>만났어요</Button> : <Button disabled className="meetingReadDoneButton" type="submit">아직 날짜가 안 지났습니다.</Button>}        
       </Row>
     </div>
   );
@@ -151,7 +159,7 @@ class Friends extends React.Component {
           <img src={`${process.env.REACT_APP_API_URL}/files/${this.props.imgUrl}`} />
         </Col>
         <Col span={16} className="meetingReadFriendName">
-          {this.props.name}
+          <strong>{this.props.name}</strong>
         </Col>
       </Row>
     );

@@ -16,7 +16,7 @@ function Login() {
   const dispatch = useDispatch()
 
   function loginWithKakao() {
-    Kakao.Auth.loginForm({
+    Kakao.Auth.login({
       success: function(obj) {
         // console.log(obj, SERVER_URL)
         localStorage.setItem("refresh_token", obj.refresh_token)
