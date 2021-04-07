@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 
-import { Form, Input, Button, DatePicker, Space } from "antd";
+import { Form, Input, Button, DatePicker, Space, Rate } from "antd";
 
 
 
@@ -224,6 +224,7 @@ function RecommendationModal(props) {
       .then((res) => res.json())
       .then((response) => {
         console.log("받아온 가게목록~!~!!~!~!~!~!~", response)
+        setLoading(false)
         setRecommStores(response)
       })
     }
@@ -234,15 +235,25 @@ function RecommendationModal(props) {
     const Posts = (recommStores, loading) => {
       console.info("표기할 recommStores", recommStores)
       return (
-        <div>
-          { loading && <div> { meetingArea[0].locationName } 주변 맛집을 찾고 있어요~! </div>}
-          <div>
+        <div className="recommModalStoreWrapper">
+          { loading && <div className="recommModalLodaing"> { meetingArea[0].locationName } 주변 맛집을 찾고 있어요~! </div>}
+          <div className="recommModalStore">
             { recommStores.map((item) =>
               <div 
                 key={item.storeId}
+                className="recommModalStoreContent"
                 onClick={() => setMeetingLocation(meetingLocation.concat(item))}
               >
-                { item.storeName } 이에요!
+                <div className="rMStoreName">
+                  { item.storeName }
+                </div>
+                <div className="rMStoreAddress">
+                  { item.storeAddress }
+                </div>
+                <Rate 
+                  className="rMStoreRate"
+                  disabled defaultValue={item.avgRate}
+                />
               </div>
             ) }
           </div>
@@ -271,7 +282,7 @@ function RecommendationModal(props) {
     }
 
     return (
-      <div>
+      <div className="recommPageContent">
         { Posts(currentPosts(recommStores), loading) }
         { nextButton() }
       </div>
@@ -279,7 +290,7 @@ function RecommendationModal(props) {
   };
   
   return (
-    <div>
+    <div className="recommModalContent">
       { (meetingAreaSettled) ? (recommendationPage()) : (meetingAreaPage()) }
     </div>
   );
