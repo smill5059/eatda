@@ -77,7 +77,6 @@ function Login() {
       <img src={Logo} className="logoImg" />
       
       <img src={kakaoLogin} className="kakaoLogin" onClick={loginWithKakao} />
-
     </div>
   );
 }

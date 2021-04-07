@@ -188,7 +188,8 @@ def sim_pearson(data, name1, name2):
 
 
 # 함수 1 : 유사도 자동 업데이트 함수     
-def Similarity():
+@api_view(['POST'])
+def Similarity(request):
     update()
     # schedule.every().day.at("05:00").do(update)
 
@@ -196,7 +197,7 @@ def Similarity():
     #     schedule.run_pending()
     #     time.sleep(1)
 
-    return "유사도 업데이트도 됩니다!"
+    return Response("SUCCESS")
 
 # 함수 2 : user와 지역 정보를 입력받아서, 가게 유사도 돌린 후, 추천 값 반환하는 함수
 @api_view(['POST'])
