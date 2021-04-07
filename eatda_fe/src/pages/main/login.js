@@ -17,7 +17,7 @@ function Login() {
 
   function loginWithKakao() {
     Kakao.Auth.login({
-      success: function (obj) {
+      success: function(obj) {
         // console.log(obj, SERVER_URL)
         localStorage.setItem("refresh_token", obj.refresh_token)
         fetch(`${SERVER_URL}/user/kakao/login`, {

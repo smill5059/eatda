@@ -31,6 +31,7 @@ function CreateModify(props) {
   // 페이지 정보 (생성, 수정)
   const [pageTitle, setPageTitle] = useState("약속 만들기");
   const [meetingButtonText, setMeetingButtonText] = useState("약속 생성하기");
+  const [pageChange, setPageChange] = useState(false)
   // 서버에 보낼 정보
   const [meetingTitle, setMeetingTitle] = useState("");
   const [meetingDate, setMeetingDate] = useState("");
@@ -116,9 +117,6 @@ function CreateModify(props) {
 
             setSelectedList(newSelectedList)
             // 선택 가능한 친구 세팅
-  
-              
-
               // 폼에 값 세팅
               form.setFieldsValue({
                 meetingName: response.title,
@@ -141,25 +139,37 @@ function CreateModify(props) {
     setModalVisible(false);
   }, [meetingLocation]);
 
+  let [tempValue, setTempValue] = useState('')
+
   // 장소 모달
   function locationModalItem() {
     return (
       <div className="meetingLocationContent">
-        <Form layout="vertical">
+        <Form layout="inline">
           <Form.Item
             name="meetingLocationForm"
             className="meetingLocationForm"
             label="장소 검색하기"
           >
-            <Input
+            <Input         
               placeholder="식당 이름을 검색해주세요"
+              onChange={(e)=> {setTempValue(e.target.value); tempValue=e.target.value}}
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
                   setLocationKeyword(e.target.value);
                 }
               }}
-            />
+              style={{width:'100%'}}
+              addonAfter={<Form.Item noStyle >
+          <Button htmlType="button" className="meetingFindLocationButton" onClick={(e)=>{
+              e.preventDefault();
+              setLocationKeyword(tempValue)
+              setTempValue('')
+          }}>검색</Button>
+              </Form.Item>}
+            />   
           </Form.Item>
+          
         </Form>
         <div className="meetingLocationMap"></div>
       </div>
@@ -258,7 +268,7 @@ function CreateModify(props) {
       });
     }
     // 지도 끝
-  }, [modalVisible, locationKeyword]);
+  }, [modalVisible, locationKeyword, modalContent]);
 
   console.log("추가추가__________________")
   console.log(selectedList)
@@ -286,6 +296,17 @@ function CreateModify(props) {
   useEffect(() => {
     setModalContent(recommendationModalItem);
   }, [meetingArea]);
+
+  useEffect(()=>{
+      console.log("USEEFFECT")
+    console.log(selectedList)
+    selectedList.forEach((item)=>{
+        let tempoList = item.split("|")
+        selectedFriends.push(tempoList[0])
+    })
+    let newSelectedFriends = [...new Set(selectedFriends)]
+    setSelectedFriends(newSelectedFriends)
+  }, [selectedList])
 
   function showModal(e, modalType) {
     e.preventDefault();
@@ -327,17 +348,17 @@ function CreateModify(props) {
     let newDate = date_text + "T" + time_text;
     setMeetingLocation(meetingLocation);
     // 본인 설정
-    selectedFriends.push(user.userId);
-    selectedReviewIds.push(user.reviewId);
+    let tempSelectedFriends = [user.userId];
+    let tempSelectedReviewIds= [user.reviewId];
 
     selectedList.forEach((item)=>{
         const tempList = item.split('|')
-        selectedFriends.push(tempList[0])
-        selectedReviewIds.push(parseInt(tempList[1]))
+        tempSelectedFriends.push(tempList[0])
+        tempSelectedReviewIds.push(parseInt(tempList[1]))
     })
 
-    let newSelectedFriends = [...new Set(selectedFriends)]
-    let newSelectedReviewIds = [...new Set(selectedReviewIds)]
+    let newSelectedFriends = [...new Set(tempSelectedFriends)]
+    let newSelectedReviewIds = [...new Set(tempSelectedReviewIds)]
     let newSelectedList = [...new Set(selectedList)]
     setSelectedFriends(newSelectedFriends)
     setSelectedReviewIds(newSelectedReviewIds)
@@ -388,7 +409,7 @@ function CreateModify(props) {
   return (
     <div className="contentWrapper">
       <div className="contentTitle">{pageTitle}</div>
-      <div className="contentBody">
+      <div className="contentBody meetingCreateBody">
         <Form name="meetingCreateForm" form={form}>
           {/* 약속 이름 창 */}
           <Form.Item
@@ -461,23 +482,23 @@ function CreateModify(props) {
             </Button>
           </Form.Item>
           {/* 장소 목록   */}
+          {meetingLocation.length > 0 ? 
           <Form.Item className="meetingLocationsListBox">
             <div className="meetingLocationsList">
-              {meetingLocation.length > 0
-                ? meetingLocation.map((store, index) => {
+              {meetingLocation.map((store, index) => {
                     return (
                       <div className="meetingLocationsItem" key={index}>
                         <p>{store.storeName}</p>
                         <CloseOutlined onClick={(e) => deleteStore(store)} />
                       </div>
                     );
-                  })
-                : "장소를 정해주세요"}
+                  })}
             </div>
           </Form.Item>
-          
-          <Form.Item name="meetingCreate" className="meetingCreate">
-            <Button
+          : null
+          }
+        </Form>
+        <Button
               type="primary"
               htmlType="submit"
               onClick={(e) => createMeeting(e)}
@@ -485,9 +506,8 @@ function CreateModify(props) {
             >
               {meetingButtonText}
             </Button>
-          </Form.Item>
-        </Form>
       </div>
+      
       {/* 모달 */}
       {modalVisible ? (
         <div className="modalWrapper">
