@@ -13,7 +13,7 @@ import * as actions from 'store/modules/meetingData';
 
 function Main() {
   const history = useHistory()
-  
+
   // 버튼을 클릭할 때 마다 calendar와 timeline을 toggle하는 함수를 작성해 보겠습니다.
 
   // STEP 1. calendar를 보여주는 state 값을 Boolean으로 설정한다. 기본값을 true
@@ -25,25 +25,37 @@ function Main() {
 
   /* when main rendering */
   const dispatch = useDispatch();
-  const [ data, setData ] = useState([]);
+  const [data, setData] = useState([]);
   const userToken = localStorage.getItem('Kakao_token') ? localStorage.getItem('Kakao_token') : ""
-  
+  const refreshToken = localStorage.getItem('refresh_token') ? localStorage.getItem('refresh_token') : ""
+
   useEffect(() => {
-      if (userToken === ""){
-          window.location.href = "/login"
-      }
+    // if(refreshToken === ""){
+    //   window.location.href = "/login"
+    // }
+
+    // fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
+    //   headers : {
+    //     'token': userToken,        
+    //     // 'Content-Type': 'application/json',
+    //   }
+    // })
+
+    if (userToken === "") {
+      window.location.href = "/login"
+    }
     fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
-      headers : {
-        'token': userToken,        
+      headers: {
+        'token': userToken,
         // 'Content-Type': 'application/json',
       }
     })
-    .then(res => res.json())
-    .then(res => {
-      setData(res)
-      console.info("미팅데이터 불러오기", res)
-    })
-  },[]);
+      .then(res => res.json())
+      .then(res => {
+        setData(res)
+        console.info("미팅데이터 불러오기", res)
+      })
+  }, []);
 
   const setMeetingData = useCallback((data) => {
     dispatch(actions.meetingData(data));
@@ -52,7 +64,7 @@ function Main() {
   setMeetingData(data)
 
   const toMeetingCreate = () => {
-   window.location.href="/createMeeting"
+    window.location.href = "/createMeeting"
   }
 
   if (!localStorage.getItem('Kakao_token')) {
@@ -84,17 +96,17 @@ function Main() {
             </Button>
           </div>
           <div className="mainComponentWrapper">
-            { viewCalendar ? <Calendar/> : <Timeline/> }
-            <PlusCircleFilled 
+            {viewCalendar ? <Calendar /> : <Timeline />}
+            <PlusCircleFilled
               className="mainMeetingCreateBtn"
-              onClick={toMeetingCreate} 
+              onClick={toMeetingCreate}
             />
           </div>
         </div>
       </div>
     );
   }
-  
+
 }
 
 export default Main;
