@@ -142,9 +142,13 @@ function PhotoUploader(props) {
         <p>{meetingTitle}</p>
       </Row>
       <div className="photoUploaderContent">
-        <Form className="photoBox addPhoto" encType="multipart/form-data">
+        <Form 
+          className="photoBox addPhoto" 
+          encType="multipart/form-data"
+          onClick={handleClick}>
           {/* <PlusOutlined /> */}
-          <PictureFilled onClick={handleClick} />
+          {/* <PictureFilled onClick={handleClick} /> */}
+          <PictureFilled />
           <input 
             type="file" 
             accept="image/jpg, image/jpeg, image/png" 

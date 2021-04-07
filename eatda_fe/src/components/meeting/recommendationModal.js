@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { Form, Input, Button, DatePicker, Space, Rate } from "antd";
 
+import LOADING from "assets/product/loading.gif"
 
 
 function RecommendationModal(props) {
@@ -245,7 +246,14 @@ function RecommendationModal(props) {
       console.info("표기할 recommStores", recommStores)
       return (
         <div className="recommModalStoreWrapper">
-          { loading && <div className="recommModalLodaing"> { meetingArea[0].locationName } 주변 맛집을 찾고 있어요~! </div>}
+          { loading && <div className="recommModalLoading"> 
+              <div style={{
+                fontSize: 'larger',
+                fontWeight: 600,
+              }}>{ meetingArea[0].locationName }</div>
+              <div>가까운 맛집을 찾고 있어요~! </div>
+              <img src={LOADING} width={100} height={100} />
+            </div>}
           <div className="recommModalStore">
             { recommStores.map((item) =>
               <div 
@@ -273,19 +281,23 @@ function RecommendationModal(props) {
     const nextButton = () => {
       if (currentPage === 3) {
         return (
-          <Button
-            onClick={(e) => showModal(e, "location")}
-          >
-            직접 고를게요!
-          </Button>
+          <div className="rMBtnWrapper">
+            <Button
+              onClick={(e) => showModal(e, "location")}
+            >
+              직접 고를게요!
+            </Button>
+          </div>
         )
       } else if (loading === false) {
         return(
-        <Button
-          onClick={() => {setCurrentPage(currentPage + 1)}}
-        >
-          다른 추천을 볼게요!
-        </Button>
+          <div className="rMBtnWrapper">
+            <Button
+              onClick={() => {setCurrentPage(currentPage + 1)}}
+            >
+              다른 추천을 볼게요!
+            </Button>
+          </div>
         )
       }
     }

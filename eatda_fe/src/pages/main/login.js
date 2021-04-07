@@ -19,6 +19,7 @@ function Login() {
     Kakao.Auth.loginForm({
       success: function(obj) {
         // console.log(obj, SERVER_URL)
+        localStorage.setItem("refresh_token", obj.refresh_token)
         fetch(`${SERVER_URL}/user/kakao/login`, {
           method: 'POST',
           headers: {
@@ -31,30 +32,30 @@ function Login() {
           .then(res => res.json())
           .then(res => {
             console.log('로그인 결과', res)
-            dispatch(settingUser.setUser({id: res.id, name: res.name, profileUrl: res.profileUrl, code: res.seq, friends: res.friends, reviewId: res.reviewId}))
+            dispatch(settingUser.setUser({ id: res.id, name: res.name, profileUrl: res.profileUrl, code: res.seq, friends: res.friends, reviewId: res.reviewId }))
             localStorage.setItem('Kakao_token', res.token);
             if (res.token) {
               history.push('/')
-                // 밑에 굳이 안해도 될 듯
-                // 어차피 / 로 이동하면 실행됨
+              // 밑에 굳이 안해도 될 듯
+              // 어차피 / 로 이동하면 실행됨
               console.log('로그인 성공')
-            //   fetch(`${SERVER_URL}/main/schedules`, {
-            //     headers: {
-            //       token: res.token
-            //     },
-            //   })
-            //     .then(res => res.json())
-            //     .then(res => {
-            //       console.log(res)
-            //       history.push('/')
-            //     })
+              //   fetch(`${SERVER_URL}/main/schedules`, {
+              //     headers: {
+              //       token: res.token
+              //     },
+              //   })
+              //     .then(res => res.json())
+              //     .then(res => {
+              //       console.log(res)
+              //       history.push('/')
+              //     })
             }
           })
-            // .then((res) => {
-            //   setMeetingData(data)
-            // })
+        // .then((res) => {
+        //   setMeetingData(data)
+        // })
       },
-      fail: function(err) {
+      fail: function (err) {
         console.warn(JSON.stringify(err))
       }
     })
@@ -67,7 +68,7 @@ function Login() {
       </div>
 
       <img src={Logo} className="logoImg" />
-      
+
       <img src={kakaoLogin} className="kakaoLogin" onClick={loginWithKakao} />
     </div>
   );
