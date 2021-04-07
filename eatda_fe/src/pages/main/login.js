@@ -30,8 +30,8 @@ function Login() {
         })
           .then(res => res.json())
           .then(res => {
-            // console.log('로그인 결과', res)
-            dispatch(settingUser.setUser({id: res.id, name: res.name, code: res.seq, friends: res.friends, reviewId: res.reviewId}))
+            console.log('로그인 결과', res)
+            dispatch(settingUser.setUser({id: res.id, name: res.name, profileUrl: res.profileUrl, code: res.seq, friends: res.friends, reviewId: res.reviewId}))
             localStorage.setItem('Kakao_token', res.token);
             if (res.token) {
               history.push('/')

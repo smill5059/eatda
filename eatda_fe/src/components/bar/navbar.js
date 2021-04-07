@@ -40,9 +40,11 @@ function Navbar() {
 
   return (
     <div className="navbar">
-      <Popover content={content} placement="bottomRight" trigger="click">
-        <AppstoreOutlined className="navButton" />
-      </Popover>
+      { localStorage.getItem('Kakao_token') && 
+        <Popover content={content} placement="bottomRight" trigger="click">
+          <AppstoreOutlined className="navButton" />
+        </Popover>
+      }
     </div>
   )
 }
