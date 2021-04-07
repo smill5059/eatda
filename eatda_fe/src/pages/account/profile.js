@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Image, Card, Modal, Menu, Dropdown, Button, message, Input } from 'antd';
@@ -70,12 +70,12 @@ function Profile() {
   const { confirm } = Modal;
   function deleteFriend(friend) {
     confirm({
-      title: '친구 안 할거야? ㅠㅠ',
+      // title: '친구 끊기',
       icon: <ExclamationCircleOutlined />,
-      content: '안 할 거냐구우',
-      okText: '넹',
+      content: '친구를 끊으시겠습니까?',
+      okText: '끊기',
       okType: 'danger',
-      cancelText: '앗 실수',
+      cancelText: '취소',
       onOk() {
         axios.delete(`${SERVER_URL}/user/deletefriend`, {
           headers: {
@@ -96,48 +96,71 @@ function Profile() {
       },
     })
   }
-
   
-  // 친구 초대
-  const inviteFriend = code => {
-    // 친구 초대 
-    // Kakao.Link.
-    Kakao.API.request({
-      url: '/v2/api/talk/memo/default/send',
-      data: {
-        template_object: {
-          object_type: 'feed',
-          content: {
-            title: '카카오톡 링크 4.0',
-            description: '디폴트 템플릿 FEED',
-            image_url: 'http://mud-kage.kakao.co.kr/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
-            link: {
-              web_url: 'https://developers.kakao.com',
-              mobile_web_url: 'https://developers.kakao.com',
-            },
-          },
-          social: {
-            like_count: 100,
-            comment_count: 200,
-          },
-          button_title: '바로 확인',
-        }
-      },
-      success: function(response) {
-        console.log(response);
-      },
-      fail: function(error) {
-        // console.log(error);
-        // 여기 하고 있었습니다,, 여기 오류 한바가지
-        Kakao.Auth.authorize({
-          redirectUri: '{REDIRECT_URI}',
-          scope: 'talk_message'
-        });
-      },
-    })
-  }
+  // useEffect(() => {
+  //   inviteFriend();
+  // }, [])
 
-
+  // // 친구 초대
+  // const inviteFriend = () => {
+  //   // Kakao.API.request({
+  //   //   url: '/v2/api/talk/memo/default/send',
+  //   //   data: {
+  //   //     template_object: {
+  //   //       object_type: 'feed',
+  //   //       content: {
+  //   //         title: '제목',
+  //   //         description: '설명',
+  //   //         link: {
+  //   //           web_url: 'https://eatda.me',
+  //   //         },
+  //   //       },
+  //   //       button_title: '바로 확인',
+  //   //     }
+  //   //   },
+  //   //   success: function(response) {
+  //   //     console.log(response);
+  //   //   },
+  //   //   fail: function(error) {
+  //   //     console.log(error);
+  //   //     Kakao.Auth.authorize({
+  //   //       redirectUri: 'http://localhost:3000/profile',
+  //   //       scope: 'talk_message',
+  //   //     });
+  //   //   },
+  //   // })
+  //   Kakao.Link.createDefaultButton({
+  //     container: '#kakao-link-btn',
+  //     objectType: 'feed',
+  //     content: {
+  //       title: '디저트 사진',
+  //       description: '아메리카노, 빵, 케익',
+  //       imageUrl:
+  //         'http://mud-kage.kakao.co.kr/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
+  //       link: {
+  //         mobileWebUrl: 'https://developers.kakao.com',
+  //         androidExecParams: 'test',
+  //       },
+  //     },
+  //     buttons: [
+  //       {
+  //         title: '웹으로 보기',
+  //         link: {
+  //           mobileWebUrl: 'https://developers.kakao.com',
+  //           webUrl: 'https://developers.kakao.com'
+  //         }
+  //       },
+  //       {
+  //         title: '앱으로 보기',
+  //         link: {
+  //           mobileWebUrl: 'https://developers.kakao.com',
+  //           webUrl: 'https://developers.kakao.com'
+  //         }
+  //       }
+  //     ]
+  //   });
+  // }
+  
   // 친구 관리
   const friendMenu = friend => (
     <Menu>
@@ -182,10 +205,13 @@ function Profile() {
           <div className="frdTitle">
             나의 친구 목록
           </div>
+
+          {/* <div className="" id="kakao_link_btn" onClick={inviteFriend()}>
+            친구 초대
+          </div> */}
+          
           <div className="frdAddBtn">
-            <div className="" onClick={inviteFriend(user.usercode)}>
-              친구 초대
-            </div>
+
             <PlusSquareOutlined style={{fontSize: 'larger', color: '#EFBF43'}} onClick={showModal} />
             <Modal
               visible={visible}
