@@ -11,6 +11,7 @@ function MeetingRead(props) {
 
   const { meetingId } = props.match.params;
   const [meetComponent, setMeetComponent] = useState("");
+  const [meetingTitle, setMeetingTitle] = useState("");
   const [month, setMonth] = useState("");
   const [date, setDate] = useState("");
   const [day, setDay] = useState("");
@@ -149,7 +150,7 @@ function MeetingRead(props) {
   return (
     <div className="contentWrapper">
       <Row className="contentTitle">
-        <Col span={20}>
+        <Col span={20} className="contentTitleText">
           {/* {month}월 {date}일({day}) {hours}시 {minutes}분 */}
           {meetingTitle}
         </Col>

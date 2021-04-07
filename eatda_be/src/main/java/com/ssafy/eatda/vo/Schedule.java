@@ -26,6 +26,7 @@ public class Schedule {
 
   private List<Store> stores;
   private List<ObjectId> participants;
+  private List<Integer> reviewIds;
   private List<String> tags;
   private List<Score> scores;
   private List<Comment> comments;

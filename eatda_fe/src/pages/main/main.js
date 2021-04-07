@@ -81,7 +81,9 @@ function Main() {
                 console.info("미팅데이터 불러오기", res)
               })
           })
-      })
+      }).catch(function (error) {
+        window.location.href = "/login"
+      });
 
   }, []);
 

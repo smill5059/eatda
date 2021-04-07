@@ -154,7 +154,7 @@ function RecommendationModal(props) {
   //   }
   // ]);
 
-
+  let [tempValue, setTempValue] = useState('')
   const meetingAreaPage = () => {
     console.info("미팅페이지 렌더링 됐어요")
     return (
@@ -167,11 +167,20 @@ function RecommendationModal(props) {
             >
             <Input
               placeholder="만날 장소를 검색해주세요"
+              onChange={(e)=> {setTempValue(e.target.value); tempValue=e.target.value}}
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
                   setLocationKeyword(e.target.value);
                 }
               }}
+              style={{width:'100%'}}
+              addonAfter={<Form.Item noStyle >
+                <Button htmlType="button" className="meetingFindLocationButton" onClick={(e)=>{
+                    e.preventDefault();
+                    setLocationKeyword(tempValue)
+                    setTempValue('')
+                }}>검색</Button>
+                    </Form.Item>}
               />
           </Form.Item>
         </Form>

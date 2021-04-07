@@ -26,6 +26,7 @@ public class ScheduleResult {
 
   private List<Store> stores;
   private List<Profile> participants;
+  private List<Integer> reviewIds;
   private List<String> tags;
   private List<Score> scores;
   private List<Comment> comments;
@@ -43,5 +44,6 @@ public class ScheduleResult {
     this.comments = s.getComments();
     this.imgs = s.getImgs();
     this.completed = s.getCompleted();
+    this.reviewIds = s.getReviewIds();
   }
 }
