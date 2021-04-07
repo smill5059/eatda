@@ -8,17 +8,21 @@ const { Kakao } = window;
 
 function Navbar() {
   const history = useHistory()
-  
+
   function logoutWithKakao() {
     Kakao.API.request({
       url: '/v1/user/unlink',
-      success: function(response) {
+      success: function (response) {
         console.log('성공', response);
         localStorage.removeItem('Kakao_token')
+        localStorage.removeItem('refresh_token')
         history.push('/login')
       },
-      fail: function(error) {
+      fail: function (error) {
         console.log('실패', error);
+        localStorage.removeItem('Kakao_token')
+        localStorage.removeItem('refresh_token')
+        history.push('/login')
       },
     });
   }
@@ -40,7 +44,7 @@ function Navbar() {
 
   return (
     <div className="navbar">
-      { localStorage.getItem('Kakao_token') && 
+      { localStorage.getItem('Kakao_token') &&
         <Popover content={content} placement="bottomRight" trigger="click">
           <AppstoreOutlined className="navButton" />
         </Popover>

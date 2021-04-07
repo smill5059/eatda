@@ -9,6 +9,7 @@ import Calendar from '../../components/main/calendar';
 import Timeline from '../../components/main/timeline';
 
 import * as actions from 'store/modules/meetingData';
+import * as settingUser from 'store/modules/userData';
 
 
 function Main() {
@@ -26,36 +27,64 @@ function Main() {
   /* when main rendering */
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
-  const userToken = localStorage.getItem('Kakao_token') ? localStorage.getItem('Kakao_token') : ""
-  const refreshToken = localStorage.getItem('refresh_token') ? localStorage.getItem('refresh_token') : ""
+
+  const user = useSelector(state => state.userData)
 
   useEffect(() => {
-    // if(refreshToken === ""){
-    //   window.location.href = "/login"
-    // }
 
-    // fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
-    //   headers : {
-    //     'token': userToken,        
-    //     // 'Content-Type': 'application/json',
-    //   }
-    // })
+    console.log(localStorage.getItem('refresh_token'))
 
-    if (userToken === "") {
+    if ((localStorage.getItem('refresh_token') ? localStorage.getItem('refresh_token') : "") === "") {
       window.location.href = "/login"
     }
-    fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
+
+
+    fetch(`https://kauth.kakao.com/oauth/token`, {
+      method: "POST",
       headers: {
-        'token': userToken,
-        // 'Content-Type': 'application/json',
-      }
-    })
-      .then(res => res.json())
-      .then(res => {
-        setData(res)
-        console.info("미팅데이터 불러오기", res)
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `grant_type=refresh_token&client_id=${process.env.REACT_APP_KAKAO_API_KEY}&refresh_token=${localStorage.getItem('refresh_token')}`
+
+    }).then(obj => obj.json())
+      .then(obj => {
+
+        if (obj.refresh_token != undefined) {
+          localStorage.setItem("refresh_token", obj.refresh_token)
+          console.log("gmlgml")
+        }
+
+        fetch(`${process.env.REACT_APP_API_URL}/user/kakao/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            access_token: obj.access_token
+          })
+        })
+          .then(res => res.json())
+          .then(res => {
+            console.log('로그인 결과', res)
+            dispatch(settingUser.setUser({ id: res.id, name: res.name, profileUrl: res.profileUrl, code: res.seq, friends: res.friends, reviewId: res.reviewId }))
+            localStorage.setItem('Kakao_token', res.token);
+
+            fetch(`${process.env.REACT_APP_API_URL}/main/schedules`, {
+              headers: {
+                'token': localStorage.getItem('Kakao_token'),
+                // 'Content-Type': 'application/json',
+              }
+            })
+              .then(res => res.json())
+              .then(res => {
+                setData(res)
+                console.info("미팅데이터 불러오기", res)
+              })
+          })
       })
+
   }, []);
+
 
   const setMeetingData = useCallback((data) => {
     dispatch(actions.meetingData(data));
