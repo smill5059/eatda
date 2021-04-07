@@ -162,7 +162,7 @@ function CreateModify(props) {
   function recommendationModalItem() {
     // console.info("모달을 열어볼게요")
     return (
-      <div>
+      <div className="recommModal">
         <RecommendationModal
           setLocationKeyword={setLocationKeyword}
           meetingArea={meetingArea}
