@@ -30,26 +30,33 @@ function PhotoUploader(props) {
       console.info("폼데이터는요", formData.getAll("updatedFile"))
     }
 
+    let errorCheck = ''
+
     if(photoToAddList.length > 0){
         fetch(`${process.env.REACT_APP_API_URL}/review/img/${meetingId}`, {
             method: "POST",
             body: formData
-          })
+          }).catch((err)=>errorCheck = err)
     }
 
-    console.info("삭제할 사진", deletedUrls)
-    fetch(`${process.env.REACT_APP_API_URL}/review/img/${meetingId}`, {
-      method: "DELETE",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        deletedUrls: deletedUrls,
-      })
-    }).then((res) => {
-      // alert("사진이 저장되었습니다!");
-      window.location.href = `/meeting/${meetingId}`;
-    })
+    if (errorCheck === ''){
+        fetch(`${process.env.REACT_APP_API_URL}/review/img/${meetingId}`, {
+            method: "DELETE",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              deletedUrls: deletedUrls,
+            })
+          }).then((res) => {
+            // alert("사진이 저장되었습니다!");
+            window.location.href = `/meeting/${meetingId}`;
+          })
+    }else{
+        alert("관리자에게 문의하세요.")
+        console.log(errorCheck)
+    }
+    
   };
 
   // 저장된 사진 가져오기 구현

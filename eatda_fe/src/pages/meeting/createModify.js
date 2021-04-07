@@ -116,9 +116,6 @@ function CreateModify(props) {
 
             setSelectedList(newSelectedList)
             // 선택 가능한 친구 세팅
-  
-              
-
               // 폼에 값 세팅
               form.setFieldsValue({
                 meetingName: response.title,
@@ -140,6 +137,8 @@ function CreateModify(props) {
   useEffect(() => {
     setModalVisible(false);
   }, [meetingLocation]);
+
+
 
   // 장소 모달
   function locationModalItem() {
@@ -287,6 +286,17 @@ function CreateModify(props) {
     setModalContent(recommendationModalItem);
   }, [meetingArea]);
 
+  useEffect(()=>{
+      console.log("USEEFFECT")
+    console.log(selectedList)
+    selectedList.forEach((item)=>{
+        let tempoList = item.split("|")
+        selectedFriends.push(tempoList[0])
+    })
+    let newSelectedFriends = [...new Set(selectedFriends)]
+    setSelectedFriends(newSelectedFriends)
+  }, [selectedList])
+
   function showModal(e, modalType) {
     e.preventDefault();
     if (modalType === "location") {
@@ -327,17 +337,17 @@ function CreateModify(props) {
     let newDate = date_text + "T" + time_text;
     setMeetingLocation(meetingLocation);
     // 본인 설정
-    selectedFriends.push(user.userId);
-    selectedReviewIds.push(user.reviewId);
+    let tempSelectedFriends = [user.userId];
+    let tempSelectedReviewIds= [user.reviewId];
 
     selectedList.forEach((item)=>{
         const tempList = item.split('|')
-        selectedFriends.push(tempList[0])
-        selectedReviewIds.push(parseInt(tempList[1]))
+        tempSelectedFriends.push(tempList[0])
+        tempSelectedReviewIds.push(parseInt(tempList[1]))
     })
 
-    let newSelectedFriends = [...new Set(selectedFriends)]
-    let newSelectedReviewIds = [...new Set(selectedReviewIds)]
+    let newSelectedFriends = [...new Set(tempSelectedFriends)]
+    let newSelectedReviewIds = [...new Set(tempSelectedReviewIds)]
     let newSelectedList = [...new Set(selectedList)]
     setSelectedFriends(newSelectedFriends)
     setSelectedReviewIds(newSelectedReviewIds)
