@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  font-family: 'S-CoreDream-3Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+   sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+// a {
+//   color: red;
+// }
+// *, *:before, *:after {
+//   box-sizing: border-box;
+// }
+
+@font-face {
+  font-family: 'S-CoreDream-3Light';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@import '~antd/dist/antd.css';
+@import "assets/scss/layout.scss";
+@import "assets/scss/login.scss";
+@import "assets/scss/profile.scss";
+@import "assets/scss/main.scss";
+@import "assets/scss/calendar.scss";
+@import "assets/scss/timeline.scss";
+
+@import "assets/scss/navbar.scss";
+
+
+@import "assets/scss/modal.scss";
+
+// 약속 관련 SCSS
+@import "assets/scss/meeting.scss";
+@import "assets/scss/meetingInfo.scss";
+@import "assets/scss/meetingReview.scss";

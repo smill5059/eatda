@@ -1,0 +1,181 @@
+@import "assets/scss/variables.scss";
+
+.calWrapper {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+
+  grid-template-rows: 1fr 6fr;
+}
+
+// 캘린더 헤더 영역
+
+.calHeaderWrapper {
+  justify-items: center;
+  align-items: center;
+  
+  display: grid;
+
+  grid-template-columns: 2fr 1fr 3fr 1fr 2fr;
+}
+
+// 헤더 날짜 영역 
+.calHeaderNow {
+  grid-column: 3 / 4;
+
+  color: $fontTheme;
+  font-weight: 600;
+}
+
+// 버튼 공통 속성
+.calHeaderBtn {
+  color: $themeColor;
+}
+
+// 버튼 각각의 속성
+.calHeaderBeforeBtn {
+  grid-column: 2 / 3;
+}
+
+.calHeaderAfterBtn {
+  grid-column: 4 / 5;
+}
+
+// 캘린더 바디 영역
+
+.calBodyWrapper {
+  height: 100%;
+  width: 100%;
+
+  // background-color: burlywood;
+
+  display: grid;
+
+  grid-template-rows: 1fr 15fr;
+}
+
+// 캘린더 바디 중 요일 영역
+
+.calBodyHeader {
+  height: 100%;
+  width: 100%;
+
+  // background-color: $themeColor;
+  border-bottom: solid 1px $themeColor;
+  
+  font-weight: 600;
+
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+
+  justify-items: center;
+  align-items: center;
+}
+
+// 각 요일 영역 셀 공통
+.calBodyHeaderCell {
+  font-size: x-small;
+}
+
+// 요일별 셀 속성
+.day-sun {
+  color: red;
+}
+.day-sat {
+  color: blue;
+}
+.day-weekday {
+  color: black;
+}
+
+
+// 캘린더 바디 중 날짜 영역 
+
+.calBodyContent {
+  height: 100%;
+  width: 100%;
+
+  
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  
+}
+
+
+// 각 요일 영역 셀 공통
+.calBodyContentCell {
+  height: 100%;
+  width: 100%;  
+    
+  font-size: x-small;
+  text-align: center;
+  
+  padding: 15% 5% 5%;
+  
+  border: solid 0.3px white;
+
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-row-gap: 2px;
+
+}
+
+.outdate {
+  visibility: hidden;
+
+  color: white;
+  background-color: white;
+
+  .meetingBlob {
+    height: 100%;
+    width: 100%;
+
+    // background-color: white;
+  }
+}
+
+.date-today {
+  color: $eatdaBrown1;
+  // background-color: $eatdaGray3;
+  background: linear-gradient(135deg, $eatdaGray3 0%, $eatdaBeige2 100%);
+  border-radius: 10px;
+
+  // outline: 3px solid $eatdaBeige1;
+  // border-image-source: linear-gradient(45deg, $eatdaBeige1, $eatdaBeige2);
+  // border-image-slice: 1;
+
+  .meetingBlob {
+    height: 100%;
+    width: 100%;
+
+    background-color: $eatdaBrown1;
+      }
+}
+
+.date-sun {
+  color: red;
+  background-color: white;
+
+}
+.date-sat {
+  color: blue;
+  background-color: white;
+
+}
+.date-weekday {
+  color: black;
+  background-color: white;
+}
+
+/* 데이 셀 내부 meeting Data 표기 blob*/ 
+
+.meetingBlob {
+  height: 100%;
+  width: 100%;
+
+  background-color: $subColor;
+
+  border-radius: 10px;
+}

@@ -1,0 +1,42 @@
+@import "assets/scss/variables.scss";
+
+.mainWrapper {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  grid-template-rows: 1fr 5fr;
+}
+
+.mainButtonWrapper {
+  width: 100%;
+  height: 100%;
+
+  // 나중에 grid로 변경하고 custom div 맞출 예정입니다!
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  // background-color: aquamarine;
+
+  .ant-btn-primary {
+    background: $themeColor;
+    border-color: $themeColor;
+    --antd-wave-shadow-color: $themeColor;
+  }
+}
+
+.mainComponentWrapper {
+  width: 100%;
+  height: 100%;
+
+  position: relative;
+}
+
+.mainMeetingCreateBtn {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+
+  font-size: xx-large;
+  color: $eatdaBrown2;
+}
