@@ -78,6 +78,7 @@ function MemoUpdate(props) {
       .then((res) => res.json())
       .then((result) => {
         schedule = result;
+        console.log(schedule)
         schedule.scores = meetingScores;
         // 이미 댓글이 있었음
         if (memoCheck) {
@@ -113,7 +114,7 @@ function MemoUpdate(props) {
   function changeStar(v, storeItem) {
     let checkExist = false;
     meetingScores.forEach((item) => {
-      if (item.storeId === storeItem.storeId) {
+      if (item.storeId === storeItem.storeId && userSeq === item.userSeq) {
         item.rate = v;
         storeItem.rate = v;
         checkExist = true;

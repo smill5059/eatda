@@ -12,7 +12,7 @@ public interface UserService {
 
   public User userInfo(int userSeq);
 
-  public User userInfoUpdate(int userSeq, User newUser, MultipartFile file);
+  public UserResult userInfoUpdate(int userSeq, User newUser, MultipartFile file);
 
   public Profile addFriend(int userSeq, int code);
 
