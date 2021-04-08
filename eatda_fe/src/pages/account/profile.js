@@ -51,7 +51,7 @@ function Profile() {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState(`${user.profileUrl}`);
   const [newUserName, setNewUserName] = useState(`${user.username}`);
-  const [inputFile, setInputFile] = useState('');
+  const [inputFile, setInputFile] = useState("");
   // 리액트에서 폼 세팅
   const [editForm] = Form.useForm();
 
@@ -215,30 +215,45 @@ function Profile() {
   ));
 
   function editProfile() {
-    const formData = new FormData()
-    formData.append("file", inputFile)
-    let newUserInfo = {...user, username:newUserName}
-    fetch(`${process.env.REACT_APP_API_URL}/user/userinfo`, {
-        method:"PUT",
-        headers:{
-            token: localStorage.getItem('Kakao_token')
-        },
-        body:{
-            formData,
-            user:newUserInfo
-        }
-    }).then((res)=>res.json()).then((result)=>console.log(result))
+    const formData = new FormData();
+    let newImgUrl = 'noImage'
+    console.log(inputFile)
+    if(inputFile !== ''){
+        newImgUrl = imageUrl
+        formData.append("file", inputFile);
+    }
+    
+    // let newUserInfo = {
+    //   userId: user.userId,
+    //   username: newUserName,
+    //   usercode: user.usercode,
+    //   profileUrl: "noImage",
+    //   friendList: user.friendList,
+    //   reviewId: user.reviewId,
+    // };
+    fetch(`${process.env.REACT_APP_API_URL}/user/userinfo?name=${newUserName}&profileUrl=${newImgUrl}`, {
+      method: "PUT",
+      headers: {
+        token: localStorage.getItem("Kakao_token"),
+      },
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((result) => {
+          console.log(result)
+        dispatch(settingUser.setUser({ id: result.id, name: result.name, profileUrl: result.profileUrl, code: result.seq, friends: result.friends, reviewId: result.reviewId }))
+        setEditModalVisible(false)
+      });
     // console.log(inputFile)
-      console.log(newUserInfo)
   }
 
-  function setPreview(e){
-      setInputFile(e.target.files[0])
-      let fileReader = new FileReader()
-      setImageUrl(URL.createObjectURL(e.target.files[0]))
-      console.log(e.target.files[0])
-      console.log(fileReader.readAsDataURL(e.target.files[0]))
-      console.log(URL.createObjectURL(e.target.files[0]))
+  function setPreview(e) {
+    setInputFile(e.target.files[0]);
+    let fileReader = new FileReader();
+    setImageUrl(URL.createObjectURL(e.target.files[0]));
+    console.log(e.target.files[0]);
+    console.log(fileReader.readAsDataURL(e.target.files[0]));
+    console.log(URL.createObjectURL(e.target.files[0]));
   }
 
   return (
@@ -263,11 +278,19 @@ function Profile() {
             label="이름"
             initialValue={`${newUserName}`}
           >
-            <Input type="text" placeholder="닉네임을 입력해주세요." onChange={(e)=>setNewUserName(e.target.value)}/>
+            <Input
+              type="text"
+              placeholder="닉네임을 입력해주세요."
+              onChange={(e) => setNewUserName(e.target.value)}
+            />
           </Form.Item>
-          <Form.Item  label="프로필사진">
+          <Form.Item label="프로필사진">
             <Image width={150} src={`${imageUrl}`} />
-            <input type="file" name="editUserImage" onChange={(e)=>setPreview(e)}/>
+            <input
+              type="file"
+              name="editUserImage"
+              onChange={(e) => setPreview(e)}
+            />
           </Form.Item>
         </Form>
       </Modal>

@@ -19,7 +19,6 @@ function MeetingRead(props) {
   const [minutes, setMinutes] = useState("");
   const [menu, setMenu] = useState("");
 
-  const [dateString, setDateString] = useState("");
 
   useEffect(() => {
       if (userToken === ""){
@@ -34,9 +33,9 @@ function MeetingRead(props) {
     })
       .then((res) => res.json())
       .then((res) => {
-          console.log("_________")
-          console.log(res)
-          console.log("_________")
+          // console.log("_________")
+          // console.log(res)
+          // console.log("_________")
         function parse(str) {
           var y = str.substr(0, 4);
           var m = str.substr(5, 2);
@@ -66,9 +65,8 @@ function MeetingRead(props) {
         }
         setHours(date.getHours());
         setMinutes(date.getMinutes());
-
-        setMeetingTitle(res.title)
         // 만난 약속
+        setMeetingTitle(res.title)
         if (res.completed === 1) {
           var i = 0
           var comment = ""
@@ -82,7 +80,7 @@ function MeetingRead(props) {
           }
 
           if (comment === "") {
-            comment = "수정하기를 눌러 다녀온 후기를 남겨보세요!";
+            comment = "후기를 남겨보세요!";
           }
 
           // 유저 매장 별점
@@ -97,7 +95,7 @@ function MeetingRead(props) {
           });
 
           setMeetComponent(
-            <MeetingReview info={res} comment={comment} dateString={dateString}></MeetingReview>
+            <MeetingReview info={res} comment={comment}></MeetingReview>
           );
           setMenu(
             <Menu>
@@ -110,7 +108,7 @@ function MeetingRead(props) {
             </Menu>
           );
         } else {
-          setMeetComponent(<MeetingInfo info={res} dateString={dateString}></MeetingInfo>);
+          setMeetComponent(<MeetingInfo info={res}></MeetingInfo>);
           setMenu(
             <Menu>
               <Menu.Item key="0">
@@ -146,11 +144,6 @@ function MeetingRead(props) {
 
   // 드롭다운 메뉴들
   // 디니디니
-
-  useEffect(()=> {
-    setDateString(`${month}월 ${date}일(${day}) ${hours}시 ${minutes}분`)
-    console.info("데이트스트링", dateString)
-  }, [day])
 
   return (
     <div className="contentWrapper">
