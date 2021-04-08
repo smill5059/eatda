@@ -78,6 +78,7 @@ function MemoUpdate(props) {
       .then((res) => res.json())
       .then((result) => {
         schedule = result;
+        console.log(schedule)
         schedule.scores = meetingScores;
         // 이미 댓글이 있었음
         if (memoCheck) {

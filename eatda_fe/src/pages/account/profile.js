@@ -125,69 +125,36 @@ function Profile() {
     });
   }
 
-  // useEffect(() => {
-  //   inviteFriend();
-  // }, [])
+  useEffect(() => {
+    inviteFriend();
+  }, [])
 
-  // // 친구 초대
-  // const inviteFriend = () => {
-  //   // Kakao.API.request({
-  //   //   url: '/v2/api/talk/memo/default/send',
-  //   //   data: {
-  //   //     template_object: {
-  //   //       object_type: 'feed',
-  //   //       content: {
-  //   //         title: '제목',
-  //   //         description: '설명',
-  //   //         link: {
-  //   //           web_url: 'https://eatda.me',
-  //   //         },
-  //   //       },
-  //   //       button_title: '바로 확인',
-  //   //     }
-  //   //   },
-  //   //   success: function(response) {
-  //   //     console.log(response);
-  //   //   },
-  //   //   fail: function(error) {
-  //   //     console.log(error);
-  //   //     Kakao.Auth.authorize({
-  //   //       redirectUri: 'http://localhost:3000/profile',
-  //   //       scope: 'talk_message',
-  //   //     });
-  //   //   },
-  //   // })
-  //   Kakao.Link.createDefaultButton({
-  //     container: '#kakao-link-btn',
-  //     objectType: 'feed',
-  //     content: {
-  //       title: '디저트 사진',
-  //       description: '아메리카노, 빵, 케익',
-  //       imageUrl:
-  //         'http://mud-kage.kakao.co.kr/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
-  //       link: {
-  //         mobileWebUrl: 'https://developers.kakao.com',
-  //         androidExecParams: 'test',
-  //       },
-  //     },
-  //     buttons: [
-  //       {
-  //         title: '웹으로 보기',
-  //         link: {
-  //           mobileWebUrl: 'https://developers.kakao.com',
-  //           webUrl: 'https://developers.kakao.com'
-  //         }
-  //       },
-  //       {
-  //         title: '앱으로 보기',
-  //         link: {
-  //           mobileWebUrl: 'https://developers.kakao.com',
-  //           webUrl: 'https://developers.kakao.com'
-  //         }
-  //       }
-  //     ]
-  //   });
-  // }
+  // 친구 초대
+  const inviteFriend = () => {
+    Kakao.Link.createDefaultButton({
+      container: '#kakao-link-btn',
+      objectType: 'feed',
+      content: {
+        title: '잇다eat-diary',
+        description: '너와 나를 잇는 다이어리, 잇다이어리에 초대합니다.',
+        imageUrl:
+          'http://eatda.me/app/files/eatda(2).png',
+        link: {
+          mobileWebUrl: 'https://eatda.me',
+          androidExecParams: 'test',
+        },
+      },
+      buttons: [
+        {
+          title: '가입하러 가기',
+          link: {
+            mobileWebUrl: 'https://eatda.me',
+            webUrl: 'https://eatda.me'
+          }
+        },
+      ]
+    });
+  }
 
   // 친구 관리
   const friendMenu = (friend) => (
@@ -302,13 +269,13 @@ function Profile() {
           <div className="usrName">{user.username}</div>
           <div className="usrCode"># {user.usercode}</div>
         </div>
+        <div>
+          <a className="" id="kakao-link-btn">
+            친구 초대
+          </a>
+        </div>
         <div className="friendBox">
           <div className="frdTitle">나의 친구 목록</div>
-
-          {/* <div className="" id="kakao_link_btn" onClick={inviteFriend()}>
-            친구 초대
-          </div> */}
-
           <div className="frdAddBtn">
             <PlusSquareOutlined
               style={{ fontSize: "larger", color: "#EFBF43" }}
