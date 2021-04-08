@@ -30,8 +30,15 @@ window.addEventListener('resize', function(event){
 })
 
 function App() {
+    // console.log(localStorage.getItem('Kakao_token'))
+
+    if (localStorage.getItem('Kakao_token') === null){
+        localStorage.setItem('Kakao_token', "")
+        window.location.href = '/login'
+    }
+
   if (window.innerWidth > 600 && window.location.href.indexOf('/login') < 0){
-    console.log()
+    
       return(
           <div className="toMobile" style={{backgroundImage:`url(${MobilePlz})`}}>
           </div>
