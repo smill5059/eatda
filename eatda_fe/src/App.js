@@ -16,11 +16,26 @@ import MemoUpdate from "./pages/meeting/memoUpdate";
 import Navbar from "components/bar/navbar";
 import PrivateRoute from 'helpers/privateRoute';
 
+import MobilePlz from 'assets/product/mobilePlz.png'
+
 import "./App.css";
 
 const { Kakao } = window;
+let id
+window.addEventListener('resize', function(event){
+    clearTimeout(id)
+    // setTimeout(window.location.reload(), 30000)
+    id = setTimeout(window.location.reload(), 1000)
+})
 
 function App() {
+  if (window.innerWidth > 400){
+      return(
+          <div className="toMobile" style={{backgroundImage:`url(${MobilePlz})`}}>
+          </div>
+      )
+  }
+  
   return (
     <BrowserRouter>
       <div className="Layout">
