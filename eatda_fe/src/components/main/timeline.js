@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
-import { Card, Input, Image, Form, Select, Tag } from 'antd';
+import { Card, Input, Image, Form, Select, Tag, Timeline } from 'antd';
 import { useHistory } from "react-router";
 import noImg from "assets/product/no_photo.png"
 
 import moment from 'moment';
+import { HeartFilled } from "@ant-design/icons";
+import ColumnGroup from "antd/lib/table/ColumnGroup";
 
-function Timeline() {
+function MyTimeline() {
   const history = useHistory()
   const meetings = useSelector(state => state.meetingData.meeting)
   const user = useSelector((state) => state.userData);
@@ -30,10 +32,21 @@ function Timeline() {
     history.push(`/meeting/${meeting.id}`)
   }
 
-  const meetingFriends = meeting => meeting.participants.slice(0, 2).map(parti =>
-    <span className="meetingFrName">
-      {parti.userName}
-    </span>
+  // const meetingFriends = meeting => meeting.participants.slice(0, 2).map(parti =>
+  //   <span className="meetingFrName">
+  //     {parti.userName}
+  //   </span>
+  // )
+  const meetingFriends = meeting => meeting.participants.slice(0, 2).map(parti => {
+    // console.info("얘랑", parti.userSeq, "달라요", user.usercode)
+    // console.info(Boolean(parti.userSeq !== user.usercode))
+    if (parti.userSeq !== user.usercode) {    
+      return(
+        <span className="meetingFrName">
+          {parti.userName}
+        </span>
+      )  
+    }}
   )
 
   function getDays(meetDate) {
@@ -54,7 +67,7 @@ function Timeline() {
     } else {
       return meetDate.format('YYYY - MM -DD')
     }
-  }
+  };
 
   // 약속 리스트 출력
   // setTimeline(meetings.map(meeting => {
@@ -105,49 +118,100 @@ function Timeline() {
     );
   }
 
-  function getSchedule(meeting) {
-    let imgUrl = noImg
-    if (meeting.imgs.length > 0) {
-      imgUrl = `${process.env.REACT_APP_API_URL}/files/${meeting.imgs[0]}`
+  function getSchedule(meeting, idx) {
+
+    const imgCard = (meeting) => {
+      let imgUrl = noImg
+      if (meeting.imgs.length > 0) {
+        imgUrl = `${process.env.REACT_APP_API_URL}/files/${meeting.imgs[0]}`
+        return (
+          <div className="tCmeetingImg" css="border-radius:100%;" >
+            <img alt="image" src={imgUrl} />
+          </div>
+        )
+      } 
+    }
+    const timelineIconColor = (idx) => {
+      // console.info("웨엉망이조", idx)
+      if (idx % 4 === 1) {
+        return (
+          "timelineIcon1st"
+        )
+      } else if (idx % 4 === 2) {
+        return (
+          "timelineIcon2nd"
+        )
+      } else if (idx % 4 === 3) {
+        return (
+          "timelineIcon3rd"
+        )
+      } else {
+        return (
+          "timelineIcon4th"
+        )
+      }
     }
     return (
-      <Card.Grid key={meeting.id} onClick={() => meetingInfo(meeting)}>
-        <div className="meetingImg" css="border-radius:100%;" >
-          <Image alt="image" src={imgUrl} />
+      <Timeline.Item 
+        dot={<HeartFilled className={timelineIconColor(idx)}/>}
+        key={meeting.id}
+      >
+        <div className="timelineCard" onClick={() => meetingInfo(meeting)}>
+          <div className="tCmeetingTitle">
+            {meeting.title}
+          </div>
+          { imgCard(meeting) }
+          <div>
+            📅 {getDays(moment(meeting.meetDate))}
+          </div>
+          <div>
+           😀 {meetingFriends(meeting)}
+          </div>
         </div>
-        <div className="meetingTitle">
-          {meeting.title}
-        </div>
-        <div className="meetingTime">
-          {/* {moment(meeting.meetDate).format('YYYY - MM -DD')} */}
-          {getDays(moment(meeting.meetDate))}
-        </div>
-        <div className="meetingFr">
-          {meetingFriends(meeting)}
-        </div>
-      </Card.Grid>
+      </Timeline.Item>
+      // <Timeline.Item>
+      //   {/* <Card.Grid key={meeting.id} onClick={() => meetingInfo(meeting)}> */}
+      //   <div key={meeting.id} onClick={() => meetingInfo(meeting)}>
+      //     <div className="meetingImg" css="border-radius:100%;" >
+      //       <Image alt="image" src={imgUrl} />
+      //     </div>
+      //     <div className="meetingTitle">
+      //       {meeting.title}
+      //     </div>
+      //     <div className="meetingTime">
+      //       {/* {moment(meeting.meetDate).format('YYYY - MM -DD')} */}
+      //       {getDays(moment(meeting.meetDate))}
+      //     </div>
+      //     <div className="meetingFr">
+      //       {meetingFriends(meeting)}
+      //     </div>
+      //   </div>
+      //   {/* </Card.Grid> */}
+      // </Timeline.Item>
     )
   }
 
   useEffect(() => {
-
-    setTimeline(meetings.map(meeting => {
-      // 완료된 약속만 보여줌
-      if (meeting.completed === 1) {
-        // 선택된 친구가 없으면 모든 약속을 보여줌
-        if (selectedList.length === 0) {
-          return getSchedule(meeting)
-        } // 선택된 친구들이 있을 경우 그 친구들의 교집합만 보여줌 
-        else {
-          var i = 0
-          var cnt = 0
-          for (i = 0; i < meeting.participants.length; i++) {
-            if (include(selectedList, meeting.participants[i].id)) {
-              cnt += 1
+    setTimeline(meetings.map((meeting, idx) => {
+      // 오늘 날짜 이전의 약속만 보여줌
+      if (moment(meeting.meetDate).isBefore(moment())) {
+        // 완료된 약속만 보여줌
+        if (meeting.completed === 1) {
+          // 선택된 친구가 없으면 모든 약속을 보여줌
+          if (selectedList.length === 0) {
+            return getSchedule(meeting, idx)
+          } // 선택된 친구들이 있을 경우 그 친구들의 교집합만 보여줌 
+          else {
+            var i = 0
+            var cnt = 0
+            for (i = 0; i < meeting.participants.length; i++) {
+              if (include(selectedList, meeting.participants[i].id)) {
+                cnt += 1
+              }
             }
-          }
-          if (cnt === selectedList.length) {
-            return getSchedule(meeting)
+            if (cnt === selectedList.length) {
+              return getSchedule(meeting, idx)
+            }
           }
         }
       }
@@ -177,11 +241,11 @@ function Timeline() {
           placeholder="함께 먹은 친구"
         />
       </Form.Item>
-      <div className="meetingList">
+      <Timeline className="meetingList">
         {timeline}
-      </div>
+      </Timeline>
     </div>
   );
 }
 
-export default Timeline;
+export default MyTimeline;

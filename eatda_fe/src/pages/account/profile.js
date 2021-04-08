@@ -129,65 +129,73 @@ function Profile() {
   //   inviteFriend();
   // }, [])
 
-  // // 친구 초대
-  // const inviteFriend = () => {
-  //   // Kakao.API.request({
-  //   //   url: '/v2/api/talk/memo/default/send',
-  //   //   data: {
-  //   //     template_object: {
-  //   //       object_type: 'feed',
-  //   //       content: {
-  //   //         title: '제목',
-  //   //         description: '설명',
-  //   //         link: {
-  //   //           web_url: 'https://eatda.me',
-  //   //         },
-  //   //       },
-  //   //       button_title: '바로 확인',
-  //   //     }
-  //   //   },
-  //   //   success: function(response) {
-  //   //     console.log(response);
-  //   //   },
-  //   //   fail: function(error) {
-  //   //     console.log(error);
-  //   //     Kakao.Auth.authorize({
-  //   //       redirectUri: 'http://localhost:3000/profile',
-  //   //       scope: 'talk_message',
-  //   //     });
-  //   //   },
-  //   // })
-  //   Kakao.Link.createDefaultButton({
-  //     container: '#kakao-link-btn',
-  //     objectType: 'feed',
-  //     content: {
-  //       title: '디저트 사진',
-  //       description: '아메리카노, 빵, 케익',
-  //       imageUrl:
-  //         'http://mud-kage.kakao.co.kr/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
-  //       link: {
-  //         mobileWebUrl: 'https://developers.kakao.com',
-  //         androidExecParams: 'test',
-  //       },
-  //     },
-  //     buttons: [
-  //       {
-  //         title: '웹으로 보기',
+  // 친구 초대
+
+  // useEffect(() => {
+  //   const inviteFriend = () => {
+  //     // Kakao.API.request({
+  //     //   url: '/v2/api/talk/memo/default/send',
+  //     //   data: {
+  //     //     template_object: {
+  //     //       object_type: 'feed',
+  //     //       content: {
+  //     //         title: '제목',
+  //     //         description: '설명',
+  //     //         link: {
+  //     //           web_url: 'https://eatda.me',
+  //     //         },
+  //     //       },
+  //     //       button_title: '바로 확인',
+  //     //     }
+  //     //   },
+  //     //   success: function(response) {
+  //     //     console.log(response);
+  //     //   },
+  //     //   fail: function(error) {
+  //     //     console.log(error);
+  //     //     Kakao.Auth.authorize({
+  //     //       redirectUri: 'http://localhost:3000/profile',
+  //     //       scope: 'talk_message',
+  //     //     });
+  //     //   },
+  //     // })
+  //     Kakao.Link.createDefaultButton({
+  //       container: '#kakao-link-btn',
+  //       objectType: 'feed',
+  //       content: {
+  //         title: '디저트 사진',
+  //         description: '아메리카노, 빵, 케익',
+  //         imageUrl:
+  //           'http://mud-kage.kakao.co.kr/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
   //         link: {
   //           mobileWebUrl: 'https://developers.kakao.com',
-  //           webUrl: 'https://developers.kakao.com'
-  //         }
+  //           androidExecParams: 'test',
+  //         },
   //       },
-  //       {
-  //         title: '앱으로 보기',
-  //         link: {
-  //           mobileWebUrl: 'https://developers.kakao.com',
-  //           webUrl: 'https://developers.kakao.com'
+  //       buttons: [
+  //         {
+  //           title: '웹으로 보기',
+  //           link: {
+  //             mobileWebUrl: 'https://developers.kakao.com',
+  //             webUrl: 'https://developers.kakao.com'
+  //           }
+  //         },
+  //         {
+  //           title: '앱으로 보기',
+  //           link: {
+  //             mobileWebUrl: 'https://developers.kakao.com',
+  //             webUrl: 'https://developers.kakao.com'
+  //           }
   //         }
-  //       }
-  //     ]
-  //   });
-  // }
+  //       ]
+  //     })
+  //     // return (
+  //     //   <div className="" id="kakao-link-btn" onClick={inviteFriend()}>
+  //     //   친구 초대
+  //     // </div>
+  //     // );
+  //   }
+  // }, [])
 
   // 친구 관리
   const friendMenu = (friend) => (
@@ -282,9 +290,11 @@ function Profile() {
         <div className="friendBox">
           <div className="frdTitle">나의 친구 목록</div>
 
-          {/* <div className="" id="kakao_link_btn" onClick={inviteFriend()}>
+
+          <div className="" id="kakao-link-btn">
             친구 초대
-          </div> */}
+          </div>
+          {/* { inviteFriend() } */}
 
           <div className="frdAddBtn">
             <PlusSquareOutlined

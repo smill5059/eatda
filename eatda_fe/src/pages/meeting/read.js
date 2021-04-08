@@ -19,8 +19,6 @@ function MeetingRead(props) {
   const [minutes, setMinutes] = useState("");
   const [menu, setMenu] = useState("");
 
-  const [meetingTitle, setMeetingTitle] = useState("");
-
 
   useEffect(() => {
       if (userToken === ""){
