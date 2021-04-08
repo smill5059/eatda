@@ -4,12 +4,15 @@
 
   .navbarLogo{
       height:100%;
-    //   background-color:red;
-      width:15%;
+      // background-color:red;
+      width: 10%;
+      margin-left: 5%;
       img{
           display:block;
           width:100%;
           height:100%;
+
+          object-fit: contain;
       }
   }
 

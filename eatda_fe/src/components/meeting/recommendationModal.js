@@ -282,7 +282,7 @@ function RecommendationModal(props) {
       if (currentPage === 3) {
         return (
           <div className="rMBtnWrapper">
-            <Button
+            <Button className="recommendationBtn"
               onClick={(e) => showModal(e, "location")}
             >
               직접 고를게요!
@@ -292,7 +292,7 @@ function RecommendationModal(props) {
       } else if (loading === false) {
         return(
           <div className="rMBtnWrapper">
-            <Button
+            <Button className="recommendationBtn"
               onClick={() => {setCurrentPage(currentPage + 1)}}
             >
               다른 추천을 볼게요!
