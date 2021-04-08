@@ -1,8 +1,8 @@
 import React from 'react';
 import { useHistory } from "react-router";
 import { Button, Popover } from 'antd';
-import { AppstoreOutlined } from '@ant-design/icons';
 import Logo from 'assets/product/navbar_logo.png'
+import { MenuOutlined } from '@ant-design/icons';
 
 
 const { Kakao } = window;
@@ -50,7 +50,7 @@ function Navbar() {
         </div>
       { localStorage.getItem('Kakao_token') &&
         <Popover content={content} placement="bottomRight" trigger="click">
-          <AppstoreOutlined className="navButton" />
+          <MenuOutlined className="navButton" />
         </Popover>
       }
     </div>
