@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Logo from 'assets/product/logo.png';
+import Logo from 'assets/product/mainLogo.png';
 import kakaoLogin from 'assets/product/kakaoLogin.png';
 import { useHistory } from "react-router";
 import { useSelector, useDispatch } from 'react-redux';
@@ -63,13 +63,25 @@ function Login() {
 
   return (
     <div className="login">
-      <div className="phrase">
+      {/* <div className="phrase">
         기억할게 우리가 함께 먹던 그 시간
+      </div> */}
+      <div className="logoImg">
+        <img src={Logo}/>
+        <div className="intro">
+          <p>너와 나를 밥으로 잇는</p>
+          <p><span>EAT-Diary</span></p>
+        </div>
+        {/* <div className="loginInfo">
+          <p>모바일 기기로 접속하지 않을 경우</p>
+          <p>로그인 팝업이 작동하지 않을 수 있습니다.</p>
+        </div> */}
       </div>
-
-      <img src={Logo} className="logoImg" />
-
-      <img src={kakaoLogin} className="kakaoLogin" onClick={loginWithKakao} />
+      <div className="kakaoLogin">
+        <div>
+          <img src={kakaoLogin} onClick={loginWithKakao} />
+        </div>
+      </div>
     </div>
   );
 }
