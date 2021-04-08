@@ -45,9 +45,11 @@ function Navbar() {
 
   return (
     <div className="navbar">
+      { localStorage.getItem('Kakao_token') &&      
         <div className="navbarLogo" onClick={(e)=>window.location.href="/"}>
             <img src={Logo}/>
         </div>
+      }
       { localStorage.getItem('Kakao_token') &&
         <Popover content={content} placement="bottomRight" trigger="click">
           <MenuOutlined className="navButton" />
