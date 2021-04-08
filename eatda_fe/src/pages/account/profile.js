@@ -33,15 +33,16 @@ function Profile() {
   const { Search } = Input;
 
   // 친구목록 카드 CSS
-  const frdCard = {
-    width: "inherit",
-    float: "initial",
-    padding: "1rem",
-    margin: "1rem",
-    display: "grid",
-    gridTemplateColumns: "repeat(8, 1fr)",
-    backgroundColor: "antiquewhite",
-  };
+  // const frdCard = {
+  //   width: "inherit",
+  //   // heigt: "50vh",
+  //   float: "initial",
+  //   padding: "1rem",
+  //   margin: "1rem",
+  //   display: "grid",
+  //   gridTemplateColumns: "repeat(8, 1fr)",
+  //   // backgroundColor: "antiquewhite",
+  // };
 
   // 유저 데이터
   const user = useSelector((state) => state.userData);
@@ -166,18 +167,18 @@ function Profile() {
   );
 
   const friendList = user.friendList.map((friend) => (
-    <Card.Grid key={friend.userSeq} style={frdCard}>
+    <Card.Grid key={friend.userSeq} className="frdCard">
       <div className="frdImg">
         <Image src={friend.userProfileUrl} />
       </div>
       <div className="frdName">{friend.userName}</div>
-      <Dropdown
-        overlay={friendMenu(friend)}
-        placement="bottomCenter"
-        className="frdCtrl"
-      >
-        <Button>관리</Button>
-      </Dropdown>
+        <Dropdown
+          overlay={friendMenu(friend)}
+          placement="bottomCenter"
+          className="frdCtrl"
+        >
+          <Button>관리</Button>
+        </Dropdown>
     </Card.Grid>
   ));
 
@@ -269,11 +270,6 @@ function Profile() {
           <div className="usrName">{user.username}</div>
           <div className="usrCode"># {user.usercode}</div>
         </div>
-        <div>
-          <a className="" id="kakao-link-btn">
-            친구 초대
-          </a>
-        </div>
         <div className="friendBox">
           <div className="frdTitle">나의 친구 목록</div>
           <div className="frdAddBtn">
@@ -310,7 +306,14 @@ function Profile() {
               />
             </Modal>
           </div>
-          <Card className="frdList">{friendList}</Card>
+          <div className="frdCardWrapper">
+            <Card className="frdList"> {friendList} </Card>
+          </div>
+        </div>
+        <div className="kakaoInviteBtnWrapper">
+            <Button className="kakaoInviteBtn" id="kakao-link-btn">
+              잇다이어리로 친구 초대하기
+            </Button>
         </div>
       </div>
     </div>

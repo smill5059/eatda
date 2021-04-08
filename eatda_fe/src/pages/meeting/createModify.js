@@ -477,7 +477,7 @@ function CreateModify(props) {
             label="어디서"
             rules={[{ required: true, message: "약속 장소를 정해주세요" }]}
           >
-            <Button onClick={(e) => showModal(e, "recommendation")}>
+            <Button className="recommendationBtn" onClick={(e) => showModal(e, "recommendation")}>
               추천받기
             </Button>
           </Form.Item>

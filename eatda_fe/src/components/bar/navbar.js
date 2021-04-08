@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from "react-router";
 import { Button, Popover } from 'antd';
 import { AppstoreOutlined } from '@ant-design/icons';
-import Logo from 'assets/product/logo.png'
+import Logo from 'assets/product/navbar_logo.png'
 
 
 const { Kakao } = window;

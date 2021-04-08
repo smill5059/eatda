@@ -155,3 +155,21 @@
         border-radius:10px;
     }
 }
+
+.recommendationBtn {
+    color: $eatdaGray1;
+    background-color: $eatdaBeige2;
+
+    -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+
+    &:hover {
+        color: $eatdaBeige2;
+        background-color: white;
+        border-color: $eatdaBeige2;
+    }
+
+    &:active {
+
+    }
+}
