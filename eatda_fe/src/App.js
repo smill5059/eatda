@@ -23,13 +23,15 @@ import "./App.css";
 const { Kakao } = window;
 let id
 window.addEventListener('resize', function(event){
+    
     clearTimeout(id)
     // setTimeout(window.location.reload(), 30000)
     id = setTimeout(window.location.reload(), 1000)
 })
 
 function App() {
-  if (window.innerWidth > 400){
+  if (window.innerWidth > 600 && window.location.href.indexOf('/login') < 0){
+    console.log()
       return(
           <div className="toMobile" style={{backgroundImage:`url(${MobilePlz})`}}>
           </div>
