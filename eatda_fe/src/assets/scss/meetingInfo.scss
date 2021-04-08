@@ -6,7 +6,7 @@
 }
 .meetingReadContent {
   display: grid;
-  grid-template-rows: 1fr 12fr 3fr 6fr 1fr;
+  grid-template-rows: 1fr 10fr 3fr 5fr 2fr;
   min-height: 0;
   grid-gap: 5px;
   .meetingReadTitle {
@@ -83,9 +83,9 @@
       align-self: flex-start;
       width: 100%;
       border-radius: 10px;
-      color: #717171;
-      background-color: #ffffff;
-      border: 2px solid #efbf43;
+      color: $eatdaGray3;
+      background-color: $eatdaBrown1;
+      border: none;
     }
   }
 }

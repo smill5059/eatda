@@ -25,3 +25,13 @@
   grid-column: 1 / 10;
   background-color: #E8CDBB;
 }
+
+.toMobile{
+    text-align: center;
+    background-color:#f4f4f4;
+    width:100vw;
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}

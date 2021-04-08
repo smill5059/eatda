@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User userInfoUpdate(int userSeq, User newUser, MultipartFile uploadFile) {
+  public UserResult userInfoUpdate(int userSeq, User newUser, MultipartFile uploadFile) {
     // TODO Auto-generated method stub
 
     User user = userRepository.findBySeq(userSeq);
@@ -253,7 +253,26 @@ public class UserServiceImpl implements UserService {
     userRepository.save(user);
     profileRepository.save(profile);
 
-    return user;
+    UserResult userResult = new UserResult();
+
+    userResult.setToken(jwtService.create(user.getSeq()));
+    userResult.setProfileUrl(user.getProfileUrl());
+    userResult.setName(user.getName());
+    userResult.setSeq(user.getSeq());
+    userResult.setReviewId(user.getReviewId());
+    userResult.setId(user.getId());
+
+    ArrayList<Profile> list = new ArrayList<Profile>();
+    for (ObjectId id : user.getFriends()) {
+      Profile p = profileRepository.findById(id).orElse(null);
+      if (p == null)
+        continue;
+      list.add(p);
+    }
+
+    userResult.setFriends(list);
+
+    return userResult;
   }
 
   @Override

@@ -89,6 +89,8 @@ public class MeetingServiceImpl implements MeetingService {
       }
     }
 
+    List<Store> newStoreList = new ArrayList<Store>();
+
     // storeId 배정
     for (Store store : schedule.getStores()) {
       if (store.getStoreId().equals("0")) {
@@ -107,10 +109,12 @@ public class MeetingServiceImpl implements MeetingService {
           store.setStoreId(stores.get(0).getStoreId());
         }
       }
+      newStoreList.add(store);
     }
 
     // schedule 저장
     schedule.setCompleted(0);
+    schedule.setStores(newStoreList);
     Schedule result = meetingRepo.insert(schedule);
 
     // user schedule 정보에 추가
@@ -241,9 +245,69 @@ public class MeetingServiceImpl implements MeetingService {
         }
       }
 
+
+      // 그룹 reviewId 생성
+      if (schedule.getReviewIds().size() == 0) {
+        return null;
+      }
+
+      Collections.sort(schedule.getReviewIds());
+
+      if (schedule.getReviewIds().size() > 1) {
+        Collections.sort(schedule.getReviewIds());
+        String groupId = "";
+        for (Integer reviewId : schedule.getReviewIds()) {
+          groupId += Integer.toString(reviewId);
+        }
+        Group group = groupRepo.findByGroupId(groupId);
+        if (group == null) {
+          group = new Group();
+          group.setCnt(0);
+          group.setGroupId(groupId);
+          group.setMembers((ArrayList<Integer>) schedule.getReviewIds());
+
+          MaxStoreId maxReviewId =
+              maxStoreIdRepo.findById(new ObjectId("606ad4b5180a4b670d79d0a4")).get();
+          group.setReviewId(maxReviewId.getReviewIdMaxValue());
+          groupRepo.save(group);
+
+          Review review = new Review();
+          review.setReviewId(maxReviewId.getReviewIdMaxValue());
+          review.setScores(new HashMap<String, Integer>());
+          reviewUpdateRepo.save(review);
+
+          maxReviewId.setReviewIdMaxValue(maxReviewId.getReviewIdMaxValue() + 1);
+          maxStoreIdRepo.save(maxReviewId);
+        }
+      }
+
+      List<Store> newStoreList = new ArrayList<Store>();
+
+      // storeId 배정
+      for (Store store : schedule.getStores()) {
+        if (store.getStoreId().equals("0")) {
+          ArrayList<Store> stores = storeRepo.findByStoreNameAndStoreAddress(store.getStoreName(),
+              store.getStoreAddress());
+
+          if (stores == null || stores.size() == 0) {
+            MaxStoreId maxStoreId =
+                maxStoreIdRepo.findById(new ObjectId("606ad4b5180a4b670d79d0a4")).get();
+            store.setStoreId(Integer.toString(maxStoreId.getMaxValue()));
+            store.setReviewers(new HashMap<String, Integer>());
+            storeRepo.save(store);
+            maxStoreId.setMaxValue(maxStoreId.getMaxValue() + 1);
+            maxStoreIdRepo.save(maxStoreId);
+          } else {
+            store.setStoreId(stores.get(0).getStoreId());
+          }
+        }
+        newStoreList.add(store);
+      }
+
+      // schedule 저장
       found.get().setTitle(schedule.getTitle());
       found.get().setMeetDate(schedule.getMeetDate());
-      found.get().setStores(schedule.getStores());
+      found.get().setStores(newStoreList);
       found.get().setParticipants(schedule.getParticipants());
       found.get().setTags(schedule.getTags());
       found.get().setReviewIds(schedule.getReviewIds());

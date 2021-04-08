@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.14.0",
     "axios": "^0.21.1",
+    "browser-image-compression": "^1.0.14",
     "dotenv": "^8.2.0",
     "moment": "^2.29.1",
     "react": "^17.0.1",
