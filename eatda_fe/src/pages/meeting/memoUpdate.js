@@ -113,7 +113,7 @@ function MemoUpdate(props) {
   function changeStar(v, storeItem) {
     let checkExist = false;
     meetingScores.forEach((item) => {
-      if (item.storeId === storeItem.storeId) {
+      if (item.storeId === storeItem.storeId && userSeq === item.userSeq) {
         item.rate = v;
         storeItem.rate = v;
         checkExist = true;
