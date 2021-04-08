@@ -65,17 +65,17 @@ public class UserController {
   // 회원정보수정
   @ApiOperation(value = "회원정보수정", notes = "변경할 닉네임과 프로필 사진 정보를 받아와서 회원정보 수정", response = User.class)
   @PutMapping("/userinfo")
-  public ResponseEntity<User> userInfoUpdate(
+  public ResponseEntity<UserResult> userInfoUpdate(
       @ApiParam(value = "닉네임", required = true) User user, @ApiParam(value = "프로필사진",
           required = false) @RequestParam(value = "file", required = false) MultipartFile file,
       HttpServletRequest req) {
     logger.info("userInfoUpdate - 호출");
     String jwt = req.getHeader("token");
     int userSeq = jwtService.decode(jwt);
-    User userInfo = userService.userInfoUpdate(userSeq, user, file);
+    UserResult userInfo = userService.userInfoUpdate(userSeq, user, file);
     if (userInfo == null)
-      return new ResponseEntity<User>(userInfo, HttpStatus.BAD_REQUEST);
-    return new ResponseEntity<User>(userInfo, HttpStatus.OK);
+      return new ResponseEntity<UserResult>(userInfo, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<UserResult>(userInfo, HttpStatus.OK);
   }
 
   // 친구 추가
