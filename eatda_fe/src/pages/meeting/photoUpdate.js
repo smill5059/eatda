@@ -122,14 +122,16 @@ function PhotoUploader(props) {
     const photoToAdd = e.target.files;
 
     const options = {
-      maxSizeMB: 0.1,
-      maxWidthOrHeight: 1920,
+      maxSizeMB: 0.05,
+      maxWidthOrHeight: 720,
     };
     try {
       for (let i = 0; i < photoToAdd.length; i++) {
         const compressedFile = await imageCompression(photoToAdd[i], options);
         var newFile = new File([compressedFile], compressedFile.name);
         temp.push({ id: newFile.name, file: newFile, url: URL.createObjectURL(newFile) })
+        // console.log(photoToAdd[i])
+        // console.log(newFile)
         setPhotoToAddList(temp.concat(photoToAddList))
       };
     } catch (error) {
