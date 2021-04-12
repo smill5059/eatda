@@ -1,6 +1,8 @@
+@import "assets/scss/variables.scss";
+
 .contentWrapper {
   height: 100%;
-  width: 100%;
+  width: 100vw;
 
   padding: 5%;
 
@@ -13,10 +15,17 @@
     font-size: x-large;
     font-weight: 600;
     
-    color: #EFBF43;
+    color: $fontTheme;
   }
 
   .contentBody {
+    min-width:0;
     grid-row: 2 / 3;
   }
+}
+
+/* 네비게이션 바 */
+.navbar {
+  font-size: small;
+  display: flex;
 }

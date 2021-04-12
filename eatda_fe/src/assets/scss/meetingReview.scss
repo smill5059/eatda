@@ -1,0 +1,328 @@
+@import "assets/scss/variables.scss";
+
+.meetingReadAfterContent {
+  display: grid;
+  // grid-template-rows: 1fr 9fr 2fr 3fr 2fr;
+  grid-template-rows: 1fr 1fr 6fr 9fr 3fr;
+  min-height: 0;
+  grid-gap: 5px;
+
+  .meetingReadTitle {
+    grid-row: 1 / 2;
+    p {
+      margin: 0;
+    }
+  }
+  .meetingReadImage {
+    grid-row: 3 / 4;
+    padding: 5% 5% 0%;
+
+    // width: auto; 
+    display: block;
+    // display: flex;
+    // flex-direction: row;
+    // justify-content: flex-start;
+    // flex-wrap: nowrap;
+    // float: left;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    // 스크롧바 없애기
+    // -ms-overflow-style: none;  /* IE and Edge */
+    // scrollbar-width: none;  /* Firefox */
+    // &::-webkit-scrollbar {
+    //     display: none;
+    //   }
+    .meetingReadImageItem {
+      display: inline-block;
+      // float: left;
+      width: 45vw !important;
+      height: 45vw;
+      margin-right: 5%;
+      // border: 2px solid black;
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+      }
+    }
+  }
+  .meetingReadAfterFriend {
+    grid-row: 2 / 3;
+    // padding: 2%;
+    width: 100%;
+    height: 100%;
+    // overflow: auto;
+    // white-space: nowrap;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    .meetingReadAfterFriendItem {
+      // display: inline-flex;
+      margin-left: 3%;
+      // width: 35%;
+      height: 100%;
+      // border: 2px solid #cccccc;
+      // border-radius: 10px;
+      .meetingReadAfterFriendImage {
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+        }
+      }
+      .meetingReadAfterFriendName {
+        overflow: hidden;
+        // padding: 0% 0%;
+        background-color: $eatdaBeige1;
+
+        border: solid $eatdaBeige1;
+        border-width: 2px 5px;
+        border-radius: 3px;
+        // white-space: nowrap;
+        // text-overflow: ellipsis;
+        text-align: center;
+      }
+    }
+  }
+  .meetingReadAfterStore{
+      grid-row: 5 / 6;
+      min-height:0;
+      height:100%;
+      overflow:auto;
+      .meetingReadAfterStoreItem{
+          // border:2px solid #717171;
+
+      
+          // margin-bottom:2%;
+          // padding:1%;
+
+      }
+  }
+  .meetingReadAfterComment {
+    grid-row: 4 / 5;
+    overflow: auto;
+
+    div:nth-child(3n+1) {
+      background-color: $eatdaBeige2trans;
+    }
+    div:nth-child(3n+2) {
+      background-color: $eatdaBeige2;
+    }
+    div:nth-child(3n+3) {
+      background-color: $eatdaBeige1;
+    }
+
+    .mRACImyCommentDefault {
+      justify-content: center;
+      text-align: center;
+      background-color: $eatdaGray2 !important;
+    }
+    
+    .meetingReadAfterCommentItem {
+      // border-top: 1px solid #717171;
+      width: 94%;
+      height: auto;
+      
+      margin: 3%;
+      
+      // background-color: $eatdaBeige2;
+      border-radius: 10px;
+
+      padding: 3%;
+      word-wrap: break-word;
+      word-break: keep-all;
+      .meetingReadAfterCommentName {
+        // height: 10%;
+        font-weight: 600;
+        margin: 0;
+      }
+      .meetingReadAfterCommentContent {
+        // height: 10%;
+        margin: 0;
+      }
+    }
+  }
+}
+/* storeCard 부분 */
+
+.storeCard {
+  height: 48%;
+  width: 94%;
+  margin: 3%;
+
+  padding-left: 3%;
+
+  background-color: $eatdaGray3;
+  border-radius: 5px;
+
+  p{
+    margin:0;
+    max-width:50%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height:2em;
+    text-align: start;
+}
+}
+.storeCardRating {
+  // background-color: #efbf43;
+  padding-right: 3%;
+  padding-bottom: 2%;
+  vertical-align: center;
+}
+
+
+
+/* PhotoUploader 부분 */
+
+.photoUploaderWrapper {
+  height: 100%;
+  width: 100%;
+
+  display: grid;
+  grid-template-rows: 1fr 22fr 1fr;
+  min-height: 0;
+  grid-gap: 5px;
+}
+
+.photoUploaderContent {
+  width: 100%;
+  height: 100%;
+
+  // background-color: yellowgreen;
+
+  // 사진 정렬 구도
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+
+  // 내용물이 많을 경우 scroll 처리
+  overflow: scroll;
+}
+
+.box::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+.photoBox {
+  // contentWrapper에서 전체 화면의 5%씩을 padding으로 주었으므로,
+  // 내부인 90%가 곧 90vw임. 30vw로 하면 딱 맞아떨어짐
+  width: 30vw;
+  height: 30vw;
+
+  // background-color: #efbf43;
+
+  // justify-items: center;
+  // align-items: center;
+
+  border: solid 2px white;
+
+  position: relative;
+
+  .photoBoxDelete {
+    position: absolute;
+    top: 3.5px;
+    right: 3.5px;
+
+    color: $eatdaGray3trans;
+  }
+}
+.photoPreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.addPhoto {
+  background-color: $eatdaGray2;
+  color: $eatdaGray3;
+
+  font-size: xx-large;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    color: $eatdaGray1;
+    margin: 0;
+    font-size: small;
+  }
+}
+
+// 메모 관련 SCSS
+
+.memoContent {
+  height:100%;
+    display: grid;
+
+  grid-template-rows: 10% 40% 40% 10%;
+  .memoTitle {
+    min-height: 0;
+    margin: auto;
+    width: 100%;
+    padding: 2%;
+    text-align: end;
+    grid-row: 1 / 2;
+  }
+  .memoCreate {
+    min-height: 0;
+    grid-row: 2 / 3;
+    padding: 2%;
+    .memoCreateInput {
+      border: 2px solid #efbf43;
+      height: 96%;
+    }
+  }
+  .starCreate {
+    // background-color: blue;
+    
+    border-top: 1px solid #cccccc;
+    grid-row: 3 / 4;
+    padding: 2%;
+    height:96%;
+    min-height: 0;
+    display: flex;
+    
+    flex-direction: column;
+    overflow: auto;
+    .starContent {
+      height:fit-content;
+      // border: 1px solid #cccccc;
+      border-radius: 10px;
+      padding: 2% 3%;
+      margin-bottom: 2%;
+      .starStoreName {
+        // vertical-align: middle;
+        max-width: 50%;
+        overflow:hidden;
+        white-space: nowrap;
+        text-overflow:ellipsis;
+        line-height: 2em;
+        margin: 0%;
+        padding-top: 2%;
+        display: block;
+        min-height: 0;
+      }
+      .starRating {
+        min-height: 0;
+      }
+    }
+  }
+  .memoCreateButton {
+    grid-row: 4 / 5;
+    width: 100%;
+    height: 80%;
+    margin: auto;
+    border: 2px solid #efbf43;
+    background: none;
+  }
+}

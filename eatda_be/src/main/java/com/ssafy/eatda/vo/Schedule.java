@@ -1,31 +1,36 @@
 package com.ssafy.eatda.vo;
 
+import java.util.Date;
+import java.util.List;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.ssafy.eatda.util.CustomObjectIdSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
-
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.sql.Date;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule {
-    private ObjectId seq;
-    private String title;
+  @JsonSerialize(using = CustomObjectIdSerializer.class)
+  @Id
+  private ObjectId id;
+  private String title;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date meetDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date meetDate;
 
-    private List<Store> stores;
-    private List<Participant> participants;
-    private List<String> tags;
-    private List<Score> scores;
-    private List<Comment> comments;
-    private List<Img> imgs;
+  private List<Store> stores;
+  private List<ObjectId> participants;
+  private List<Integer> reviewIds;
+  private List<String> tags;
+  private List<Score> scores;
+  private List<Comment> comments;
+  private List<String> imgs;
 
-    private boolean isCompleted;
+  private int completed;
 }
