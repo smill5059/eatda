@@ -18,9 +18,9 @@
 - 프론트엔드 .env 파일 생성
 
   ```
-  REACT_APP_API_URL=http://eatda.me:8080/app
-  REACT_APP_KAKAO_MAP_KEY=83785c478d05854a2b908f95ba035b78
-  REACT_APP_KAKAO_API_KEY=a56629054e548a02152dbbfcc5df9e7f
+  REACT_APP_API_URL={uri}
+  REACT_APP_KAKAO_MAP_KEY={kakao map key}
+  REACT_APP_KAKAO_API_KEY={kakao api key}
   ```
 
 - 프론트엔드 빌드
@@ -41,26 +41,26 @@
 
   ```
   ## MongoDB Config ##
-  spring.data.mongodb.uri=mongodb://j4a103.p.ssafy.io:27017
-  spring.data.mongodb.database=eatda
-  spring.data.mongodb.username=eatdaAdmin
-  spring.data.mongodb.password=a103qhsgurwldmswnsgmltnflaeksdnjsa103
+  spring.data.mongodb.uri={uri}
+  spring.data.mongodb.database={database}
+  spring.data.mongodb.username={username}
+  spring.data.mongodb.password={password}
   
   spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   
   server.port=8081
   
   #JWT
-  JWT.ISSUER=A103
-  JWT.SECRET=fkdlffkrchlrh
+  JWT.ISSUER={jwt issuer}
+  JWT.SECRET={jwt secret}
   
   #Kakao
-  Kakao.APP_REST_API_KEY=a56629054e548a02152dbbfcc5df9e7f
-  Kakao.REDIRECT_URI=http://localhost:8081/user/kakao/login
+  Kakao.APP_REST_API_KEY={rest api key}
+  Kakao.REDIRECT_URI={redirect uri}
   
   #MatterMost
   notification.mattermost.enabled=true
-  notification.mattermost.webhook-url=https://meeting.ssafy.com/hooks/oaa6khzehib3jbuio1rrow19er
+  notification.mattermost.webhook-url={mattermost webhook url}
   
   #file
   resources.location=/home/ubuntu/files/
